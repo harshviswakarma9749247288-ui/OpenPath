@@ -81,7 +81,7 @@ npm start          # Runs backend REST API on http://localhost:5000
 ```bash
 cd frontend
 npm install
-npm run dev        # Launches Vite development server on http://localhost:5173
+npm run dev        # Launches Vite development server on http://localhost:3000
 ```
 
 ---
