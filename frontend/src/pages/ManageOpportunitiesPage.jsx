@@ -63,7 +63,7 @@ export default function ManageOpportunitiesPage() {
     <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px', flexWrap: 'wrap', gap: '16px' }}>
         <div>
-          <h1 style={{ fontSize: '2rem', color: 'var(--secondary-navy)', marginBottom: '4px' }}>
+          <h1 style={{ fontSize: '2rem', color: '#FFFFFF', marginBottom: '4px' }}>
             Manage Your Opportunities
           </h1>
           <p style={{ color: 'var(--secondary-text)', fontSize: '0.95rem' }}>
@@ -96,7 +96,7 @@ export default function ManageOpportunitiesPage() {
             </thead>
             <tbody>
               {opportunities.map((opp) => (
-                <tr key={opp._id} style={{ borderBottom: '1px solid #F1F5F9' }}>
+                <tr key={opp._id} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
                   <td style={{ padding: '14px' }}>
                     <strong style={{ fontSize: '0.95rem', color: 'var(--primary-text)', display: 'block' }}>
                       {opp.title}
@@ -119,13 +119,13 @@ export default function ManageOpportunitiesPage() {
                     <button
                       onClick={() => handleToggleStatus(opp._id, opp.status)}
                       style={{
-                        padding: '4px 10px',
+                        padding: '4px 12px',
                         borderRadius: '9999px',
                         fontSize: '0.75rem',
                         fontWeight: 600,
-                        backgroundColor: opp.status === 'Active' ? '#ECFDF5' : '#F1F5F9',
-                        color: opp.status === 'Active' ? '#047857' : '#64748B',
-                        border: opp.status === 'Active' ? '1px solid #A7F3D0' : '1px solid #CBD5E1',
+                        backgroundColor: opp.status === 'Active' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                        color: opp.status === 'Active' ? '#34D399' : 'var(--secondary-text)',
+                        border: opp.status === 'Active' ? '1px solid rgba(16, 185, 129, 0.35)' : '1px solid rgba(255, 255, 255, 0.12)',
                         cursor: 'pointer',
                       }}
                       title="Click to toggle Active/Closed"
@@ -135,13 +135,13 @@ export default function ManageOpportunitiesPage() {
                   </td>
 
                   <td style={{ padding: '14px' }}>
-                    <span style={{ fontWeight: 700, color: 'var(--primary-blue)', fontSize: '1rem' }}>
+                    <span style={{ fontWeight: 700, color: '#C084FC', fontSize: '1rem' }}>
                       {opp.totalApplicants || 0}
                     </span>
                   </td>
 
                   <td style={{ padding: '14px' }}>
-                    <span style={{ fontWeight: 600, color: '#7C3AED' }}>
+                    <span style={{ fontWeight: 600, color: '#34D399' }}>
                       {opp.shortlisted || 0}
                     </span>
                   </td>
@@ -155,18 +155,21 @@ export default function ManageOpportunitiesPage() {
                       <button
                         onClick={() => navigate('candidate-review', { opportunityId: opp._id })}
                         className="btn-primary"
-                        style={{ padding: '6px 12px', fontSize: '0.775rem' }}
+                        style={{ padding: '6px 14px', fontSize: '0.775rem' }}
                       >
                         <Users size={14} /> Review Candidates
                       </button>
                       <button
                         onClick={() => handleDelete(opp._id)}
                         style={{
-                          padding: '6px 8px',
-                          color: '#DC2626',
-                          borderRadius: '6px',
-                          border: '1px solid #FECACA',
-                          backgroundColor: '#FEF2F2',
+                          padding: '6px 10px',
+                          color: '#F87171',
+                          borderRadius: '8px',
+                          border: '1px solid rgba(239, 68, 68, 0.35)',
+                          backgroundColor: 'rgba(239, 68, 68, 0.12)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
                         }}
                         title="Delete Listing"
                       >

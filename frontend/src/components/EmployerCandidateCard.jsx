@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
-import { Mail, GraduationCap, Briefcase, MapPin, FileText, ChevronDown, Check, X } from 'lucide-react';
+import { Mail, GraduationCap, Briefcase, MapPin, FileText } from 'lucide-react';
 import MatchScoreBadge from './MatchScoreBadge';
 import ApplicationStatusBadge from './ApplicationStatusBadge';
 
 export default function EmployerCandidateCard({ candidate, onStatusChange }) {
   const [isUpdating, setIsUpdating] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState(candidate.status);
-  const [showStatusDropdown, setShowStatusDropdown] = useState(false);
 
   const statuses = ['Applied', 'Reviewing', 'Shortlisted', 'Interview', 'Selected', 'Rejected'];
 
   const handleUpdate = async (newStatus) => {
     setIsUpdating(true);
     setSelectedStatus(newStatus);
-    setShowStatusDropdown(false);
     await onStatusChange(candidate.applicationId, newStatus);
     setIsUpdating(false);
   };
@@ -24,8 +22,8 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
     <div
       className="card"
       style={{
-        padding: '22px',
-        marginBottom: '16px',
+        padding: '24px',
+        marginBottom: '18px',
         display: 'flex',
         flexDirection: 'column',
         gap: '16px',
@@ -41,11 +39,11 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
               'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150'
             }
             alt={user.name}
-            style={{ width: '52px', height: '52px', borderRadius: '50%', objectFit: 'cover' }}
+            style={{ width: '52px', height: '52px', borderRadius: '50%', objectFit: 'cover', border: '1.5px solid rgba(255, 255, 255, 0.2)' }}
           />
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--primary-text)' }}>
+              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#FFFFFF' }}>
                 {user.name}
               </h3>
               <ApplicationStatusBadge status={selectedStatus} />
@@ -65,7 +63,7 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
         {/* Match Score Badge */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{ textAlign: 'right' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#C084FC' }}>
               COMPUTED MATCH
             </span>
           </div>
@@ -79,16 +77,17 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
           gap: '12px',
-          padding: '12px',
-          backgroundColor: '#F8FAFC',
+          padding: '14px',
+          backgroundColor: 'rgba(255, 255, 255, 0.03)',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
           borderRadius: 'var(--radius-md)',
           fontSize: '0.85rem',
         }}
       >
         <div style={{ display: 'flex', gap: '8px' }}>
-          <GraduationCap size={16} color="var(--primary-blue)" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <GraduationCap size={16} color="#A78BFA" style={{ flexShrink: 0, marginTop: '2px' }} />
           <div>
-            <strong style={{ color: 'var(--primary-text)' }}>
+            <strong style={{ color: '#F8FAFC' }}>
               {user.education?.degree || 'Undergraduate Degree'}
             </strong>
             <p style={{ color: 'var(--secondary-text)', fontSize: '0.8rem' }}>
@@ -98,9 +97,9 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
         </div>
 
         <div style={{ display: 'flex', gap: '8px' }}>
-          <Briefcase size={16} color="var(--primary-blue)" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <Briefcase size={16} color="#EC4899" style={{ flexShrink: 0, marginTop: '2px' }} />
           <div>
-            <strong style={{ color: 'var(--primary-text)' }}>
+            <strong style={{ color: '#F8FAFC' }}>
               {user.experience?.role || 'Fresher / Project Contributor'}
             </strong>
             <p style={{ color: 'var(--secondary-text)', fontSize: '0.8rem' }}>
@@ -113,7 +112,7 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
       {/* Matched vs Missing Skills */}
       <div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '8px' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#047857', alignSelf: 'center', marginRight: '4px' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#34D399', alignSelf: 'center', marginRight: '4px' }}>
             Matched:
           </span>
           {(candidate.matchedSkills || []).map((s, idx) => (
@@ -122,13 +121,13 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
             </span>
           ))}
           {(candidate.matchedSkills || []).length === 0 && (
-            <span style={{ fontSize: '0.75rem', color: '#94A3B8' }}>None</span>
+            <span style={{ fontSize: '0.75rem', color: '#64748B' }}>None</span>
           )}
         </div>
 
         {(candidate.missingSkills || []).length > 0 && (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#C2410C', alignSelf: 'center', marginRight: '4px' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#F472B6', alignSelf: 'center', marginRight: '4px' }}>
               Missing:
             </span>
             {candidate.missingSkills.map((s, idx) => (
@@ -143,7 +142,7 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
       {/* Bottom Action Bar: Resume + Status Change Pipeline */}
       <div
         style={{
-          borderTop: '1px solid #F1F5F9',
+          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
           paddingTop: '14px',
           display: 'flex',
           justifyContent: 'space-between',
@@ -157,7 +156,7 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
             alert(`Opening candidate digital resume portfolio for ${user.name}`);
           }}
           className="btn-secondary"
-          style={{ padding: '6px 12px', fontSize: '0.8rem' }}
+          style={{ padding: '6px 14px', fontSize: '0.8rem' }}
         >
           <FileText size={14} /> View Digital Resume
         </button>
@@ -174,12 +173,13 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
               onClick={() => handleUpdate(st)}
               style={{
                 fontSize: '0.75rem',
-                fontWeight: 600,
+                fontWeight: 700,
                 padding: '4px 10px',
-                borderRadius: '6px',
-                border: selectedStatus === st ? '1.5px solid var(--primary-blue)' : '1px solid var(--border-color)',
-                backgroundColor: selectedStatus === st ? '#EFF6FF' : '#FFFFFF',
-                color: selectedStatus === st ? 'var(--primary-blue)' : '#475569',
+                borderRadius: '8px',
+                border: selectedStatus === st ? '1.5px solid #C026D3' : '1px solid rgba(255, 255, 255, 0.12)',
+                backgroundColor: selectedStatus === st ? 'rgba(192, 38, 211, 0.25)' : 'rgba(255, 255, 255, 0.04)',
+                color: selectedStatus === st ? '#F0ABFC' : '#94A3B8',
+                boxShadow: selectedStatus === st ? '0 0 12px rgba(192, 38, 211, 0.35)' : 'none',
                 cursor: selectedStatus === st ? 'default' : 'pointer',
               }}
             >

@@ -45,7 +45,7 @@ export default function ApplicationsPage() {
     <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
       {/* 1. Header & Summary Metric Dashboard */}
       <div style={{ marginBottom: '28px' }}>
-        <h1 style={{ fontSize: '2rem', color: 'var(--secondary-navy)', marginBottom: '6px' }}>
+        <h1 style={{ fontSize: '2rem', color: '#FFFFFF', marginBottom: '6px' }}>
           My Applications
         </h1>
         <p style={{ color: 'var(--secondary-text)', fontSize: '0.95rem' }}>
@@ -61,25 +61,25 @@ export default function ApplicationsPage() {
             marginTop: '20px',
           }}
         >
-          <div className="card" style={{ padding: '16px', borderLeft: '4px solid var(--primary-blue)' }}>
+          <div className="card" style={{ padding: '16px', borderLeft: '4px solid #8B5CF6' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>TOTAL SUBMITTED</span>
-            <h3 style={{ fontSize: '1.8rem', color: 'var(--primary-blue)', marginTop: '2px' }}>{total}</h3>
+            <h3 style={{ fontSize: '1.8rem', color: '#C084FC', marginTop: '2px' }}>{total}</h3>
           </div>
-          <div className="card" style={{ padding: '16px', borderLeft: '4px solid #D97706' }}>
+          <div className="card" style={{ padding: '16px', borderLeft: '4px solid #F59E0B' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>UNDER REVIEW</span>
-            <h3 style={{ fontSize: '1.8rem', color: '#D97706', marginTop: '2px' }}>{reviewing}</h3>
+            <h3 style={{ fontSize: '1.8rem', color: '#FBBF24', marginTop: '2px' }}>{reviewing}</h3>
           </div>
-          <div className="card" style={{ padding: '16px', borderLeft: '4px solid #7C3AED' }}>
+          <div className="card" style={{ padding: '16px', borderLeft: '4px solid #C026D3' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>SHORTLISTED</span>
-            <h3 style={{ fontSize: '1.8rem', color: '#7C3AED', marginTop: '2px' }}>{shortlisted}</h3>
+            <h3 style={{ fontSize: '1.8rem', color: '#F472B6', marginTop: '2px' }}>{shortlisted}</h3>
           </div>
-          <div className="card" style={{ padding: '16px', borderLeft: '4px solid #0891B2' }}>
+          <div className="card" style={{ padding: '16px', borderLeft: '4px solid #06B6D4' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>INTERVIEW CALLS</span>
-            <h3 style={{ fontSize: '1.8rem', color: '#0891B2', marginTop: '2px' }}>{interviews}</h3>
+            <h3 style={{ fontSize: '1.8rem', color: '#38BDF8', marginTop: '2px' }}>{interviews}</h3>
           </div>
-          <div className="card" style={{ padding: '16px', borderLeft: '4px solid #059669' }}>
+          <div className="card" style={{ padding: '16px', borderLeft: '4px solid #10B981' }}>
             <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>OFFERS / SELECTED</span>
-            <h3 style={{ fontSize: '1.8rem', color: '#059669', marginTop: '2px' }}>{selected}</h3>
+            <h3 style={{ fontSize: '1.8rem', color: '#34D399', marginTop: '2px' }}>{selected}</h3>
           </div>
         </div>
       </div>
@@ -114,9 +114,10 @@ export default function ApplicationsPage() {
                 borderRadius: 'var(--radius-md)',
                 fontSize: '0.85rem',
                 fontWeight: activeTab === tab.id ? 600 : 500,
-                backgroundColor: activeTab === tab.id ? '#EFF6FF' : 'transparent',
-                color: activeTab === tab.id ? 'var(--primary-blue)' : 'var(--secondary-text)',
-                border: activeTab === tab.id ? '1px solid #BFDBFE' : '1px solid transparent',
+                backgroundColor: activeTab === tab.id ? 'rgba(168, 85, 247, 0.2)' : 'rgba(255, 255, 255, 0.04)',
+                color: activeTab === tab.id ? '#C084FC' : 'var(--secondary-text)',
+                border: activeTab === tab.id ? '1px solid rgba(168, 85, 247, 0.4)' : '1px solid rgba(255, 255, 255, 0.08)',
+                backdropFilter: 'blur(8px)',
               }}
             >
               {tab.label}
@@ -125,16 +126,16 @@ export default function ApplicationsPage() {
         </div>
 
         {/* View toggle */}
-        <div style={{ display: 'flex', gap: '4px', backgroundColor: '#F1F5F9', padding: '3px', borderRadius: '8px' }}>
+        <div style={{ display: 'flex', gap: '4px', backgroundColor: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(255, 255, 255, 0.1)', padding: '3px', borderRadius: '8px' }}>
           <button
             onClick={() => setViewMode('cards')}
             style={{
-              padding: '6px 10px',
+              padding: '6px 12px',
               borderRadius: '6px',
               fontSize: '0.8rem',
               fontWeight: 500,
-              backgroundColor: viewMode === 'cards' ? '#FFFFFF' : 'transparent',
-              color: viewMode === 'cards' ? 'var(--primary-blue)' : '#64748B',
+              backgroundColor: viewMode === 'cards' ? 'rgba(255, 255, 255, 0.12)' : 'transparent',
+              color: viewMode === 'cards' ? '#A78BFA' : '#64748B',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
@@ -145,12 +146,12 @@ export default function ApplicationsPage() {
           <button
             onClick={() => setViewMode('kanban')}
             style={{
-              padding: '6px 10px',
+              padding: '6px 12px',
               borderRadius: '6px',
               fontSize: '0.8rem',
               fontWeight: 500,
-              backgroundColor: viewMode === 'kanban' ? '#FFFFFF' : 'transparent',
-              color: viewMode === 'kanban' ? 'var(--primary-blue)' : '#64748B',
+              backgroundColor: viewMode === 'kanban' ? 'rgba(255, 255, 255, 0.12)' : 'transparent',
+              color: viewMode === 'kanban' ? '#A78BFA' : '#64748B',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
@@ -237,23 +238,25 @@ export default function ApplicationsPage() {
               <div
                 key={stage}
                 style={{
-                  backgroundColor: '#F8FAFC',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '14px',
-                  border: '1px solid var(--border-color)',
+                  backgroundColor: 'rgba(15, 23, 42, 0.65)',
+                  backdropFilter: 'blur(12px)',
+                  borderRadius: 'var(--radius-lg)',
+                  padding: '16px',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
                   minHeight: '400px',
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                  <strong style={{ fontSize: '0.85rem', color: 'var(--secondary-navy)' }}>{stage}</strong>
+                  <strong style={{ fontSize: '0.85rem', color: '#FFFFFF' }}>{stage}</strong>
                   <span
                     style={{
                       fontSize: '0.75rem',
                       fontWeight: 700,
-                      backgroundColor: '#FFFFFF',
+                      backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                      color: '#A78BFA',
                       padding: '2px 8px',
                       borderRadius: '10px',
-                      border: '1px solid var(--border-color)',
+                      border: '1px solid rgba(255, 255, 255, 0.12)',
                     }}
                   >
                     {stageApps.length}

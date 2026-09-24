@@ -58,7 +58,7 @@ export default function MatchExplanationPage({ opportunityId }) {
       title: '1. Skill Match',
       weight: 40,
       icon: Target,
-      color: '#2563EB',
+      color: '#38BDF8',
       data: breakdown?.skillMatch,
       formula: 'Overlap between your profile skills and mandatory role competencies.',
     },
@@ -66,7 +66,7 @@ export default function MatchExplanationPage({ opportunityId }) {
       title: '2. Academic Qualification',
       weight: 20,
       icon: GraduationCap,
-      color: '#059669',
+      color: '#34D399',
       data: breakdown?.qualification,
       formula: 'Degree level and field of study alignment against opportunity criteria.',
     },
@@ -74,7 +74,7 @@ export default function MatchExplanationPage({ opportunityId }) {
       title: '3. Location & Work Mode',
       weight: 20,
       icon: MapPin,
-      color: '#7C3AED',
+      color: '#C084FC',
       data: breakdown?.location,
       formula: 'Remote availability or regional city proximity and preferences.',
     },
@@ -82,7 +82,7 @@ export default function MatchExplanationPage({ opportunityId }) {
       title: '4. Industry Interest',
       weight: 10,
       icon: Heart,
-      color: '#DB2777',
+      color: '#F472B6',
       data: breakdown?.interest,
       formula: 'Shared domain tags, industry verticals, and career aspirations.',
     },
@@ -90,7 +90,7 @@ export default function MatchExplanationPage({ opportunityId }) {
       title: '5. Experience Level',
       weight: 10,
       icon: Briefcase,
-      color: '#D97706',
+      color: '#FBBF24',
       data: breakdown?.experience,
       formula: 'Suitability for students, freshers, or project background.',
     },
@@ -124,34 +124,37 @@ export default function MatchExplanationPage({ opportunityId }) {
             style={{
               fontSize: '0.75rem',
               fontWeight: 700,
-              color: 'var(--primary-blue)',
+              color: '#C084FC',
               textTransform: 'uppercase',
-              backgroundColor: '#EFF6FF',
-              padding: '3px 10px',
+              backgroundColor: 'rgba(168, 85, 247, 0.15)',
+              border: '1px solid rgba(168, 85, 247, 0.35)',
+              padding: '4px 12px',
               borderRadius: '9999px',
+              letterSpacing: '0.05em',
             }}
           >
             EXPLAINABLE AI TRANSPARENCY
           </span>
-          <h1 style={{ fontSize: '2rem', marginTop: '10px', color: 'var(--secondary-navy)' }}>
+          <h1 style={{ fontSize: '2rem', marginTop: '12px', color: '#FFFFFF' }}>
             Why This Role Matches You
           </h1>
           <p style={{ fontSize: '1rem', color: 'var(--secondary-text)', marginTop: '4px' }}>
-            Match calculation for <strong>{opp?.title}</strong> at {opp?.organization}
+            Match calculation for <strong style={{ color: '#FFFFFF' }}>{opp?.title}</strong> at {opp?.organization}
           </p>
           <div
             style={{
               marginTop: '16px',
-              padding: '12px 16px',
-              backgroundColor: '#F8FAFC',
-              borderRadius: '8px',
-              border: '1px solid #E2E8F0',
+              padding: '14px 18px',
+              backgroundColor: 'rgba(255, 255, 255, 0.04)',
+              borderRadius: '10px',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
               maxWidth: '560px',
               fontSize: '0.9rem',
               color: 'var(--primary-text)',
+              lineHeight: '1.5',
             }}
           >
-            <Sparkles size={16} color="var(--primary-blue)" style={{ display: 'inline', marginRight: '6px' }} />
+            <Sparkles size={16} color="#C084FC" style={{ display: 'inline', marginRight: '6px' }} />
             {summary}
           </div>
         </div>
@@ -166,7 +169,7 @@ export default function MatchExplanationPage({ opportunityId }) {
 
       {/* 5-Factor Detail Cards */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '32px' }}>
-        <h3 style={{ fontSize: '1.25rem', color: 'var(--secondary-navy)', marginBottom: '8px' }}>
+        <h3 style={{ fontSize: '1.25rem', color: '#FFFFFF', marginBottom: '8px' }}>
           5 Weighted Decision Factors
         </h3>
 
@@ -182,26 +185,28 @@ export default function MatchExplanationPage({ opportunityId }) {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <div
                     style={{
-                      width: '36px',
-                      height: '36px',
-                      borderRadius: '8px',
-                      backgroundColor: '#EFF6FF',
+                      width: '38px',
+                      height: '38px',
+                      borderRadius: '10px',
+                      backgroundColor: `${f.color}20`,
+                      border: `1px solid ${f.color}45`,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       color: f.color,
+                      boxShadow: `0 0 10px ${f.color}30`,
                     }}
                   >
                     <Icon size={18} />
                   </div>
                   <div>
-                    <h4 style={{ fontSize: '1.05rem', color: 'var(--primary-text)' }}>{f.title}</h4>
+                    <h4 style={{ fontSize: '1.05rem', color: '#FFFFFF' }}>{f.title}</h4>
                     <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>{f.formula}</span>
                   </div>
                 </div>
 
                 <div style={{ textAlign: 'right' }}>
-                  <span style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--primary-blue)' }}>
+                  <span style={{ fontSize: '1.1rem', fontWeight: 700, color: f.color }}>
                     +{contrib}%
                   </span>
                   <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)', display: 'block' }}>
@@ -211,19 +216,20 @@ export default function MatchExplanationPage({ opportunityId }) {
               </div>
 
               {/* Progress Bar */}
-              <div style={{ height: '8px', backgroundColor: '#E2E8F0', borderRadius: '4px', overflow: 'hidden', marginBottom: '8px' }}>
+              <div style={{ height: '8px', backgroundColor: 'rgba(255, 255, 255, 0.08)', borderRadius: '4px', overflow: 'hidden', marginBottom: '10px' }}>
                 <div
                   style={{
                     height: '100%',
                     width: `${score}%`,
-                    backgroundColor: score >= 80 ? '#10B981' : score >= 50 ? '#F59E0B' : '#EF4444',
+                    background: score >= 80 ? 'linear-gradient(90deg, #10B981, #34D399)' : score >= 50 ? 'linear-gradient(90deg, #F59E0B, #FBBF24)' : 'linear-gradient(90deg, #EF4444, #F87171)',
                     borderRadius: '4px',
+                    boxShadow: score >= 80 ? '0 0 10px rgba(16, 185, 129, 0.5)' : 'none',
                   }}
                 />
               </div>
 
-              <div style={{ fontSize: '0.85rem', color: '#475569', backgroundColor: '#F8FAFC', padding: '8px 12px', borderRadius: '6px' }}>
-                <strong>Assessment: </strong> {details}
+              <div style={{ fontSize: '0.85rem', color: '#CBD5E1', backgroundColor: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', padding: '10px 14px', borderRadius: '8px' }}>
+                <strong style={{ color: '#F8FAFC' }}>Assessment: </strong> {details}
               </div>
             </div>
           );

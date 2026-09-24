@@ -106,12 +106,14 @@ export default function OpportunitiesPage() {
               onClick={() => setSelectedType(t)}
               style={{
                 fontSize: '0.8rem',
-                padding: '5px 12px',
+                padding: '6px 14px',
                 borderRadius: '9999px',
-                backgroundColor: selectedType === t ? 'var(--primary-blue)' : '#FFFFFF',
+                background: selectedType === t ? 'var(--primary-gradient)' : 'rgba(255, 255, 255, 0.05)',
                 color: selectedType === t ? '#FFFFFF' : 'var(--secondary-text)',
-                border: selectedType === t ? '1px solid var(--primary-blue)' : '1px solid var(--border-color)',
-                fontWeight: 500,
+                border: selectedType === t ? '1px solid rgba(255, 255, 255, 0.3)' : '1px solid rgba(255, 255, 255, 0.12)',
+                boxShadow: selectedType === t ? '0 0 15px rgba(168, 85, 247, 0.4)' : 'none',
+                fontWeight: 600,
+                backdropFilter: 'blur(8px)',
               }}
             >
               {t === 'all' ? 'All Roles' : t}
@@ -123,12 +125,14 @@ export default function OpportunitiesPage() {
               onClick={() => setSelectedLocation(loc)}
               style={{
                 fontSize: '0.8rem',
-                padding: '5px 12px',
+                padding: '6px 14px',
                 borderRadius: '9999px',
-                backgroundColor: selectedLocation === loc ? '#1E40AF' : '#FFFFFF',
+                background: selectedLocation === loc ? 'linear-gradient(135deg, #06B6D4, #3B82F6)' : 'rgba(255, 255, 255, 0.05)',
                 color: selectedLocation === loc ? '#FFFFFF' : 'var(--secondary-text)',
-                border: selectedLocation === loc ? '1px solid #1E40AF' : '1px solid var(--border-color)',
-                fontWeight: 500,
+                border: selectedLocation === loc ? '1px solid rgba(255, 255, 255, 0.3)' : '1px solid rgba(255, 255, 255, 0.12)',
+                boxShadow: selectedLocation === loc ? '0 0 15px rgba(6, 182, 212, 0.4)' : 'none',
+                fontWeight: 600,
+                backdropFilter: 'blur(8px)',
               }}
             >
               {loc === 'all' ? 'Any Mode' : loc}
@@ -155,7 +159,7 @@ export default function OpportunitiesPage() {
             </strong>
             <button
               onClick={handleResetFilters}
-              style={{ fontSize: '0.75rem', color: 'var(--primary-blue)', display: 'flex', alignItems: 'center', gap: '3px' }}
+              style={{ fontSize: '0.75rem', color: '#A78BFA', display: 'flex', alignItems: 'center', gap: '3px' }}
             >
               <RotateCcw size={12} /> Reset
             </button>
@@ -180,7 +184,7 @@ export default function OpportunitiesPage() {
           <div className="form-group">
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: '4px' }}>
               <label className="form-label" style={{ margin: 0 }}>Min Match Score</label>
-              <strong>{minMatch}%</strong>
+              <strong style={{ color: '#A78BFA' }}>{minMatch}%</strong>
             </div>
             <input
               type="range"
@@ -189,11 +193,11 @@ export default function OpportunitiesPage() {
               step="10"
               value={minMatch}
               onChange={(e) => setMinMatch(Number(e.target.value))}
-              style={{ width: '100%', accentColor: 'var(--primary-blue)' }}
+              style={{ width: '100%', accentColor: 'var(--aurora-violet)' }}
             />
           </div>
 
-          <div style={{ padding: '12px', backgroundColor: '#EFF6FF', borderRadius: '8px', fontSize: '0.775rem', color: '#1D4ED8', marginTop: '16px' }}>
+          <div style={{ padding: '12px', backgroundColor: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: '10px', fontSize: '0.775rem', color: '#38BDF8', marginTop: '16px' }}>
             💡 <strong>Pro Tip:</strong> Matches above 80% have strong overlap with your profile skills & coursework.
           </div>
         </div>
@@ -203,17 +207,17 @@ export default function OpportunitiesPage() {
           {/* Header with Results count & Grid/List view toggle */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
             <span style={{ fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
-              Showing <strong>{filteredOpportunities.length}</strong> available opportunities
+              Showing <strong style={{ color: '#FFFFFF' }}>{filteredOpportunities.length}</strong> available opportunities
             </span>
 
-            <div style={{ display: 'flex', gap: '4px', backgroundColor: '#F1F5F9', padding: '2px', borderRadius: '8px' }}>
+            <div style={{ display: 'flex', gap: '4px', backgroundColor: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(255, 255, 255, 0.1)', padding: '3px', borderRadius: '8px' }}>
               <button
                 onClick={() => setViewMode('grid')}
                 style={{
                   padding: '6px',
                   borderRadius: '6px',
-                  backgroundColor: viewMode === 'grid' ? '#FFFFFF' : 'transparent',
-                  color: viewMode === 'grid' ? 'var(--primary-blue)' : '#64748B',
+                  backgroundColor: viewMode === 'grid' ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
+                  color: viewMode === 'grid' ? '#A78BFA' : '#64748B',
                 }}
               >
                 <Grid size={16} />
@@ -223,8 +227,8 @@ export default function OpportunitiesPage() {
                 style={{
                   padding: '6px',
                   borderRadius: '6px',
-                  backgroundColor: viewMode === 'list' ? '#FFFFFF' : 'transparent',
-                  color: viewMode === 'list' ? 'var(--primary-blue)' : '#64748B',
+                  backgroundColor: viewMode === 'list' ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
+                  color: viewMode === 'list' ? '#A78BFA' : '#64748B',
                 }}
               >
                 <List size={16} />

@@ -96,16 +96,18 @@ export default function CandidateReviewPage({ opportunityId }) {
             style={{
               fontSize: '0.75rem',
               fontWeight: 700,
-              color: '#7C3AED',
+              color: '#C084FC',
               textTransform: 'uppercase',
-              backgroundColor: '#F5F3FF',
-              padding: '3px 10px',
+              backgroundColor: 'rgba(168, 85, 247, 0.15)',
+              border: '1px solid rgba(168, 85, 247, 0.35)',
+              padding: '4px 12px',
               borderRadius: '9999px',
+              letterSpacing: '0.05em',
             }}
           >
             CANDIDATE INTELLIGENCE
           </span>
-          <h1 style={{ fontSize: '1.85rem', marginTop: '8px', color: 'var(--secondary-navy)' }}>
+          <h1 style={{ fontSize: '1.85rem', marginTop: '10px', color: '#FFFFFF' }}>
             Candidate Review & Matching
           </h1>
           <p style={{ fontSize: '0.9rem', color: 'var(--secondary-text)', marginTop: '4px' }}>
@@ -135,7 +137,7 @@ export default function CandidateReviewPage({ opportunityId }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <h3 style={{ fontSize: '1.15rem', color: 'var(--primary-text)' }}>
             Ranked Candidates for{' '}
-            <strong style={{ color: 'var(--primary-blue)' }}>{oppDetails?.title || 'Selected Role'}</strong>
+            <strong style={{ color: '#C084FC' }}>{oppDetails?.title || 'Selected Role'}</strong>
           </h3>
           <span style={{ fontSize: '0.85rem', color: 'var(--secondary-text)' }}>
             {candidates.length} Candidate{candidates.length !== 1 ? 's' : ''} Evaluated

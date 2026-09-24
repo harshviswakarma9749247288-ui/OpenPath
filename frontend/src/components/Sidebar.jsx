@@ -46,7 +46,9 @@ export default function Sidebar() {
       className="sidebar-desktop"
       style={{
         width: isSidebarCollapsed ? '72px' : '240px',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: 'rgba(8, 12, 24, 0.92)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
         borderRight: '1px solid var(--border-color)',
         display: 'flex',
         flexDirection: 'column',
@@ -75,20 +77,21 @@ export default function Sidebar() {
             onClick={() => navigate('landing')}
             style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
           >
-            {/* Logo Mark */}
+            {/* Cyber Aurora Logo Mark */}
             <div
               style={{
                 width: '36px',
                 height: '36px',
                 borderRadius: '10px',
-                backgroundColor: 'var(--primary-blue)',
+                background: 'linear-gradient(135deg, #7C3AED 0%, #C026D3 50%, #EC4899 100%)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 color: '#FFFFFF',
                 fontWeight: 800,
                 fontSize: '1.1rem',
-                boxShadow: '0 4px 10px rgba(37, 99, 235, 0.3)',
+                boxShadow: '0 0 15px rgba(236, 72, 153, 0.45)',
+                border: '1px solid rgba(255, 255, 255, 0.25)',
                 flexShrink: 0,
               }}
             >
@@ -99,13 +102,13 @@ export default function Sidebar() {
                 <span
                   style={{
                     fontFamily: 'var(--font-heading)',
-                    fontSize: '1.2rem',
-                    fontWeight: 700,
-                    color: 'var(--secondary-navy)',
+                    fontSize: '1.25rem',
+                    fontWeight: 800,
+                    color: '#FFFFFF',
                     letterSpacing: '-0.3px',
                   }}
                 >
-                  Open<span style={{ color: 'var(--primary-blue)' }}>Path</span>
+                  Open<span className="gradient-text">Path</span>
                 </span>
               </div>
             )}
@@ -146,7 +149,7 @@ export default function Sidebar() {
         )}
 
         {/* Navigation Links */}
-        <nav style={{ padding: '16px 10px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        <nav style={{ padding: '16px 10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activePage === item.id;
@@ -163,16 +166,24 @@ export default function Sidebar() {
                   padding: isSidebarCollapsed ? '12px 0' : '10px 14px',
                   justifyContent: isSidebarCollapsed ? 'center' : 'flex-start',
                   borderRadius: 'var(--radius-md)',
-                  backgroundColor: isActive ? '#EFF6FF' : 'transparent',
-                  color: isActive ? 'var(--primary-blue)' : 'var(--secondary-text)',
+                  background: isActive
+                    ? 'linear-gradient(135deg, rgba(124, 58, 237, 0.25) 0%, rgba(236, 72, 153, 0.2) 100%)'
+                    : 'transparent',
+                  color: isActive ? '#FFFFFF' : 'var(--secondary-text)',
                   fontWeight: isActive ? 600 : 500,
                   fontSize: '0.9rem',
-                  border: isActive ? '1px solid #BFDBFE' : '1px solid transparent',
+                  border: isActive
+                    ? '1px solid rgba(168, 85, 247, 0.45)'
+                    : '1px solid transparent',
+                  boxShadow: isActive ? '0 0 15px rgba(124, 58, 237, 0.25)' : 'none',
                   position: 'relative',
                   transition: 'var(--transition-normal)',
                 }}
               >
-                <Icon size={20} color={isActive ? 'var(--primary-blue)' : 'currentColor'} />
+                <Icon
+                  size={19}
+                  color={isActive ? '#F472B6' : 'currentColor'}
+                />
                 {!isSidebarCollapsed && <span>{item.label}</span>}
               </button>
             );
@@ -187,9 +198,9 @@ export default function Sidebar() {
           <div
             style={{
               padding: '10px',
-              backgroundColor: '#F8FAFC',
+              backgroundColor: 'rgba(255, 255, 255, 0.03)',
               borderRadius: 'var(--radius-md)',
-              border: '1px dashed #CBD5E1',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
               marginBottom: '12px',
             }}
           >
@@ -202,10 +213,11 @@ export default function Sidebar() {
                   fontSize: '0.7rem',
                   fontWeight: 700,
                   textTransform: 'uppercase',
-                  color: isEmployer ? '#7C3AED' : 'var(--primary-blue)',
-                  backgroundColor: isEmployer ? '#F5F3FF' : '#EFF6FF',
-                  padding: '1px 6px',
-                  borderRadius: '4px',
+                  color: isEmployer ? '#F472B6' : '#C084FC',
+                  backgroundColor: isEmployer ? 'rgba(236, 72, 153, 0.15)' : 'rgba(124, 58, 237, 0.15)',
+                  padding: '2px 8px',
+                  borderRadius: '9999px',
+                  border: isEmployer ? '1px solid rgba(236, 72, 153, 0.3)' : '1px solid rgba(124, 58, 237, 0.3)',
                 }}
               >
                 {user?.role || 'Guest'}
@@ -221,17 +233,17 @@ export default function Sidebar() {
                 padding: '6px',
                 fontSize: '0.75rem',
                 fontWeight: 600,
-                color: 'var(--primary-blue)',
-                backgroundColor: '#FFFFFF',
-                border: '1px solid var(--border-color)',
-                borderRadius: '6px',
+                color: '#E2E8F0',
+                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                borderRadius: '8px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '6px',
               }}
             >
-              <ArrowRightLeft size={12} /> Switch to {isEmployer ? 'Student View' : 'Employer View'}
+              <ArrowRightLeft size={12} /> Switch to {isEmployer ? 'Student Hub' : 'Employer Hub'}
             </button>
           </div>
         )}
@@ -256,14 +268,14 @@ export default function Sidebar() {
                   'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120'
                 }
                 alt={user?.name || 'User'}
-                style={{ width: '34px', height: '34px', borderRadius: '50%', objectFit: 'cover' }}
+                style={{ width: '34px', height: '34px', borderRadius: '50%', objectFit: 'cover', border: '1px solid rgba(255, 255, 255, 0.2)' }}
               />
               <div style={{ overflow: 'hidden' }}>
                 <p
                   style={{
                     fontSize: '0.85rem',
                     fontWeight: 600,
-                    color: 'var(--primary-text)',
+                    color: '#F8FAFC',
                     whiteSpace: 'nowrap',
                     textOverflow: 'ellipsis',
                     overflow: 'hidden',
@@ -285,7 +297,7 @@ export default function Sidebar() {
             }}
             title="Log Out"
             style={{
-              color: '#94A3B8',
+              color: '#64748B',
               padding: '6px',
               borderRadius: '6px',
               display: 'flex',

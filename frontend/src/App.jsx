@@ -93,38 +93,44 @@ export default function App() {
       {/* Toast Notification Container */}
       {toast && (
         <div
-          className="card animate-fade-in"
+          className="card card-featured animate-fade-in"
           style={{
             position: 'fixed',
             top: '20px',
             right: '24px',
-            padding: '12px 18px',
+            padding: '12px 20px',
             display: 'flex',
             alignItems: 'center',
             gap: '10px',
             backgroundColor:
               toast.type === 'success'
-                ? '#ECFDF5'
+                ? 'rgba(16, 185, 129, 0.2)'
                 : toast.type === 'error'
-                ? '#FEF2F2'
-                : '#EFF6FF',
+                ? 'rgba(239, 68, 68, 0.2)'
+                : 'rgba(168, 85, 247, 0.2)',
             border:
               toast.type === 'success'
-                ? '1px solid #A7F3D0'
+                ? '1px solid rgba(16, 185, 129, 0.4)'
                 : toast.type === 'error'
-                ? '1px solid #FECACA'
-                : '1px solid #BFDBFE',
+                ? '1px solid rgba(239, 68, 68, 0.4)'
+                : '1px solid rgba(168, 85, 247, 0.4)',
             color:
               toast.type === 'success'
-                ? '#047857'
+                ? '#34D399'
                 : toast.type === 'error'
-                ? '#DC2626'
-                : '#1D4ED8',
-            boxShadow: 'var(--shadow-lg)',
+                ? '#F87171'
+                : '#C084FC',
+            boxShadow:
+              toast.type === 'success'
+                ? '0 0 20px rgba(16, 185, 129, 0.3)'
+                : toast.type === 'error'
+                ? '0 0 20px rgba(239, 68, 68, 0.3)'
+                : '0 0 20px rgba(124, 58, 237, 0.3)',
             zIndex: 9999,
             borderRadius: 'var(--radius-md)',
             fontSize: '0.875rem',
-            fontWeight: 500,
+            fontWeight: 600,
+            backdropFilter: 'blur(16px)',
           }}
         >
           {toast.type === 'success' ? (
@@ -148,7 +154,8 @@ export default function App() {
           style={{
             position: 'fixed',
             inset: 0,
-            backgroundColor: 'rgba(15, 23, 42, 0.5)',
+            backgroundColor: 'rgba(7, 10, 19, 0.8)',
+            backdropFilter: 'blur(8px)',
             zIndex: 100,
           }}
         >
@@ -157,7 +164,9 @@ export default function App() {
             style={{
               width: '280px',
               height: '100%',
-              backgroundColor: '#FFFFFF',
+              backgroundColor: '#0D1222',
+              borderRight: '1px solid rgba(255, 255, 255, 0.1)',
+              backdropFilter: 'blur(20px)',
               padding: '24px',
               display: 'flex',
               flexDirection: 'column',
@@ -166,8 +175,8 @@ export default function App() {
           >
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                <strong style={{ fontSize: '1.2rem', color: 'var(--secondary-navy)' }}>OpenPath</strong>
-                <button onClick={() => setMobileDrawerOpen(false)}>
+                <strong style={{ fontSize: '1.2rem', color: '#FFFFFF' }}>OpenPath</strong>
+                <button onClick={() => setMobileDrawerOpen(false)} style={{ color: '#94A3B8' }}>
                   <X size={20} />
                 </button>
               </div>
@@ -188,7 +197,7 @@ export default function App() {
                 <button onClick={() => navigate('profile')} className="btn-ghost" style={{ justifyContent: 'flex-start' }}>
                   Digital Resume
                 </button>
-                <hr style={{ margin: '12px 0', border: 'none', borderTop: '1px solid #E2E8F0' }} />
+                <hr style={{ margin: '12px 0', border: 'none', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }} />
                 <button onClick={() => navigate('employer-dashboard')} className="btn-ghost" style={{ justifyContent: 'flex-start' }}>
                   Employer Hub
                 </button>

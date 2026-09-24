@@ -75,20 +75,22 @@ export default function SkillGapPage({ opportunityId }) {
             style={{
               fontSize: '0.75rem',
               fontWeight: 700,
-              color: 'var(--primary-blue)',
+              color: '#C084FC',
               textTransform: 'uppercase',
-              backgroundColor: '#EFF6FF',
-              padding: '3px 10px',
+              backgroundColor: 'rgba(168, 85, 247, 0.15)',
+              border: '1px solid rgba(168, 85, 247, 0.35)',
+              padding: '4px 12px',
               borderRadius: '9999px',
+              letterSpacing: '0.05em',
             }}
           >
             SKILL GAP ANALYSIS
           </span>
-          <h1 style={{ fontSize: '2rem', marginTop: '10px', color: 'var(--secondary-navy)' }}>
+          <h1 style={{ fontSize: '2rem', marginTop: '12px', color: '#FFFFFF' }}>
             Target Skill Readiness
           </h1>
           <p style={{ fontSize: '1rem', color: 'var(--secondary-text)', marginTop: '4px' }}>
-            For <strong>{opportunityTitle}</strong> at {organization}
+            For <strong style={{ color: '#FFFFFF' }}>{opportunityTitle}</strong> at {organization}
           </p>
           <p style={{ fontSize: '0.9rem', color: 'var(--primary-text)', marginTop: '12px', maxWidth: '540px' }}>
             {recommendationNote}
@@ -98,20 +100,22 @@ export default function SkillGapPage({ opportunityId }) {
         {/* Readiness Meter */}
         <div
           style={{
-            padding: '20px 24px',
-            backgroundColor: '#FFFFFF',
-            borderRadius: 'var(--radius-md)',
-            border: '1px solid #DBEAFE',
+            padding: '24px 28px',
+            backgroundColor: 'rgba(15, 23, 42, 0.75)',
+            backdropFilter: 'blur(12px)',
+            borderRadius: 'var(--radius-lg)',
+            border: '1px solid rgba(168, 85, 247, 0.35)',
+            boxShadow: '0 0 20px rgba(124, 58, 237, 0.2)',
             textAlign: 'center',
           }}
         >
           <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>
             ROLE SKILL READINESS
           </span>
-          <h2 style={{ fontSize: '2.5rem', color: 'var(--primary-blue)', fontWeight: 800 }}>
+          <h2 style={{ fontSize: '2.5rem', color: '#C084FC', fontWeight: 800, textShadow: '0 0 20px rgba(192, 132, 252, 0.4)' }}>
             {readinessPercentage}%
           </h2>
-          <span style={{ fontSize: '0.8rem', color: '#059669', fontWeight: 600 }}>
+          <span style={{ fontSize: '0.8rem', color: '#34D399', fontWeight: 600 }}>
             {matchedSkills.length} of {matchedSkills.length + missingSkills.length} Required Skills
           </span>
         </div>
@@ -120,8 +124,8 @@ export default function SkillGapPage({ opportunityId }) {
       {/* Matched Skills Section */}
       <div style={{ marginBottom: '32px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-          <CheckCircle2 size={20} color="#059669" />
-          <h3 style={{ fontSize: '1.25rem', color: 'var(--primary-text)' }}>
+          <CheckCircle2 size={20} color="#34D399" />
+          <h3 style={{ fontSize: '1.25rem', color: '#FFFFFF' }}>
             Verified In Your Profile ({matchedSkills.length})
           </h3>
         </div>
@@ -134,16 +138,17 @@ export default function SkillGapPage({ opportunityId }) {
               style={{
                 padding: '16px',
                 borderLeft: '4px solid #10B981',
-                backgroundColor: '#F0FDF4',
+                backgroundColor: 'rgba(16, 185, 129, 0.08)',
+                border: '1px solid rgba(16, 185, 129, 0.25)',
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                <strong style={{ fontSize: '1rem', color: '#065F46' }}>{s.name}</strong>
-                <span style={{ fontSize: '0.7rem', color: '#047857', backgroundColor: '#DCFCE7', padding: '2px 8px', borderRadius: '4px', fontWeight: 600 }}>
+                <strong style={{ fontSize: '1rem', color: '#6EE7B7' }}>{s.name}</strong>
+                <span style={{ fontSize: '0.7rem', color: '#34D399', backgroundColor: 'rgba(16, 185, 129, 0.2)', padding: '2px 8px', borderRadius: '4px', fontWeight: 600 }}>
                   {s.category || 'Skill'}
                 </span>
               </div>
-              <p style={{ fontSize: '0.8rem', color: '#047857' }}>
+              <p style={{ fontSize: '0.8rem', color: '#A7F3D0' }}>
                 Proficiency verified. Contributes to your 40% skill factor.
               </p>
             </div>
@@ -157,8 +162,8 @@ export default function SkillGapPage({ opportunityId }) {
       {/* Missing Skills Section with Direct Action Learning CTAs */}
       <div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-          <AlertTriangle size={20} color="#D97706" />
-          <h3 style={{ fontSize: '1.25rem', color: 'var(--primary-text)' }}>
+          <AlertTriangle size={20} color="#FBBF24" />
+          <h3 style={{ fontSize: '1.25rem', color: '#FFFFFF' }}>
             Missing Competencies to Bridge ({missingSkills.length})
           </h3>
         </div>
@@ -170,7 +175,7 @@ export default function SkillGapPage({ opportunityId }) {
               className="card"
               style={{
                 padding: '18px',
-                borderLeft: '4px solid #F59E0B',
+                borderLeft: '4px solid #F43F5E',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
@@ -183,8 +188,9 @@ export default function SkillGapPage({ opportunityId }) {
                     style={{
                       fontSize: '0.7rem',
                       fontWeight: 600,
-                      color: s.priority === 'High Priority' ? '#DC2626' : '#D97706',
-                      backgroundColor: s.priority === 'High Priority' ? '#FEF2F2' : '#FFFBEB',
+                      color: s.priority === 'High Priority' ? '#FDA4AF' : '#FDE68A',
+                      backgroundColor: s.priority === 'High Priority' ? 'rgba(244, 63, 94, 0.15)' : 'rgba(245, 158, 11, 0.15)',
+                      border: `1px solid ${s.priority === 'High Priority' ? 'rgba(244, 63, 94, 0.35)' : 'rgba(245, 158, 11, 0.35)'}`,
                       padding: '2px 8px',
                       borderRadius: '4px',
                     }}
@@ -207,8 +213,8 @@ export default function SkillGapPage({ opportunityId }) {
             </div>
           ))}
           {missingSkills.length === 0 && (
-            <div className="card" style={{ padding: '24px', gridColumn: '1 / -1', backgroundColor: '#ECFDF5', border: '1px solid #A7F3D0' }}>
-              <p style={{ color: '#065F46', fontWeight: 600 }}>
+            <div className="card" style={{ padding: '24px', gridColumn: '1 / -1', backgroundColor: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.35)' }}>
+              <p style={{ color: '#34D399', fontWeight: 600 }}>
                 Awesome! You have all the required skills for this position.
               </p>
             </div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Lock, Mail, ArrowRight, Sparkles, CheckCircle2, Shield } from 'lucide-react';
+import { Eye, EyeOff, Lock, Mail, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
 
@@ -38,7 +38,7 @@ export default function LoginPage() {
         minHeight: '100vh',
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#070A13',
       }}
       className="split-auth-layout"
     >
@@ -46,7 +46,7 @@ export default function LoginPage() {
       <div
         className="auth-branding-pane"
         style={{
-          background: 'linear-gradient(135deg, #1E40AF 0%, #2563EB 100%)',
+          background: 'linear-gradient(135deg, rgba(30, 27, 75, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%)',
           padding: '60px 48px',
           display: 'flex',
           flexDirection: 'column',
@@ -54,9 +54,12 @@ export default function LoginPage() {
           color: '#FFFFFF',
           position: 'relative',
           overflow: 'hidden',
+          borderRight: '1px solid rgba(255, 255, 255, 0.08)',
         }}
       >
-        <div>
+        <div className="bg-subtle-glow" style={{ opacity: 0.8 }} />
+
+        <div style={{ position: 'relative', zIndex: 1 }}>
           {/* Logo */}
           <div
             onClick={() => navigate('landing')}
@@ -67,48 +70,49 @@ export default function LoginPage() {
                 width: '42px',
                 height: '42px',
                 borderRadius: '12px',
-                backgroundColor: '#FFFFFF',
-                color: 'var(--primary-blue)',
+                background: 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)',
+                color: '#FFFFFF',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontWeight: 800,
                 fontSize: '1.25rem',
+                boxShadow: '0 0 15px rgba(236, 72, 153, 0.45)',
               }}
             >
               OP
             </div>
-            <span style={{ fontSize: '1.4rem', fontWeight: 700, letterSpacing: '-0.5px' }}>
-              OpenPath
+            <span style={{ fontSize: '1.4rem', fontWeight: 800, letterSpacing: '-0.5px' }}>
+              Open<span className="gradient-text">Path</span>
             </span>
           </div>
 
-          <h2 style={{ fontSize: '2.5rem', fontWeight: 700, color: '#FFFFFF', lineHeight: '1.2', marginBottom: '16px' }}>
+          <h2 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#FFFFFF', lineHeight: '1.2', marginBottom: '16px' }}>
             Find Your Path. <br />
-            Build Your Future.
+            <span className="gradient-text">Build Your Future.</span>
           </h2>
-          <p style={{ color: '#DBEAFE', fontSize: '1.05rem', lineHeight: '1.6', maxWidth: '440px' }}>
+          <p style={{ color: '#94A3B8', fontSize: '1.05rem', lineHeight: '1.6', maxWidth: '440px' }}>
             The career platform engineered for students, freshers, and early talent with transparent,
             explainable matching and customized skill roadmaps.
           </p>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#EFF6FF', fontSize: '0.9rem' }}>
-            <CheckCircle2 size={20} color="#93C5FD" />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', position: 'relative', zIndex: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#E2E8F0', fontSize: '0.9rem' }}>
+            <CheckCircle2 size={20} color="#A78BFA" />
             <span>40% Skills, 20% Qualifications, 20% Location factor scoring</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#EFF6FF', fontSize: '0.9rem' }}>
-            <CheckCircle2 size={20} color="#93C5FD" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#E2E8F0', fontSize: '0.9rem' }}>
+            <CheckCircle2 size={20} color="#F472B6" />
             <span>Actionable skill gap detection and curated learning paths</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#EFF6FF', fontSize: '0.9rem' }}>
-            <CheckCircle2 size={20} color="#93C5FD" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#E2E8F0', fontSize: '0.9rem' }}>
+            <CheckCircle2 size={20} color="#38BDF8" />
             <span>Direct employer review portal with instant candidate rankings</span>
           </div>
         </div>
 
-        <div style={{ fontSize: '0.8rem', color: '#93C5FD' }}>
+        <div style={{ fontSize: '0.8rem', color: '#64748B', position: 'relative', zIndex: 1 }}>
           © 2026 OpenPath • Connecting talent with verified opportunities.
         </div>
       </div>
@@ -126,7 +130,7 @@ export default function LoginPage() {
         }}
       >
         <div style={{ marginBottom: '32px' }}>
-          <h2 style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--primary-text)' }}>
+          <h2 style={{ fontSize: '2rem', fontWeight: 800, color: '#FFFFFF' }}>
             Welcome Back
           </h2>
           <p style={{ fontSize: '0.9rem', color: 'var(--secondary-text)', marginTop: '6px' }}>
@@ -137,16 +141,17 @@ export default function LoginPage() {
         {/* 1-Click Demo Evaluation Bar */}
         <div
           style={{
-            padding: '14px 16px',
-            backgroundColor: '#F8FAFC',
-            borderRadius: 'var(--radius-md)',
-            border: '1px solid #E2E8F0',
+            padding: '16px',
+            backgroundColor: 'rgba(15, 23, 42, 0.7)',
+            backdropFilter: 'blur(16px)',
+            borderRadius: 'var(--radius-lg)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
             marginBottom: '24px',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-            <Sparkles size={16} color="var(--primary-blue)" />
-            <strong style={{ fontSize: '0.825rem', color: 'var(--primary-text)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
+            <Sparkles size={16} color="#C084FC" />
+            <strong style={{ fontSize: '0.825rem', color: '#F8FAFC' }}>
               Hackathon Quick Access:
             </strong>
           </div>
@@ -167,8 +172,9 @@ export default function LoginPage() {
                 padding: '8px',
                 fontSize: '0.8rem',
                 justifyContent: 'center',
-                borderColor: '#7C3AED',
-                color: '#7C3AED',
+                borderColor: 'rgba(236, 72, 153, 0.5)',
+                color: '#F472B6',
+                backgroundColor: 'rgba(236, 72, 153, 0.1)',
               }}
             >
               Sign In as Employer
@@ -180,10 +186,10 @@ export default function LoginPage() {
           <div
             style={{
               padding: '12px 14px',
-              backgroundColor: '#FEF2F2',
-              border: '1px solid #FECACA',
+              backgroundColor: 'rgba(239, 68, 68, 0.15)',
+              border: '1px solid rgba(239, 68, 68, 0.4)',
               borderRadius: 'var(--radius-md)',
-              color: '#DC2626',
+              color: '#FCA5A5',
               fontSize: '0.85rem',
               marginBottom: '18px',
             }}
@@ -198,7 +204,7 @@ export default function LoginPage() {
             <div style={{ position: 'relative' }}>
               <Mail
                 size={18}
-                color="#94A3B8"
+                color="#64748B"
                 style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }}
               />
               <input
@@ -219,7 +225,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setShowForgotModal(true)}
-                style={{ fontSize: '0.8rem', color: 'var(--primary-blue)', fontWeight: 500 }}
+                style={{ fontSize: '0.8rem', color: '#A78BFA', fontWeight: 600 }}
               >
                 Forgot Password?
               </button>
@@ -227,7 +233,7 @@ export default function LoginPage() {
             <div style={{ position: 'relative' }}>
               <Lock
                 size={18}
-                color="#94A3B8"
+                color="#64748B"
                 style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }}
               />
               <input
@@ -247,7 +253,7 @@ export default function LoginPage() {
                   right: '12px',
                   top: '50%',
                   transform: 'translateY(-50%)',
-                  color: '#94A3B8',
+                  color: '#64748B',
                 }}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -269,7 +275,7 @@ export default function LoginPage() {
           Don't have an OpenPath account?{' '}
           <button
             onClick={() => navigate('register')}
-            style={{ color: 'var(--primary-blue)', fontWeight: 600 }}
+            style={{ color: '#F472B6', fontWeight: 700 }}
           >
             Create an Account
           </button>
@@ -282,7 +288,8 @@ export default function LoginPage() {
           style={{
             position: 'fixed',
             inset: 0,
-            backgroundColor: 'rgba(15, 23, 42, 0.5)',
+            backgroundColor: 'rgba(3, 7, 18, 0.75)',
+            backdropFilter: 'blur(12px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -290,8 +297,8 @@ export default function LoginPage() {
             padding: '16px',
           }}
         >
-          <div className="card" style={{ maxWidth: '420px', width: '100%', padding: '28px' }}>
-            <h3 style={{ fontSize: '1.2rem', marginBottom: '8px' }}>Reset Your Password</h3>
+          <div className="card" style={{ maxWidth: '420px', width: '100%', padding: '28px', backgroundColor: 'rgba(15, 23, 42, 0.95)' }}>
+            <h3 style={{ fontSize: '1.25rem', marginBottom: '8px', color: '#FFFFFF' }}>Reset Your Password</h3>
             <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', marginBottom: '18px' }}>
               Enter your registered email address to receive an OTP verification code.
             </p>
@@ -309,7 +316,7 @@ export default function LoginPage() {
               </button>
               <button
                 onClick={() => {
-                  showToast(`Verification reset code sent to ${forgotEmail || 'your email'}! (Demo OTP: 582104)`, 'success');
+                  showToast(`Verification code sent! (Demo OTP: 582104)`, 'success');
                   setShowForgotModal(false);
                 }}
                 className="btn-primary"

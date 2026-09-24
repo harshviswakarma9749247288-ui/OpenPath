@@ -115,17 +115,18 @@ export default function ProfileSetupPage() {
           style={{
             fontSize: '0.8rem',
             fontWeight: 700,
-            color: 'var(--primary-blue)',
+            color: '#C084FC',
             textTransform: 'uppercase',
-            backgroundColor: '#EFF6FF',
-            padding: '4px 12px',
+            backgroundColor: 'rgba(168, 85, 247, 0.15)',
+            padding: '4px 14px',
             borderRadius: '9999px',
-            border: '1px solid #BFDBFE',
+            border: '1px solid rgba(168, 85, 247, 0.35)',
+            letterSpacing: '0.05em',
           }}
         >
           STEP 2 OF 2: PROFILE SETUP
         </span>
-        <h1 style={{ fontSize: '2.2rem', marginTop: '12px', color: 'var(--secondary-navy)' }}>
+        <h1 style={{ fontSize: '2.2rem', marginTop: '12px', color: '#FFFFFF' }}>
           Build Your Candidate Profile
         </h1>
         <p style={{ color: 'var(--secondary-text)', fontSize: '0.95rem', marginTop: '6px' }}>
@@ -133,12 +134,12 @@ export default function ProfileSetupPage() {
         </p>
       </div>
 
-      <form onSubmit={handleSave} className="card" style={{ padding: '32px' }}>
+      <form onSubmit={handleSave} className="card card-featured" style={{ padding: '32px' }}>
         {/* Education Section */}
         <div style={{ marginBottom: '28px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-            <GraduationCap size={20} color="var(--primary-blue)" />
-            <h3 style={{ fontSize: '1.15rem' }}>1. Academic Background</h3>
+            <GraduationCap size={20} color="#38BDF8" />
+            <h3 style={{ fontSize: '1.15rem', color: '#FFFFFF' }}>1. Academic Background</h3>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
@@ -198,10 +199,10 @@ export default function ProfileSetupPage() {
         <div style={{ marginBottom: '28px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Sparkles size={20} color="var(--primary-blue)" />
-              <h3 style={{ fontSize: '1.15rem' }}>2. Technical Skills</h3>
+              <Sparkles size={20} color="#C084FC" />
+              <h3 style={{ fontSize: '1.15rem', color: '#FFFFFF' }}>2. Technical Skills</h3>
             </div>
-            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--primary-blue)', backgroundColor: '#EFF6FF', padding: '2px 8px', borderRadius: '4px' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#C084FC', backgroundColor: 'rgba(168, 85, 247, 0.15)', border: '1px solid rgba(168, 85, 247, 0.3)', padding: '3px 10px', borderRadius: '4px' }}>
               Carries 40% Weight in Matching
             </span>
           </div>
@@ -210,11 +211,11 @@ export default function ProfileSetupPage() {
           </p>
 
           {/* Current selected chips */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px', minHeight: '40px', padding: '10px', backgroundColor: '#F8FAFC', borderRadius: '8px', border: '1px dashed #CBD5E1' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px', minHeight: '40px', padding: '12px', backgroundColor: 'rgba(255, 255, 255, 0.04)', borderRadius: '10px', border: '1px dashed rgba(255, 255, 255, 0.15)' }}>
             {selectedSkills.map((s) => (
               <span key={s._id || s.name} className="skill-chip skill-chip-matched">
                 {s.name}
-                <button type="button" onClick={() => handleRemoveSkill(s._id)} style={{ color: '#065F46' }}>
+                <button type="button" onClick={() => handleRemoveSkill(s._id)} style={{ color: '#6EE7B7' }}>
                   <X size={14} />
                 </button>
               </span>
@@ -240,11 +241,11 @@ export default function ProfileSetupPage() {
                     disabled={isSelected}
                     style={{
                       fontSize: '0.775rem',
-                      padding: '4px 10px',
+                      padding: '5px 12px',
                       borderRadius: '6px',
-                      border: isSelected ? '1px solid #A7F3D0' : '1px solid #CBD5E1',
-                      backgroundColor: isSelected ? '#ECFDF5' : '#FFFFFF',
-                      color: isSelected ? '#047857' : '#334155',
+                      border: isSelected ? '1px solid rgba(16, 185, 129, 0.35)' : '1px solid rgba(255, 255, 255, 0.12)',
+                      backgroundColor: isSelected ? 'rgba(16, 185, 129, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                      color: isSelected ? '#34D399' : '#E2E8F0',
                       cursor: isSelected ? 'default' : 'pointer',
                       display: 'inline-flex',
                       alignItems: 'center',
@@ -264,8 +265,8 @@ export default function ProfileSetupPage() {
         {/* Career Interests & Location */}
         <div style={{ marginBottom: '28px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-            <MapPin size={20} color="var(--primary-blue)" />
-            <h3 style={{ fontSize: '1.15rem' }}>3. Location & Preferences</h3>
+            <MapPin size={20} color="#F472B6" />
+            <h3 style={{ fontSize: '1.15rem', color: '#FFFFFF' }}>3. Location & Preferences</h3>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>

@@ -68,9 +68,10 @@ export default function StudentDashboard() {
                 style={{
                   fontSize: '0.75rem',
                   fontWeight: 600,
-                  backgroundColor: percentage >= 80 ? '#ECFDF5' : '#FFFBEB',
-                  color: percentage >= 80 ? '#047857' : '#B45309',
-                  padding: '2px 8px',
+                  backgroundColor: percentage >= 80 ? 'rgba(16, 185, 129, 0.15)' : 'rgba(245, 158, 11, 0.15)',
+                  color: percentage >= 80 ? '#34D399' : '#FBBF24',
+                  border: `1px solid ${percentage >= 80 ? 'rgba(16, 185, 129, 0.35)' : 'rgba(245, 158, 11, 0.35)'}`,
+                  padding: '3px 10px',
                   borderRadius: '9999px',
                 }}
               >
@@ -112,10 +113,10 @@ export default function StudentDashboard() {
             display: 'flex',
             alignItems: 'center',
             gap: '14px',
-            borderLeft: '4px solid var(--primary-blue)',
+            borderLeft: '4px solid #38BDF8',
           }}
         >
-          <div style={{ width: '42px', height: '42px', borderRadius: '10px', backgroundColor: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary-blue)' }}>
+          <div style={{ width: '42px', height: '42px', borderRadius: '10px', backgroundColor: 'rgba(56, 189, 248, 0.15)', border: '1px solid rgba(56, 189, 248, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#38BDF8' }}>
             <Compass size={22} />
           </div>
           <div>
@@ -135,10 +136,10 @@ export default function StudentDashboard() {
             display: 'flex',
             alignItems: 'center',
             gap: '14px',
-            borderLeft: '4px solid #10B981',
+            borderLeft: '4px solid #34D399',
           }}
         >
-          <div style={{ width: '42px', height: '42px', borderRadius: '10px', backgroundColor: '#ECFDF5', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#059669' }}>
+          <div style={{ width: '42px', height: '42px', borderRadius: '10px', backgroundColor: 'rgba(52, 211, 153, 0.15)', border: '1px solid rgba(52, 211, 153, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#34D399' }}>
             <FileText size={22} />
           </div>
           <div>
@@ -158,10 +159,10 @@ export default function StudentDashboard() {
             display: 'flex',
             alignItems: 'center',
             gap: '14px',
-            borderLeft: '4px solid #8B5CF6',
+            borderLeft: '4px solid #C084FC',
           }}
         >
-          <div style={{ width: '42px', height: '42px', borderRadius: '10px', backgroundColor: '#F5F3FF', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#7C3AED' }}>
+          <div style={{ width: '42px', height: '42px', borderRadius: '10px', backgroundColor: 'rgba(192, 132, 252, 0.15)', border: '1px solid rgba(192, 132, 252, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#C084FC' }}>
             <BookOpen size={22} />
           </div>
           <div>
@@ -178,8 +179,8 @@ export default function StudentDashboard() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Sparkles size={20} color="var(--primary-blue)" />
-              <h2 style={{ fontSize: '1.4rem', color: 'var(--primary-text)' }}>Best Matches for You</h2>
+              <Sparkles size={20} color="#C084FC" />
+              <h2 style={{ fontSize: '1.4rem', color: '#FFFFFF' }}>Best Matches for You</h2>
             </div>
             <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)' }}>
               Top weighted compatibility across skills, education, and location.
@@ -188,7 +189,7 @@ export default function StudentDashboard() {
           <button
             onClick={() => navigate('opportunities')}
             className="btn-ghost"
-            style={{ fontSize: '0.85rem', color: 'var(--primary-blue)' }}
+            style={{ fontSize: '0.85rem', color: '#C084FC', fontWeight: 600 }}
           >
             View All Best Matches →
           </button>
@@ -209,8 +210,8 @@ export default function StudentDashboard() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <TrendingUp size={20} color="#059669" />
-              <h2 style={{ fontSize: '1.4rem', color: 'var(--primary-text)' }}>Based on Your Verified Skills</h2>
+              <TrendingUp size={20} color="#34D399" />
+              <h2 style={{ fontSize: '1.4rem', color: '#FFFFFF' }}>Based on Your Verified Skills</h2>
             </div>
             <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)' }}>
               Roles matching your specific technical stack (React, Node.js, REST APIs).
@@ -219,7 +220,7 @@ export default function StudentDashboard() {
           <button
             onClick={() => navigate('opportunities')}
             className="btn-ghost"
-            style={{ fontSize: '0.85rem', color: 'var(--primary-blue)' }}
+            style={{ fontSize: '0.85rem', color: '#34D399', fontWeight: 600 }}
           >
             Explore Skills Catalog →
           </button>
@@ -237,8 +238,8 @@ export default function StudentDashboard() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Briefcase size={20} color="#7C3AED" />
-              <h2 style={{ fontSize: '1.4rem', color: 'var(--primary-text)' }}>Based on Your Career Interests</h2>
+              <Briefcase size={20} color="#F472B6" />
+              <h2 style={{ fontSize: '1.4rem', color: '#FFFFFF' }}>Based on Your Career Interests</h2>
             </div>
             <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)' }}>
               Selected based on your chosen topics and industry domains.
@@ -247,7 +248,7 @@ export default function StudentDashboard() {
           <button
             onClick={() => navigate('opportunities')}
             className="btn-ghost"
-            style={{ fontSize: '0.85rem', color: 'var(--primary-blue)' }}
+            style={{ fontSize: '0.85rem', color: '#F472B6', fontWeight: 600 }}
           >
             See All Opportunities →
           </button>

@@ -33,7 +33,7 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
     <div
       className="card"
       style={{
-        padding: '20px',
+        padding: '22px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
@@ -49,16 +49,17 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
               style={{
                 width: '46px',
                 height: '46px',
-                borderRadius: '10px',
-                backgroundColor: '#EFF6FF',
-                border: '1px solid #DBEAFE',
+                borderRadius: '12px',
+                backgroundColor: 'rgba(124, 58, 237, 0.15)',
+                border: '1px solid rgba(168, 85, 247, 0.3)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontWeight: 700,
-                color: 'var(--primary-blue)',
+                fontWeight: 800,
+                color: '#C084FC',
                 overflow: 'hidden',
                 flexShrink: 0,
+                boxShadow: '0 0 12px rgba(124, 58, 237, 0.2)',
               }}
             >
               {opportunity.organizationLogo ? (
@@ -75,8 +76,8 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
               <h3
                 style={{
                   fontSize: '1.05rem',
-                  fontWeight: 600,
-                  color: 'var(--primary-text)',
+                  fontWeight: 700,
+                  color: '#FFFFFF',
                   cursor: 'pointer',
                   lineHeight: '1.3',
                 }}
@@ -84,7 +85,7 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
               >
                 {opportunity.title}
               </h3>
-              <p style={{ fontSize: '0.875rem', color: 'var(--secondary-text)', fontWeight: 500 }}>
+              <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', fontWeight: 500 }}>
                 {opportunity.organization}
               </p>
             </div>
@@ -98,7 +99,7 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
               onClick={() => toggleSaveOpportunity(opportunity._id)}
               title={isSaved ? 'Remove Bookmark' : 'Save Opportunity'}
               style={{
-                color: isSaved ? 'var(--primary-blue)' : '#94A3B8',
+                color: isSaved ? '#EC4899' : '#64748B',
                 padding: '6px',
                 borderRadius: '8px',
                 transition: 'var(--transition-normal)',
@@ -120,15 +121,16 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
           {opportunity.salary && (
             <span
               style={{
-                backgroundColor: '#F8FAFC',
-                border: '1px solid #E2E8F0',
-                padding: '3px 8px',
+                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                padding: '3px 10px',
                 borderRadius: '9999px',
-                fontSize: '0.775rem',
-                color: 'var(--primary-text)',
+                fontSize: '0.75rem',
+                color: '#E2E8F0',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '4px',
+                fontWeight: 600,
               }}
             >
               <IndianRupee size={12} /> {opportunity.salary.amount} / {opportunity.salary.period}
@@ -158,17 +160,19 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
               key={idx}
               style={{
                 fontSize: '0.75rem',
-                padding: '2px 8px',
-                backgroundColor: '#F1F5F9',
-                borderRadius: '6px',
-                color: '#475569',
+                padding: '3px 9px',
+                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '9999px',
+                color: '#CBD5E1',
+                fontWeight: 500,
               }}
             >
               {skill.name || skill}
             </span>
           ))}
           {(opportunity.requiredSkills || []).length > 4 && (
-            <span style={{ fontSize: '0.75rem', color: '#94A3B8', alignSelf: 'center' }}>
+            <span style={{ fontSize: '0.75rem', color: '#64748B', alignSelf: 'center' }}>
               +{opportunity.requiredSkills.length - 4} more
             </span>
           )}
@@ -178,14 +182,14 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
       {/* Card Footer: Deadline & Action Buttons */}
       <div
         style={{
-          borderTop: '1px solid #F1F5F9',
-          paddingTop: '12px',
+          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+          paddingTop: '14px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
         }}
       >
-        <span style={{ fontSize: '0.775rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <span style={{ fontSize: '0.775rem', color: '#94A3B8', display: 'flex', alignItems: 'center', gap: '4px' }}>
           <Calendar size={13} /> {deadlineText}
         </span>
 
@@ -193,7 +197,7 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
           <button
             onClick={() => navigate('details', { id: opportunity._id })}
             className="btn-secondary"
-            style={{ padding: '6px 12px', fontSize: '0.8rem' }}
+            style={{ padding: '6px 14px', fontSize: '0.8rem' }}
           >
             Details <ChevronRight size={14} />
           </button>
@@ -201,13 +205,13 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
             <button
               disabled
               style={{
-                backgroundColor: '#ECFDF5',
-                color: '#059669',
-                border: '1px solid #A7F3D0',
-                padding: '6px 12px',
-                borderRadius: 'var(--radius-md)',
+                backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                color: '#6EE7B7',
+                border: '1px solid rgba(16, 185, 129, 0.35)',
+                padding: '6px 14px',
+                borderRadius: '9999px',
                 fontSize: '0.8rem',
-                fontWeight: 600,
+                fontWeight: 700,
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '4px',
@@ -219,7 +223,7 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
             <button
               onClick={() => onApply ? onApply(opportunity) : navigate('details', { id: opportunity._id })}
               className="btn-primary"
-              style={{ padding: '6px 14px', fontSize: '0.8rem' }}
+              style={{ padding: '6px 16px', fontSize: '0.8rem' }}
             >
               Apply
             </button>

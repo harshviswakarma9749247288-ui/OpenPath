@@ -107,7 +107,7 @@ export default function CreateOpportunityPage() {
 
       {/* Progress Steps Header */}
       <div style={{ marginBottom: '32px' }}>
-        <h1 style={{ fontSize: '1.85rem', color: 'var(--secondary-navy)', marginBottom: '8px' }}>
+        <h1 style={{ fontSize: '1.85rem', color: '#FFFFFF', marginBottom: '8px' }}>
           Post a New Opportunity
         </h1>
         <p style={{ color: 'var(--secondary-text)', fontSize: '0.9rem' }}>
@@ -128,16 +128,28 @@ export default function CreateOpportunityPage() {
               style={{
                 flex: 1,
                 minWidth: '120px',
-                padding: '8px 12px',
-                borderRadius: '8px',
-                backgroundColor: step === s.num ? '#EFF6FF' : step > s.num ? '#ECFDF5' : '#F8FAFC',
-                border: step === s.num ? '1.5px solid var(--primary-blue)' : '1px solid var(--border-color)',
+                padding: '10px 14px',
+                borderRadius: 'var(--radius-md)',
+                backgroundColor:
+                  step === s.num
+                    ? 'rgba(168, 85, 247, 0.2)'
+                    : step > s.num
+                    ? 'rgba(16, 185, 129, 0.15)'
+                    : 'rgba(255, 255, 255, 0.04)',
+                border:
+                  step === s.num
+                    ? '1.5px solid rgba(168, 85, 247, 0.5)'
+                    : step > s.num
+                    ? '1px solid rgba(16, 185, 129, 0.35)'
+                    : '1px solid rgba(255, 255, 255, 0.08)',
+                boxShadow: step === s.num ? '0 0 15px rgba(124, 58, 237, 0.3)' : 'none',
                 fontSize: '0.8rem',
-                color: step === s.num ? 'var(--primary-blue)' : step > s.num ? '#047857' : '#64748B',
+                color: step === s.num ? '#C084FC' : step > s.num ? '#34D399' : 'var(--secondary-text)',
                 fontWeight: 600,
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
+                backdropFilter: 'blur(8px)',
               }}
             >
               {step > s.num ? <CheckCircle2 size={14} /> : <span>{s.num}.</span>} {s.label}
@@ -146,11 +158,11 @@ export default function CreateOpportunityPage() {
         </div>
       </div>
 
-      <div className="card" style={{ padding: '32px' }}>
+      <div className="card card-featured" style={{ padding: '32px' }}>
         {/* STEP 1: BASIC INFORMATION */}
         {step === 1 && (
           <div className="animate-fade-in">
-            <h3 style={{ fontSize: '1.2rem', marginBottom: '18px' }}>Step 1: Role Overview</h3>
+            <h3 style={{ fontSize: '1.2rem', marginBottom: '18px', color: '#FFFFFF' }}>Step 1: Role Overview</h3>
 
             <div className="form-group">
               <label className="form-label">Opportunity Title *</label>
@@ -297,8 +309,8 @@ export default function CreateOpportunityPage() {
         {step === 4 && (
           <div className="animate-fade-in">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-              <h3 style={{ fontSize: '1.2rem' }}>Step 4: Mandatory & Preferred Skills</h3>
-              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--primary-blue)' }}>
+              <h3 style={{ fontSize: '1.2rem', color: '#FFFFFF' }}>Step 4: Mandatory & Preferred Skills</h3>
+              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#C084FC' }}>
                 Directly feeds the 40% Skill Match algorithm
               </span>
             </div>
@@ -315,16 +327,18 @@ export default function CreateOpportunityPage() {
                     type="button"
                     onClick={() => handleToggleSkill(s)}
                     style={{
-                      padding: '6px 12px',
+                      padding: '7px 14px',
                       borderRadius: '8px',
                       fontSize: '0.85rem',
-                      fontWeight: 500,
-                      backgroundColor: isSelected ? 'var(--primary-blue)' : '#F1F5F9',
-                      color: isSelected ? '#FFFFFF' : '#334155',
-                      border: isSelected ? '1px solid var(--primary-blue)' : '1px solid #E2E8F0',
+                      fontWeight: 600,
+                      background: isSelected ? 'var(--primary-gradient)' : 'rgba(255, 255, 255, 0.05)',
+                      color: isSelected ? '#FFFFFF' : '#E2E8F0',
+                      border: isSelected ? '1px solid rgba(255, 255, 255, 0.3)' : '1px solid rgba(255, 255, 255, 0.12)',
+                      boxShadow: isSelected ? '0 0 10px rgba(168, 85, 247, 0.4)' : 'none',
                       display: 'flex',
                       alignItems: 'center',
                       gap: '6px',
+                      backdropFilter: 'blur(8px)',
                     }}
                   >
                     {isSelected && <CheckCircle2 size={14} />} {s.name}
@@ -333,9 +347,11 @@ export default function CreateOpportunityPage() {
               })}
             </div>
 
-            <div style={{ padding: '12px', backgroundColor: '#F8FAFC', borderRadius: '8px', border: '1px solid var(--border-color)', fontSize: '0.85rem' }}>
-              <strong>Selected Skills ({selectedSkills.length}): </strong>
-              {selectedSkills.map((s) => s.name).join(', ') || 'None selected yet'}
+            <div style={{ padding: '14px', backgroundColor: 'rgba(255, 255, 255, 0.04)', borderRadius: '10px', border: '1px solid rgba(255, 255, 255, 0.08)', fontSize: '0.85rem' }}>
+              <strong style={{ color: '#F8FAFC' }}>Selected Skills ({selectedSkills.length}): </strong>
+              <span style={{ color: 'var(--secondary-text)' }}>
+                {selectedSkills.map((s) => s.name).join(', ') || 'None selected yet'}
+              </span>
             </div>
           </div>
         )}
@@ -343,10 +359,10 @@ export default function CreateOpportunityPage() {
         {/* STEP 5: REVIEW & PUBLISH */}
         {step === 5 && (
           <div className="animate-fade-in">
-            <h3 style={{ fontSize: '1.2rem', marginBottom: '18px' }}>Step 5: Review & Publish</h3>
+            <h3 style={{ fontSize: '1.2rem', marginBottom: '18px', color: '#FFFFFF' }}>Step 5: Review & Publish</h3>
 
-            <div style={{ padding: '20px', backgroundColor: '#F8FAFC', borderRadius: '12px', border: '1px solid var(--border-color)', marginBottom: '20px' }}>
-              <h4 style={{ fontSize: '1.2rem', color: 'var(--primary-text)', marginBottom: '6px' }}>
+            <div style={{ padding: '24px', backgroundColor: 'rgba(255, 255, 255, 0.04)', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)', marginBottom: '20px' }}>
+              <h4 style={{ fontSize: '1.2rem', color: '#FFFFFF', marginBottom: '6px' }}>
                 {title || 'Untitled Opportunity'}
               </h4>
               <p style={{ fontSize: '0.9rem', color: 'var(--secondary-text)', marginBottom: '14px' }}>
@@ -354,7 +370,7 @@ export default function CreateOpportunityPage() {
               </p>
 
               <div style={{ marginBottom: '12px' }}>
-                <strong style={{ fontSize: '0.85rem', display: 'block', marginBottom: '4px' }}>Required Skills:</strong>
+                <strong style={{ fontSize: '0.85rem', display: 'block', marginBottom: '6px', color: '#F8FAFC' }}>Required Skills:</strong>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                   {selectedSkills.map((s, idx) => (
                     <span key={idx} className="skill-chip skill-chip-matched">
@@ -366,14 +382,14 @@ export default function CreateOpportunityPage() {
               </div>
 
               <div>
-                <strong style={{ fontSize: '0.85rem', display: 'block', marginBottom: '4px' }}>Deadline:</strong>
+                <strong style={{ fontSize: '0.85rem', display: 'block', marginBottom: '4px', color: '#F8FAFC' }}>Deadline:</strong>
                 <span style={{ fontSize: '0.85rem', color: 'var(--primary-text)' }}>
                   {new Date(deadline).toLocaleDateString()}
                 </span>
               </div>
             </div>
 
-            <div style={{ padding: '14px', backgroundColor: '#EFF6FF', borderRadius: '8px', color: '#1D4ED8', fontSize: '0.85rem' }}>
+            <div style={{ padding: '14px', backgroundColor: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: '10px', color: '#38BDF8', fontSize: '0.85rem' }}>
               ✨ <strong>Ready for instant candidate matching:</strong> As soon as this role is published,
               OpenPath will match it against student profiles and compute compatibility scores in real time.
             </div>

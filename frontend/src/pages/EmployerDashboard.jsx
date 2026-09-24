@@ -56,16 +56,18 @@ export default function EmployerDashboard() {
             style={{
               fontSize: '0.75rem',
               fontWeight: 700,
-              color: '#7C3AED',
+              color: '#C084FC',
               textTransform: 'uppercase',
-              backgroundColor: '#F5F3FF',
-              padding: '3px 10px',
+              backgroundColor: 'rgba(168, 85, 247, 0.15)',
+              border: '1px solid rgba(168, 85, 247, 0.35)',
+              padding: '4px 12px',
               borderRadius: '9999px',
+              letterSpacing: '0.05em',
             }}
           >
             EMPLOYER COMMAND CENTER
           </span>
-          <h1 style={{ fontSize: '1.9rem', marginTop: '8px', color: 'var(--secondary-navy)' }}>
+          <h1 style={{ fontSize: '1.9rem', marginTop: '10px', color: '#FFFFFF' }}>
             Recruitment Overview
           </h1>
           <p style={{ fontSize: '0.95rem', color: 'var(--secondary-text)', marginTop: '4px' }}>
@@ -100,44 +102,44 @@ export default function EmployerDashboard() {
           marginBottom: '36px',
         }}
       >
-        <div className="card" style={{ padding: '20px', borderLeft: '4px solid var(--primary-blue)' }}>
+        <div className="card" style={{ padding: '20px', borderLeft: '4px solid #8B5CF6' }}>
           <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>
             ACTIVE LISTINGS
           </span>
-          <h3 style={{ fontSize: '2rem', color: 'var(--primary-blue)', marginTop: '2px' }}>
+          <h3 style={{ fontSize: '2rem', color: '#C084FC', marginTop: '2px' }}>
             {stats?.activeListings || 6}
           </h3>
-          <span style={{ fontSize: '0.75rem', color: '#64748B' }}>Verified roles published</span>
+          <span style={{ fontSize: '0.75rem', color: '#94A3B8' }}>Verified roles published</span>
         </div>
 
-        <div className="card" style={{ padding: '20px', borderLeft: '4px solid #0891B2' }}>
+        <div className="card" style={{ padding: '20px', borderLeft: '4px solid #06B6D4' }}>
           <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>
             TOTAL CANDIDATES
           </span>
-          <h3 style={{ fontSize: '2rem', color: '#0891B2', marginTop: '2px' }}>
+          <h3 style={{ fontSize: '2rem', color: '#38BDF8', marginTop: '2px' }}>
             {stats?.totalApplications || 2}
           </h3>
-          <span style={{ fontSize: '0.75rem', color: '#64748B' }}>Applications submitted</span>
+          <span style={{ fontSize: '0.75rem', color: '#94A3B8' }}>Applications submitted</span>
         </div>
 
-        <div className="card" style={{ padding: '20px', borderLeft: '4px solid #7C3AED' }}>
+        <div className="card" style={{ padding: '20px', borderLeft: '4px solid #C026D3' }}>
           <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>
             SHORTLISTED
           </span>
-          <h3 style={{ fontSize: '2rem', color: '#7C3AED', marginTop: '2px' }}>
+          <h3 style={{ fontSize: '2rem', color: '#F472B6', marginTop: '2px' }}>
             {stats?.shortlistedCount || 1}
           </h3>
-          <span style={{ fontSize: '0.75rem', color: '#64748B' }}>High compatibility fit</span>
+          <span style={{ fontSize: '0.75rem', color: '#94A3B8' }}>High compatibility fit</span>
         </div>
 
-        <div className="card" style={{ padding: '20px', borderLeft: '4px solid #D97706' }}>
+        <div className="card" style={{ padding: '20px', borderLeft: '4px solid #F59E0B' }}>
           <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>
             INTERVIEWS
           </span>
-          <h3 style={{ fontSize: '2rem', color: '#D97706', marginTop: '2px' }}>
+          <h3 style={{ fontSize: '2rem', color: '#FBBF24', marginTop: '2px' }}>
             {stats?.interviewCount || 0}
           </h3>
-          <span style={{ fontSize: '0.75rem', color: '#64748B' }}>Scheduled technical rounds</span>
+          <span style={{ fontSize: '0.75rem', color: '#94A3B8' }}>Scheduled technical rounds</span>
         </div>
       </div>
 
@@ -145,7 +147,7 @@ export default function EmployerDashboard() {
       <div className="card" style={{ padding: '28px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <div>
-            <h3 style={{ fontSize: '1.25rem', color: 'var(--secondary-navy)' }}>
+            <h3 style={{ fontSize: '1.25rem', color: '#FFFFFF' }}>
               Recent Candidate Applications
             </h3>
             <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)' }}>
@@ -174,7 +176,7 @@ export default function EmployerDashboard() {
             </thead>
             <tbody>
               {recentApplications.map((app) => (
-                <tr key={app._id} style={{ borderBottom: '1px solid #F1F5F9' }}>
+                <tr key={app._id} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
                   <td style={{ padding: '14px', fontWeight: 600, color: 'var(--primary-text)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                       <div
@@ -182,8 +184,9 @@ export default function EmployerDashboard() {
                           width: '32px',
                           height: '32px',
                           borderRadius: '50%',
-                          backgroundColor: '#EFF6FF',
-                          color: 'var(--primary-blue)',
+                          backgroundColor: 'rgba(124, 58, 237, 0.2)',
+                          color: '#C084FC',
+                          border: '1px solid rgba(168, 85, 247, 0.35)',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',

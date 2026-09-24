@@ -7,7 +7,6 @@ import {
   CheckCircle,
   Briefcase,
   TrendingUp,
-  Award,
   Layers,
   Users,
   Search,
@@ -34,8 +33,8 @@ export default function LandingPage() {
   }, []);
 
   const howItWorksSteps = [
-    { step: '01', title: 'Register Account', desc: 'Sign up as a Student or Employer in seconds with role-tailored onboarding.' },
-    { step: '02', title: 'Build Profile', desc: 'List your skills, coursework, degree, and career interests with our instant completeness score.' },
+    { step: '01', title: 'Register Account', desc: 'Sign up as a Student or Employer with role-tailored onboarding.' },
+    { step: '02', title: 'Build Profile', desc: 'List your skills, coursework, degree, and career interests with instant completeness scoring.' },
     { step: '03', title: 'Discover & Match', desc: 'See weighted 5-factor match scores explaining exactly why an internship fits your profile.' },
     { step: '04', title: 'Bridge Skill Gaps', desc: 'Identify missing competencies and explore direct learning roadmaps before applying.' },
     { step: '05', title: 'Apply & Track', desc: 'Submit one-click profile applications and track interview progression in real time.' },
@@ -45,30 +44,34 @@ export default function LandingPage() {
     {
       icon: Target,
       title: '5-Factor Explainable Matching',
-      desc: 'No black-box rejection. We transparently compute matches across Skills (40%), Qualifications (20%), Location (20%), Interests (10%), and Experience (10%).',
+      desc: 'No black-box rejection. Transparently computes matches across Skills (40%), Qualifications (20%), Location (20%), Interests (10%), and Experience (10%).',
+      color: '#A855F7',
     },
     {
       icon: TrendingUp,
       title: 'Actionable Skill-Gap Insights',
-      desc: 'Instantly see matched vs missing skills for any role, paired directly with curated roadmaps so you can learn what matters.',
+      desc: 'Instantly view matched vs missing skills for any role, paired directly with curated roadmaps so you learn what matters.',
+      color: '#EC4899',
     },
     {
       icon: Compass,
       title: 'Fresher-First Discovery',
       desc: 'Browse internships, apprenticeships, and entry-level positions verified for zero-to-low experience candidates.',
+      color: '#06B6D4',
     },
     {
       icon: Layers,
       title: 'Unified Application Pipeline',
       desc: 'Track every stage from Reviewing and Shortlisting to Interview schedules with calendar links.',
+      color: '#10B981',
     },
   ];
 
   return (
     <div style={{ position: 'relative', overflow: 'hidden' }}>
-      {/* Decorative gradient blobs */}
-      <div className="bg-subtle-glow" />
-      <div className="bg-subtle-wave" />
+      {/* Decorative Aurora gradient halos */}
+      <div className="bg-subtle-glow animate-pulse-glow" />
+      <div className="bg-subtle-wave animate-pulse-glow" />
 
       {/* 1. HERO SECTION */}
       <section
@@ -96,14 +99,15 @@ export default function LandingPage() {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                padding: '6px 14px',
+                padding: '6px 16px',
                 borderRadius: '9999px',
-                backgroundColor: '#EFF6FF',
-                color: 'var(--primary-blue)',
+                backgroundColor: 'rgba(124, 58, 237, 0.15)',
+                color: '#C084FC',
                 fontSize: '0.85rem',
-                fontWeight: 600,
+                fontWeight: 700,
                 marginBottom: '20px',
-                border: '1px solid #BFDBFE',
+                border: '1px solid rgba(168, 85, 247, 0.4)',
+                boxShadow: '0 0 15px rgba(124, 58, 237, 0.2)',
               }}
             >
               <Sparkles size={16} /> Intelligent Opportunity & Skill Platform
@@ -111,22 +115,16 @@ export default function LandingPage() {
 
             <h1
               style={{
-                fontSize: 'clamp(2.4rem, 4.5vw, 3.6rem)',
+                fontSize: 'clamp(2.6rem, 5vw, 4rem)',
                 fontWeight: 800,
-                color: 'var(--secondary-navy)',
-                letterSpacing: '-1px',
-                marginBottom: '18px',
+                color: '#FFFFFF',
+                letterSpacing: '-1.5px',
+                marginBottom: '20px',
                 lineHeight: '1.15',
               }}
             >
               Your Path.{' '}
-              <span
-                style={{
-                  background: 'linear-gradient(135deg, #2563EB 0%, #1E40AF 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
-              >
+              <span className="gradient-text">
                 Your Opportunity.
               </span>
             </h1>
@@ -134,7 +132,7 @@ export default function LandingPage() {
             <p
               style={{
                 fontSize: '1.15rem',
-                color: 'var(--secondary-text)',
+                color: '#94A3B8',
                 marginBottom: '32px',
                 lineHeight: '1.6',
                 maxWidth: '540px',
@@ -148,14 +146,14 @@ export default function LandingPage() {
               <button
                 onClick={() => navigate(isAuthenticated ? 'dashboard' : 'register')}
                 className="btn-primary"
-                style={{ padding: '14px 28px', fontSize: '1rem' }}
+                style={{ padding: '14px 32px', fontSize: '1rem' }}
               >
                 Get Started <ArrowRight size={18} />
               </button>
               <button
                 onClick={() => navigate('opportunities')}
                 className="btn-secondary"
-                style={{ padding: '14px 28px', fontSize: '1rem' }}
+                style={{ padding: '14px 32px', fontSize: '1rem' }}
               >
                 Explore Opportunities
               </button>
@@ -164,18 +162,19 @@ export default function LandingPage() {
             {/* Quick Demo Login Bar for Evaluators */}
             <div
               style={{
-                padding: '12px 18px',
-                backgroundColor: '#FFFFFF',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-color)',
-                boxShadow: 'var(--shadow-subtle)',
+                padding: '14px 20px',
+                backgroundColor: 'rgba(15, 23, 42, 0.65)',
+                backdropFilter: 'blur(16px)',
+                borderRadius: 'var(--radius-lg)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                boxShadow: '0 10px 25px rgba(0, 0, 0, 0.5)',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '12px',
                 flexWrap: 'wrap',
               }}
             >
-              <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--secondary-text)' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#A78BFA' }}>
                 ⚡ Instant Demo:
               </span>
               <button
@@ -184,7 +183,7 @@ export default function LandingPage() {
                   navigate('dashboard');
                 }}
                 className="btn-outline"
-                style={{ padding: '5px 12px', fontSize: '0.775rem' }}
+                style={{ padding: '6px 14px', fontSize: '0.775rem' }}
               >
                 Student Demo
               </button>
@@ -194,7 +193,13 @@ export default function LandingPage() {
                   navigate('employer-dashboard');
                 }}
                 className="btn-outline"
-                style={{ padding: '5px 12px', fontSize: '0.775rem' }}
+                style={{
+                  padding: '6px 14px',
+                  fontSize: '0.775rem',
+                  borderColor: 'rgba(236, 72, 153, 0.5)',
+                  color: '#F472B6',
+                  backgroundColor: 'rgba(236, 72, 153, 0.08)',
+                }}
               >
                 Employer Demo
               </button>
@@ -207,7 +212,7 @@ export default function LandingPage() {
             <div
               className="card card-featured animate-fade-in"
               style={{
-                padding: '24px',
+                padding: '28px',
                 position: 'relative',
                 zIndex: 2,
               }}
@@ -217,38 +222,51 @@ export default function LandingPage() {
                 <MatchScoreBadge score={94} size={48} showLabel={true} />
               </div>
 
-              <h3 style={{ fontSize: '1.2rem', marginBottom: '4px' }}>Frontend Engineering Intern</h3>
-              <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', marginBottom: '14px' }}>
+              <h3 style={{ fontSize: '1.25rem', marginBottom: '4px', color: '#FFFFFF' }}>
+                Frontend Engineering Intern
+              </h3>
+              <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', marginBottom: '16px' }}>
                 TechCorp Labs • Bengaluru (Remote)
               </p>
 
               {/* Match Factors Snapshot */}
-              <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <div
+                style={{
+                  marginBottom: '16px',
+                  padding: '12px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                  borderRadius: '10px',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '6px',
+                }}
+              >
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.775rem' }}>
-                  <span>Skill Match (40%)</span>
-                  <strong style={{ color: 'var(--primary-blue)' }}>100% matched</strong>
+                  <span style={{ color: '#E2E8F0' }}>Skill Match (40%)</span>
+                  <strong style={{ color: '#34D399' }}>100% matched</strong>
                 </div>
-                <div style={{ height: '6px', backgroundColor: '#E2E8F0', borderRadius: '3px', overflow: 'hidden' }}>
-                  <div style={{ width: '100%', height: '100%', backgroundColor: '#10B981' }} />
+                <div style={{ height: '6px', backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: '3px', overflow: 'hidden' }}>
+                  <div style={{ width: '100%', height: '100%', background: 'linear-gradient(90deg, #10B981, #34D399)', boxShadow: '0 0 10px #10B981' }} />
                 </div>
               </div>
 
               {/* Matched Skills Chips */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '18px' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '20px' }}>
                 <span className="skill-chip skill-chip-matched">React</span>
                 <span className="skill-chip skill-chip-matched">JavaScript</span>
                 <span className="skill-chip skill-chip-matched">REST APIs</span>
                 <span className="skill-chip skill-chip-matched">Git</span>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #E2E8F0', paddingTop: '14px' }}>
-                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--primary-text)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '16px' }}>
+                <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#F8FAFC' }}>
                   ₹35,000 / month
                 </span>
                 <button
                   onClick={() => navigate('opportunities')}
                   className="btn-primary"
-                  style={{ padding: '6px 14px', fontSize: '0.8rem' }}
+                  style={{ padding: '7px 18px', fontSize: '0.8rem' }}
                 >
                   View Live Match
                 </button>
@@ -262,15 +280,15 @@ export default function LandingPage() {
                 position: 'absolute',
                 bottom: '-25px',
                 right: '-15px',
-                padding: '16px',
-                width: '260px',
+                padding: '18px',
+                width: '270px',
                 zIndex: 3,
-                boxShadow: 'var(--shadow-lg)',
-                border: '1px solid #DBEAFE',
-                backgroundColor: '#FFFFFF',
+                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(236, 72, 153, 0.25)',
+                border: '1px solid rgba(236, 72, 153, 0.35)',
+                backgroundColor: 'rgba(13, 18, 34, 0.95)',
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#C2410C', marginBottom: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FDA4AF', marginBottom: '8px' }}>
                 <TrendingUp size={16} />
                 <strong style={{ fontSize: '0.8rem' }}>Skill Gap Guidance</strong>
               </div>
@@ -286,13 +304,13 @@ export default function LandingPage() {
       </section>
 
       {/* 2. HOW IT WORKS SECTION (5-Step Visual Journey) */}
-      <section style={{ padding: '80px 24px', backgroundColor: '#FFFFFF', borderTop: '1px solid var(--border-color)' }}>
+      <section style={{ padding: '80px 24px', backgroundColor: 'rgba(10, 15, 29, 0.6)', borderTop: '1px solid var(--border-color)' }}>
         <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--primary-blue)', textTransform: 'uppercase' }}>
+            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#C084FC', textTransform: 'uppercase', letterSpacing: '1px' }}>
               HOW IT WORKS
             </span>
-            <h2 style={{ fontSize: '2.2rem', marginTop: '6px' }}>A Five-Step Visual Journey to Your Career</h2>
+            <h2 style={{ fontSize: '2.4rem', marginTop: '8px', color: '#FFFFFF' }}>A Five-Step Visual Journey to Your Career</h2>
             <p style={{ fontSize: '1rem', color: 'var(--secondary-text)', marginTop: '8px' }}>
               From initial registration to landing interviews with guided skill enhancement.
             </p>
@@ -310,28 +328,30 @@ export default function LandingPage() {
                 key={idx}
                 className="card"
                 style={{
-                  padding: '24px',
+                  padding: '26px',
                   display: 'flex',
                   flexDirection: 'column',
                   position: 'relative',
-                  borderTop: '4px solid var(--primary-blue)',
+                  borderTop: '3px solid #A855F7',
                 }}
               >
                 <span
                   style={{
-                    fontSize: '1.6rem',
+                    fontSize: '1.8rem',
                     fontWeight: 800,
-                    color: '#DBEAFE',
+                    background: 'linear-gradient(135deg, #7C3AED, #EC4899)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
                     fontFamily: 'var(--font-heading)',
                     marginBottom: '10px',
                   }}
                 >
                   {step.step}
                 </span>
-                <h3 style={{ fontSize: '1.05rem', marginBottom: '8px', color: 'var(--primary-text)' }}>
+                <h3 style={{ fontSize: '1.1rem', marginBottom: '8px', color: '#FFFFFF' }}>
                   {step.title}
                 </h3>
-                <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', lineHeight: '1.5' }}>
+                <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', lineHeight: '1.6' }}>
                   {step.desc}
                 </p>
               </div>
@@ -341,13 +361,13 @@ export default function LandingPage() {
       </section>
 
       {/* 3. CORE FEATURES SECTION */}
-      <section style={{ padding: '80px 24px', backgroundColor: 'var(--background)' }}>
+      <section style={{ padding: '80px 24px' }}>
         <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--primary-blue)', textTransform: 'uppercase' }}>
+            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#C084FC', textTransform: 'uppercase', letterSpacing: '1px' }}>
               CORE CAPABILITIES
             </span>
-            <h2 style={{ fontSize: '2.2rem', marginTop: '6px' }}>Built Exclusively for Early Career Success</h2>
+            <h2 style={{ fontSize: '2.4rem', marginTop: '8px', color: '#FFFFFF' }}>Built Exclusively for Early Career Success</h2>
           </div>
 
           <div
@@ -365,18 +385,20 @@ export default function LandingPage() {
                     style={{
                       width: '48px',
                       height: '48px',
-                      borderRadius: '12px',
-                      backgroundColor: '#EFF6FF',
+                      borderRadius: '14px',
+                      backgroundColor: `${feat.color}22`,
+                      border: `1px solid ${feat.color}55`,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      color: 'var(--primary-blue)',
+                      color: feat.color,
                       marginBottom: '18px',
+                      boxShadow: `0 0 15px ${feat.color}33`,
                     }}
                   >
                     <Icon size={24} />
                   </div>
-                  <h3 style={{ fontSize: '1.15rem', marginBottom: '10px' }}>{feat.title}</h3>
+                  <h3 style={{ fontSize: '1.2rem', marginBottom: '10px', color: '#FFFFFF' }}>{feat.title}</h3>
                   <p style={{ fontSize: '0.875rem', color: 'var(--secondary-text)', lineHeight: '1.6' }}>
                     {feat.desc}
                   </p>
@@ -388,7 +410,7 @@ export default function LandingPage() {
       </section>
 
       {/* 4. FOR STUDENTS & FOR EMPLOYERS SPLIT */}
-      <section style={{ padding: '80px 24px', backgroundColor: '#FFFFFF', borderTop: '1px solid var(--border-color)' }}>
+      <section style={{ padding: '80px 24px', backgroundColor: 'rgba(10, 15, 29, 0.6)', borderTop: '1px solid var(--border-color)' }}>
         <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '32px' }}>
             {/* For Students */}
@@ -396,25 +418,25 @@ export default function LandingPage() {
               className="card"
               style={{
                 padding: '36px',
-                background: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)',
-                border: '1.5px solid #DBEAFE',
+                background: 'linear-gradient(180deg, rgba(20, 27, 45, 0.8) 0%, rgba(13, 18, 34, 0.9) 100%)',
+                border: '1.5px solid rgba(124, 58, 237, 0.35)',
               }}
             >
               <span className="badge badge-internship" style={{ marginBottom: '14px' }}>
                 FOR STUDENTS & FRESHERS
               </span>
-              <h3 style={{ fontSize: '1.6rem', marginBottom: '12px' }}>Discover Roles That Fit Your True Potential</h3>
+              <h3 style={{ fontSize: '1.6rem', marginBottom: '12px', color: '#FFFFFF' }}>Discover Roles That Fit Your True Potential</h3>
               <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
                 <li style={{ display: 'flex', gap: '10px', fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
-                  <CheckCircle size={18} color="var(--primary-blue)" style={{ flexShrink: 0 }} />
+                  <CheckCircle size={18} color="#A78BFA" style={{ flexShrink: 0 }} />
                   Understand why an opportunity matches you with 5 distinct factor scores.
                 </li>
                 <li style={{ display: 'flex', gap: '10px', fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
-                  <CheckCircle size={18} color="var(--primary-blue)" style={{ flexShrink: 0 }} />
+                  <CheckCircle size={18} color="#A78BFA" style={{ flexShrink: 0 }} />
                   Access 5-stage learning roadmaps to conquer missing skills.
                 </li>
-                <li style={{ display: 'flex', gap: '10px', fontSize: '0.9rem', color: 'var(--primary-blue)' }}>
-                  <CheckCircle size={18} color="var(--primary-blue)" style={{ flexShrink: 0 }} />
+                <li style={{ display: 'flex', gap: '10px', fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
+                  <CheckCircle size={18} color="#A78BFA" style={{ flexShrink: 0 }} />
                   Track applications in a real-time status progression pipeline.
                 </li>
               </ul>
@@ -428,25 +450,25 @@ export default function LandingPage() {
               className="card"
               style={{
                 padding: '36px',
-                background: 'linear-gradient(180deg, #FFFFFF 0%, #F5F3FF 100%)',
-                border: '1.5px solid #DDD6FE',
+                background: 'linear-gradient(180deg, rgba(30, 20, 45, 0.8) 0%, rgba(13, 18, 34, 0.9) 100%)',
+                border: '1.5px solid rgba(236, 72, 153, 0.35)',
               }}
             >
               <span className="badge badge-entry" style={{ marginBottom: '14px' }}>
                 FOR EMPLOYERS & STARTUPS
               </span>
-              <h3 style={{ fontSize: '1.6rem', marginBottom: '12px' }}>Find Early-Career Talent With Proven Skills</h3>
+              <h3 style={{ fontSize: '1.6rem', marginBottom: '12px', color: '#FFFFFF' }}>Find Early-Career Talent With Proven Skills</h3>
               <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
                 <li style={{ display: 'flex', gap: '10px', fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
-                  <CheckCircle size={18} color="#7C3AED" style={{ flexShrink: 0 }} />
+                  <CheckCircle size={18} color="#F472B6" style={{ flexShrink: 0 }} />
                   Post internships & entry jobs using our 5-step structured wizard.
                 </li>
                 <li style={{ display: 'flex', gap: '10px', fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
-                  <CheckCircle size={18} color="#7C3AED" style={{ flexShrink: 0 }} />
+                  <CheckCircle size={18} color="#F472B6" style={{ flexShrink: 0 }} />
                   Review candidates ranked by algorithmic skill compatibility scores.
                 </li>
                 <li style={{ display: 'flex', gap: '10px', fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
-                  <CheckCircle size={18} color="#7C3AED" style={{ flexShrink: 0 }} />
+                  <CheckCircle size={18} color="#F472B6" style={{ flexShrink: 0 }} />
                   Manage applications from review to shortlist and interview scheduling.
                 </li>
               </ul>
@@ -456,7 +478,7 @@ export default function LandingPage() {
                   navigate('employer-dashboard');
                 }}
                 className="btn-secondary"
-                style={{ width: '100%', borderColor: '#7C3AED', color: '#7C3AED' }}
+                style={{ width: '100%', borderColor: 'rgba(236, 72, 153, 0.4)', color: '#F472B6' }}
               >
                 Employer Portal <ArrowRight size={16} />
               </button>
@@ -467,14 +489,14 @@ export default function LandingPage() {
 
       {/* 5. OPPORTUNITIES PREVIEW SECTION */}
       {featuredOpps.length > 0 && (
-        <section style={{ padding: '80px 24px', backgroundColor: 'var(--background)' }}>
+        <section style={{ padding: '80px 24px' }}>
           <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '36px' }}>
               <div>
-                <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--primary-blue)', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#C084FC', textTransform: 'uppercase', letterSpacing: '1px' }}>
                   LIVE PREVIEW
                 </span>
-                <h2 style={{ fontSize: '2rem', marginTop: '6px' }}>Featured Open Opportunities</h2>
+                <h2 style={{ fontSize: '2.2rem', marginTop: '6px', color: '#FFFFFF' }}>Featured Open Opportunities</h2>
               </div>
               <button onClick={() => navigate('opportunities')} className="btn-secondary">
                 View All Opportunities <ArrowRight size={16} />
@@ -491,7 +513,7 @@ export default function LandingPage() {
       )}
 
       {/* 6. TRUST & STATISTICS SECTION */}
-      <section style={{ padding: '60px 24px', backgroundColor: '#FFFFFF', borderTop: '1px solid var(--border-color)' }}>
+      <section style={{ padding: '60px 24px', backgroundColor: 'rgba(10, 15, 29, 0.7)', borderTop: '1px solid var(--border-color)' }}>
         <div style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center' }}>
           <div
             style={{
@@ -502,32 +524,34 @@ export default function LandingPage() {
             }}
           >
             <div>
-              <h2 style={{ fontSize: '2.8rem', fontWeight: 800, color: 'var(--primary-blue)' }}>1,000+</h2>
+              <h2 style={{ fontSize: '2.8rem', fontWeight: 800, color: '#C084FC' }}>1,000+</h2>
               <p style={{ fontSize: '0.95rem', color: 'var(--secondary-text)', fontWeight: 500 }}>Opportunities Listed</p>
             </div>
             <div>
-              <h2 style={{ fontSize: '2.8rem', fontWeight: 800, color: 'var(--secondary-navy)' }}>500+</h2>
+              <h2 style={{ fontSize: '2.8rem', fontWeight: 800, color: '#F472B6' }}>500+</h2>
               <p style={{ fontSize: '0.95rem', color: 'var(--secondary-text)', fontWeight: 500 }}>Active Employers</p>
             </div>
             <div>
-              <h2 style={{ fontSize: '2.8rem', fontWeight: 800, color: 'var(--primary-blue)' }}>5,000+</h2>
+              <h2 style={{ fontSize: '2.8rem', fontWeight: 800, color: '#38BDF8' }}>5,000+</h2>
               <p style={{ fontSize: '0.95rem', color: 'var(--secondary-text)', fontWeight: 500 }}>Students & Freshers</p>
             </div>
           </div>
-          <p style={{ fontSize: '0.75rem', color: '#94A3B8' }}>
+          <p style={{ fontSize: '0.75rem', color: '#64748B' }}>
             *Figures labeled as illustrative platform projections for hackathon presentation.
           </p>
         </div>
       </section>
 
       {/* 7. FINAL CTA BANNER */}
-      <section style={{ padding: '80px 24px', backgroundColor: 'var(--background)' }}>
+      <section style={{ padding: '80px 24px' }}>
         <div
           style={{
             maxWidth: '1240px',
             margin: '0 auto',
             borderRadius: 'var(--radius-lg)',
-            background: 'linear-gradient(135deg, #1E40AF 0%, #2563EB 100%)',
+            background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.8) 0%, rgba(217, 70, 239, 0.8) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
             padding: '56px 40px',
             color: '#FFFFFF',
             display: 'flex',
@@ -535,14 +559,14 @@ export default function LandingPage() {
             alignItems: 'center',
             flexWrap: 'wrap',
             gap: '24px',
-            boxShadow: 'var(--shadow-blue)',
+            boxShadow: 'var(--shadow-neon)',
           }}
         >
           <div>
-            <h2 style={{ color: '#FFFFFF', fontSize: '2.2rem', fontWeight: 700, marginBottom: '10px' }}>
+            <h2 style={{ color: '#FFFFFF', fontSize: '2.4rem', fontWeight: 800, marginBottom: '10px' }}>
               Ready to Discover Your Path?
             </h2>
-            <p style={{ color: '#DBEAFE', fontSize: '1.05rem', maxWidth: '580px' }}>
+            <p style={{ color: '#FDF4FF', fontSize: '1.05rem', maxWidth: '580px' }}>
               Connect with top companies hiring students, explore explainable match criteria, and upgrade your skills today.
             </p>
           </div>
@@ -551,11 +575,12 @@ export default function LandingPage() {
               onClick={() => navigate('register')}
               style={{
                 backgroundColor: '#FFFFFF',
-                color: 'var(--primary-blue)',
-                padding: '14px 28px',
-                borderRadius: 'var(--radius-md)',
-                fontWeight: 600,
+                color: '#7C3AED',
+                padding: '14px 32px',
+                borderRadius: '9999px',
+                fontWeight: 700,
                 fontSize: '1rem',
+                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
               }}
             >
               Get Started Free
@@ -567,10 +592,10 @@ export default function LandingPage() {
       {/* 8. FOOTER */}
       <footer
         style={{
-          backgroundColor: '#0F172A',
-          color: '#94A3B8',
+          backgroundColor: '#04060C',
+          color: '#64748B',
           padding: '60px 24px 30px 24px',
-          borderTop: '1px solid #1E293B',
+          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
         }}
       >
         <div
@@ -584,13 +609,13 @@ export default function LandingPage() {
           }}
         >
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FFFFFF', marginBottom: '14px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#FFFFFF', marginBottom: '14px' }}>
               <div
                 style={{
                   width: '32px',
                   height: '32px',
                   borderRadius: '8px',
-                  backgroundColor: 'var(--primary-blue)',
+                  background: 'linear-gradient(135deg, #7C3AED, #EC4899)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -599,7 +624,7 @@ export default function LandingPage() {
               >
                 OP
               </div>
-              <strong style={{ fontSize: '1.1rem' }}>OpenPath</strong>
+              <strong style={{ fontSize: '1.15rem' }}>OpenPath</strong>
             </div>
             <p style={{ fontSize: '0.85rem', lineHeight: '1.6' }}>
               Connecting students and freshers with careers through explainable matching and guided learning.
@@ -657,7 +682,7 @@ export default function LandingPage() {
           style={{
             maxWidth: '1240px',
             margin: '0 auto',
-            borderTop: '1px solid #1E293B',
+            borderTop: '1px solid rgba(255, 255, 255, 0.08)',
             paddingTop: '20px',
             display: 'flex',
             justifyContent: 'space-between',

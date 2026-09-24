@@ -88,7 +88,9 @@ export default function Navbar() {
     <header
       style={{
         height: '68px',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: 'rgba(7, 10, 19, 0.8)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
         borderBottom: '1px solid var(--border-color)',
         padding: '0 24px',
         display: 'flex',
@@ -114,18 +116,18 @@ export default function Navbar() {
         </button>
 
         <div>
-          <h2 style={{ fontSize: '1.15rem', fontWeight: 600, color: 'var(--primary-text)' }}>
+          <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#FFFFFF' }}>
             {getPageTitle()}
           </h2>
           {isAuthenticated && user && (
             <p style={{ fontSize: '0.775rem', color: 'var(--secondary-text)' }}>
-              Welcome back, <strong style={{ color: 'var(--primary-blue)' }}>{user.name.split(' ')[0]}</strong>
+              Welcome back, <strong style={{ color: '#C084FC' }}>{user.name.split(' ')[0]}</strong>
             </p>
           )}
         </div>
       </div>
 
-      {/* Middle: Prominent Search Bar with Autocomplete Suggestions */}
+      {/* Middle: Cyber Aurora Search Bar */}
       <div style={{ flex: '1', maxWidth: '440px', margin: '0 20px' }}>
         <form onSubmit={handleSearchSubmit} style={{ position: 'relative' }}>
           <Search
@@ -141,12 +143,13 @@ export default function Navbar() {
             style={{
               width: '100%',
               padding: '9px 14px 9px 40px',
-              backgroundColor: '#F8FAFC',
-              border: '1px solid var(--border-color)',
+              backgroundColor: 'rgba(15, 23, 42, 0.65)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
               borderRadius: '9999px',
               fontSize: '0.875rem',
-              color: 'var(--primary-text)',
+              color: '#F8FAFC',
               outline: 'none',
+              backdropFilter: 'blur(10px)',
               transition: 'var(--transition-normal)',
             }}
           />
@@ -163,13 +166,14 @@ export default function Navbar() {
               width: '40px',
               height: '40px',
               borderRadius: '50%',
-              backgroundColor: '#F8FAFC',
-              border: '1px solid var(--border-color)',
+              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: 'var(--secondary-text)',
+              color: '#CBD5E1',
               position: 'relative',
+              backdropFilter: 'blur(8px)',
             }}
           >
             <Bell size={18} />
@@ -177,13 +181,13 @@ export default function Navbar() {
               <span
                 style={{
                   position: 'absolute',
-                  top: '6px',
-                  right: '6px',
-                  width: '8px',
-                  height: '8px',
-                  backgroundColor: 'var(--primary-blue)',
+                  top: '7px',
+                  right: '7px',
+                  width: '9px',
+                  height: '9px',
+                  backgroundColor: '#EC4899',
                   borderRadius: '50%',
-                  boxShadow: '0 0 0 2px #FFFFFF',
+                  boxShadow: '0 0 10px #EC4899',
                 }}
               />
             )}
@@ -197,37 +201,42 @@ export default function Navbar() {
                 position: 'absolute',
                 right: 0,
                 top: '48px',
-                width: '340px',
+                width: '350px',
                 maxHeight: '420px',
                 display: 'flex',
                 flexDirection: 'column',
-                boxShadow: 'var(--shadow-lg)',
+                backgroundColor: 'rgba(13, 18, 34, 0.95)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(168, 85, 247, 0.3)',
+                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(124, 58, 237, 0.25)',
                 zIndex: 100,
                 overflow: 'hidden',
+                borderRadius: 'var(--radius-lg)',
               }}
             >
               <div
                 style={{
-                  padding: '12px 16px',
-                  borderBottom: '1px solid var(--border-color)',
+                  padding: '14px 18px',
+                  borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  backgroundColor: '#FAFAFA',
+                  backgroundColor: 'rgba(255, 255, 255, 0.02)',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Bell size={16} color="var(--primary-blue)" />
-                  <strong style={{ fontSize: '0.875rem' }}>Notifications</strong>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Bell size={16} color="#A78BFA" />
+                  <strong style={{ fontSize: '0.875rem', color: '#F8FAFC' }}>Notifications</strong>
                   {unreadCount > 0 && (
                     <span
                       style={{
                         fontSize: '0.7rem',
-                        backgroundColor: '#EFF6FF',
-                        color: 'var(--primary-blue)',
+                        backgroundColor: 'rgba(236, 72, 153, 0.2)',
+                        color: '#F472B6',
+                        border: '1px solid rgba(236, 72, 153, 0.4)',
                         padding: '1px 6px',
                         borderRadius: '10px',
-                        fontWeight: 600,
+                        fontWeight: 700,
                       }}
                     >
                       {unreadCount} new
@@ -239,11 +248,11 @@ export default function Navbar() {
                     onClick={handleMarkAllRead}
                     style={{
                       fontSize: '0.75rem',
-                      color: 'var(--primary-blue)',
+                      color: '#C084FC',
                       display: 'flex',
                       alignItems: 'center',
                       gap: '4px',
-                      fontWeight: 500,
+                      fontWeight: 600,
                     }}
                   >
                     <CheckCheck size={14} /> Mark all read
@@ -253,7 +262,7 @@ export default function Navbar() {
 
               <div style={{ overflowY: 'auto', flex: 1, padding: '8px 0' }}>
                 {notifications.length === 0 ? (
-                  <div style={{ padding: '24px', textAlign: 'center', color: 'var(--secondary-text)' }}>
+                  <div style={{ padding: '28px', textAlign: 'center', color: 'var(--secondary-text)' }}>
                     <p style={{ fontSize: '0.85rem' }}>No notifications right now.</p>
                   </div>
                 ) : (
@@ -261,9 +270,9 @@ export default function Navbar() {
                     <div
                       key={n._id}
                       style={{
-                        padding: '10px 16px',
-                        borderBottom: '1px solid #F1F5F9',
-                        backgroundColor: n.isRead ? 'transparent' : '#F0F7FF',
+                        padding: '12px 18px',
+                        borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+                        backgroundColor: n.isRead ? 'transparent' : 'rgba(124, 58, 237, 0.1)',
                         cursor: 'pointer',
                         transition: 'background-color 0.2s',
                       }}
@@ -275,10 +284,10 @@ export default function Navbar() {
                       }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                        <span style={{ fontSize: '0.825rem', fontWeight: 600, color: 'var(--primary-text)' }}>
+                        <span style={{ fontSize: '0.825rem', fontWeight: 600, color: '#F8FAFC' }}>
                           {n.title}
                         </span>
-                        <span style={{ fontSize: '0.7rem', color: '#94A3B8' }}>
+                        <span style={{ fontSize: '0.7rem', color: '#64748B' }}>
                           {new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
@@ -301,11 +310,12 @@ export default function Navbar() {
               display: 'flex',
               alignItems: 'center',
               gap: '10px',
-              padding: '4px 10px 4px 4px',
+              padding: '4px 12px 4px 4px',
               borderRadius: '9999px',
-              backgroundColor: '#F8FAFC',
-              border: '1px solid var(--border-color)',
+              backgroundColor: 'rgba(255, 255, 255, 0.06)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
               cursor: 'pointer',
+              backdropFilter: 'blur(8px)',
             }}
           >
             <img
@@ -316,16 +326,17 @@ export default function Navbar() {
               alt={user.name}
               style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }}
             />
-            <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--primary-text)' }}>
+            <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#F8FAFC' }}>
               {user.name.split(' ')[0]}
             </span>
             <span
               style={{
                 fontSize: '0.7rem',
-                padding: '2px 6px',
-                borderRadius: '4px',
-                backgroundColor: user.role === 'employer' ? '#F5F3FF' : '#EFF6FF',
-                color: user.role === 'employer' ? '#7C3AED' : 'var(--primary-blue)',
+                padding: '2px 8px',
+                borderRadius: '9999px',
+                background: user.role === 'employer' ? 'rgba(236, 72, 153, 0.2)' : 'rgba(124, 58, 237, 0.25)',
+                color: user.role === 'employer' ? '#F472B6' : '#C084FC',
+                border: user.role === 'employer' ? '1px solid rgba(236, 72, 153, 0.4)' : '1px solid rgba(124, 58, 237, 0.4)',
                 fontWeight: 700,
                 textTransform: 'uppercase',
               }}
@@ -335,10 +346,10 @@ export default function Navbar() {
           </div>
         ) : (
           <div style={{ display: 'flex', gap: '8px' }}>
-            <button onClick={() => navigate('login')} className="btn-secondary" style={{ padding: '6px 14px' }}>
+            <button onClick={() => navigate('login')} className="btn-secondary" style={{ padding: '6px 16px' }}>
               Sign In
             </button>
-            <button onClick={() => navigate('register')} className="btn-primary" style={{ padding: '6px 14px' }}>
+            <button onClick={() => navigate('register')} className="btn-primary" style={{ padding: '6px 18px' }}>
               Get Started
             </button>
           </div>

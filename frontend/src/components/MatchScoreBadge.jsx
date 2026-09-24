@@ -8,37 +8,40 @@ export default function MatchScoreBadge({ score, size = 48, strokeWidth = 4, sho
   const progress = Math.min(100, Math.max(0, score));
   const strokeDashoffset = circumference - (progress / 100) * circumference;
 
-  let strokeColor = '#10B981'; // Green >= 80%
-  let textColor = '#047857';
+  let strokeColor = '#34D399'; // Neon Emerald >= 80%
+  let textColor = '#6EE7B7';
   let badgeLabel = 'High Match';
-  let bgColor = '#ECFDF5';
+  let bgColor = 'rgba(16, 185, 129, 0.15)';
+  let borderColor = 'rgba(16, 185, 129, 0.35)';
 
   if (score < 50) {
-    strokeColor = '#EF4444'; // Red < 50%
-    textColor = '#B91C1C';
+    strokeColor = '#F87171'; // Neon Rose < 50%
+    textColor = '#FCA5A5';
     badgeLabel = 'Low Match';
-    bgColor = '#FEF2F2';
+    bgColor = 'rgba(239, 68, 68, 0.15)';
+    borderColor = 'rgba(239, 68, 68, 0.35)';
   } else if (score < 80) {
-    strokeColor = '#F59E0B'; // Yellow 50-79%
-    textColor = '#B45309';
+    strokeColor = '#FBBF24'; // Neon Amber 50-79%
+    textColor = '#FDE68A';
     badgeLabel = 'Good Match';
-    bgColor = '#FFFBEB';
+    bgColor = 'rgba(245, 158, 11, 0.15)';
+    borderColor = 'rgba(245, 158, 11, 0.35)';
   }
 
   return (
     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
       <div style={{ position: 'relative', width: size, height: size }}>
-        <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
+        <svg width={size} height={size} style={{ transform: 'rotate(-90deg)', filter: `drop-shadow(0 0 6px ${strokeColor}44)` }}>
           {/* Background circle */}
           <circle
             cx={size / 2}
             cy={size / 2}
             r={radius}
-            stroke="#E2E8F0"
+            stroke="rgba(255, 255, 255, 0.1)"
             strokeWidth={strokeWidth}
             fill="transparent"
           />
-          {/* Progress circle */}
+          {/* Neon Progress circle */}
           <circle
             cx={size / 2}
             cy={size / 2}
@@ -63,7 +66,7 @@ export default function MatchScoreBadge({ score, size = 48, strokeWidth = 4, sho
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: size > 40 ? '0.8rem' : '0.65rem',
-            fontWeight: 700,
+            fontWeight: 800,
             color: textColor,
           }}
         >
@@ -75,10 +78,12 @@ export default function MatchScoreBadge({ score, size = 48, strokeWidth = 4, sho
           style={{
             backgroundColor: bgColor,
             color: textColor,
+            border: `1px solid ${borderColor}`,
             padding: '2px 8px',
             borderRadius: '9999px',
             fontSize: '0.75rem',
-            fontWeight: 600,
+            fontWeight: 700,
+            backdropFilter: 'blur(8px)',
           }}
         >
           {badgeLabel}

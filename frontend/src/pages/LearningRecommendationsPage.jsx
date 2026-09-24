@@ -92,16 +92,18 @@ export default function LearningRecommendationsPage({ skillId, skillName }) {
             style={{
               fontSize: '0.75rem',
               fontWeight: 700,
-              color: 'var(--primary-blue)',
+              color: '#C084FC',
               textTransform: 'uppercase',
-              backgroundColor: '#EFF6FF',
-              padding: '3px 10px',
+              backgroundColor: 'rgba(168, 85, 247, 0.15)',
+              border: '1px solid rgba(168, 85, 247, 0.35)',
+              padding: '4px 12px',
               borderRadius: '9999px',
+              letterSpacing: '0.05em',
             }}
           >
             ACTIONABLE CAREER PATHWAY
           </span>
-          <h1 style={{ fontSize: '2rem', marginTop: '10px', color: 'var(--secondary-navy)' }}>
+          <h1 style={{ fontSize: '2rem', marginTop: '12px', color: '#FFFFFF' }}>
             {skillName ? `Curated Roadmap for ${skillName}` : 'Personalized Learning Roadmap'}
           </h1>
           <p style={{ fontSize: '0.95rem', color: 'var(--secondary-text)', marginTop: '4px', maxWidth: '560px' }}>
@@ -113,10 +115,12 @@ export default function LearningRecommendationsPage({ skillId, skillName }) {
         {/* Learning Progress Meter */}
         <div
           style={{
-            padding: '20px 24px',
-            backgroundColor: '#FFFFFF',
-            borderRadius: 'var(--radius-md)',
-            border: '1px solid #DBEAFE',
+            padding: '24px 28px',
+            backgroundColor: 'rgba(15, 23, 42, 0.75)',
+            backdropFilter: 'blur(12px)',
+            borderRadius: 'var(--radius-lg)',
+            border: '1px solid rgba(168, 85, 247, 0.35)',
+            boxShadow: '0 0 20px rgba(124, 58, 237, 0.2)',
             textAlign: 'center',
             minWidth: '180px',
           }}
@@ -124,10 +128,10 @@ export default function LearningRecommendationsPage({ skillId, skillName }) {
           <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>
             CURRICULUM PROGRESS
           </span>
-          <h2 style={{ fontSize: '2.4rem', color: 'var(--primary-blue)', fontWeight: 800 }}>
+          <h2 style={{ fontSize: '2.4rem', color: '#C084FC', fontWeight: 800, textShadow: '0 0 20px rgba(192, 132, 252, 0.4)' }}>
             {progressPct}%
           </h2>
-          <span style={{ fontSize: '0.8rem', color: '#059669', fontWeight: 600 }}>
+          <span style={{ fontSize: '0.8rem', color: '#34D399', fontWeight: 600 }}>
             {completedCount} of {totalCount} Completed
           </span>
         </div>
@@ -151,11 +155,12 @@ export default function LearningRecommendationsPage({ skillId, skillName }) {
               style={{
                 padding: '14px 16px',
                 borderRadius: 'var(--radius-md)',
-                backgroundColor: isActive ? 'var(--primary-blue)' : '#FFFFFF',
+                background: isActive ? 'var(--primary-gradient)' : 'rgba(15, 23, 42, 0.65)',
                 color: isActive ? '#FFFFFF' : 'var(--primary-text)',
-                border: isActive ? '1px solid var(--primary-blue)' : '1px solid var(--border-color)',
+                border: isActive ? '1px solid rgba(255, 255, 255, 0.3)' : '1px solid var(--border-color)',
                 textAlign: 'left',
-                boxShadow: isActive ? 'var(--shadow-blue)' : 'var(--shadow-subtle)',
+                boxShadow: isActive ? '0 0 15px rgba(168, 85, 247, 0.4)' : 'var(--shadow-subtle)',
+                backdropFilter: 'blur(12px)',
                 transition: 'var(--transition-normal)',
               }}
             >
@@ -163,7 +168,7 @@ export default function LearningRecommendationsPage({ skillId, skillName }) {
               <span
                 style={{
                   fontSize: '0.75rem',
-                  color: isActive ? '#DBEAFE' : 'var(--secondary-text)',
+                  color: isActive ? 'rgba(255, 255, 255, 0.85)' : 'var(--secondary-text)',
                   display: 'block',
                   marginTop: '2px',
                 }}

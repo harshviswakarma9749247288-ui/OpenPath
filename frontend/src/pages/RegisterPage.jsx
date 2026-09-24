@@ -7,8 +7,8 @@ export default function RegisterPage() {
   const { register, isLoading, error } = useAuthStore();
   const { navigate, showToast } = useUIStore();
 
-  const [step, setStep] = useState('form'); // 'form' or 'otp'
-  const [role, setRole] = useState('student'); // 'student' or 'employer'
+  const [step, setStep] = useState('form');
+  const [role, setRole] = useState('student');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,7 +24,6 @@ export default function RegisterPage() {
       return;
     }
 
-    // Move to simulated OTP verification per spec
     const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
     setDemoCode(generatedOtp);
     setStep('otp');
@@ -33,7 +32,6 @@ export default function RegisterPage() {
 
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
-    // Complete registration
     const res = await register({
       name,
       email,
@@ -58,7 +56,7 @@ export default function RegisterPage() {
         minHeight: '100vh',
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#070A13',
       }}
       className="split-auth-layout"
     >
@@ -66,15 +64,20 @@ export default function RegisterPage() {
       <div
         className="auth-branding-pane"
         style={{
-          background: 'linear-gradient(135deg, #1E40AF 0%, #2563EB 100%)',
+          background: 'linear-gradient(135deg, rgba(30, 27, 75, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%)',
           padding: '60px 48px',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
           color: '#FFFFFF',
+          position: 'relative',
+          overflow: 'hidden',
+          borderRight: '1px solid rgba(255, 255, 255, 0.08)',
         }}
       >
-        <div>
+        <div className="bg-subtle-glow" style={{ opacity: 0.8 }} />
+
+        <div style={{ position: 'relative', zIndex: 1 }}>
           <div
             onClick={() => navigate('landing')}
             style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', marginBottom: '48px' }}
@@ -84,40 +87,42 @@ export default function RegisterPage() {
                 width: '42px',
                 height: '42px',
                 borderRadius: '12px',
-                backgroundColor: '#FFFFFF',
-                color: 'var(--primary-blue)',
+                background: 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)',
+                color: '#FFFFFF',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontWeight: 800,
                 fontSize: '1.25rem',
+                boxShadow: '0 0 15px rgba(236, 72, 153, 0.45)',
               }}
             >
               OP
             </div>
-            <span style={{ fontSize: '1.4rem', fontWeight: 700, letterSpacing: '-0.5px' }}>
-              OpenPath
+            <span style={{ fontSize: '1.4rem', fontWeight: 800, letterSpacing: '-0.5px' }}>
+              Open<span className="gradient-text">Path</span>
             </span>
           </div>
 
-          <h2 style={{ fontSize: '2.4rem', fontWeight: 700, lineHeight: '1.2', marginBottom: '16px' }}>
-            Start Your Journey with Clarity & Purpose
+          <h2 style={{ fontSize: '2.5rem', fontWeight: 800, lineHeight: '1.2', marginBottom: '16px' }}>
+            Start Your Journey with <br />
+            <span className="gradient-text">Clarity & Purpose</span>
           </h2>
-          <p style={{ color: '#DBEAFE', fontSize: '1.05rem', lineHeight: '1.6' }}>
+          <p style={{ color: '#94A3B8', fontSize: '1.05rem', lineHeight: '1.6' }}>
             Join thousands of college students, freshers, and progressive hiring teams connecting through
             transparent skill matching.
           </p>
         </div>
 
-        <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', padding: '20px', borderRadius: '12px' }}>
-          <strong style={{ display: 'block', marginBottom: '6px' }}>Transparent Match Policy:</strong>
-          <p style={{ fontSize: '0.85rem', color: '#DBEAFE', lineHeight: '1.5' }}>
-            OpenPath never hides candidate qualifications behind algorithms. Every applicant sees their
+        <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.1)', padding: '22px', borderRadius: '16px', position: 'relative', zIndex: 1 }}>
+          <strong style={{ display: 'block', marginBottom: '6px', color: '#F8FAFC' }}>Transparent Match Policy:</strong>
+          <p style={{ fontSize: '0.85rem', color: '#94A3B8', lineHeight: '1.5' }}>
+            OpenPath never hides candidate qualifications behind black boxes. Every applicant sees their
             mathematical 5-factor breakdown and specific missing skills.
           </p>
         </div>
 
-        <div style={{ fontSize: '0.8rem', color: '#93C5FD' }}>
+        <div style={{ fontSize: '0.8rem', color: '#64748B', position: 'relative', zIndex: 1 }}>
           Brand Promise: Your Path. Your Opportunity.
         </div>
       </div>
@@ -137,7 +142,7 @@ export default function RegisterPage() {
         {step === 'form' ? (
           <div>
             <div style={{ marginBottom: '24px' }}>
-              <h2 style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--primary-text)' }}>
+              <h2 style={{ fontSize: '2rem', fontWeight: 800, color: '#FFFFFF' }}>
                 Create Your Account
               </h2>
               <p style={{ fontSize: '0.9rem', color: 'var(--secondary-text)', marginTop: '4px' }}>
@@ -152,49 +157,52 @@ export default function RegisterPage() {
                 gridTemplateColumns: '1fr 1fr',
                 gap: '12px',
                 marginBottom: '24px',
-                padding: '4px',
-                backgroundColor: '#F1F5F9',
-                borderRadius: 'var(--radius-md)',
+                padding: '6px',
+                backgroundColor: 'rgba(15, 23, 42, 0.8)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: 'var(--radius-lg)',
               }}
             >
               <button
                 type="button"
                 onClick={() => setRole('student')}
                 style={{
-                  padding: '10px',
+                  padding: '11px',
                   borderRadius: 'var(--radius-md)',
-                  backgroundColor: role === 'student' ? '#FFFFFF' : 'transparent',
-                  color: role === 'student' ? 'var(--primary-blue)' : 'var(--secondary-text)',
-                  fontWeight: 600,
+                  backgroundColor: role === 'student' ? 'rgba(124, 58, 237, 0.3)' : 'transparent',
+                  color: role === 'student' ? '#FFFFFF' : 'var(--secondary-text)',
+                  border: role === 'student' ? '1px solid #A855F7' : '1px solid transparent',
+                  fontWeight: 700,
                   fontSize: '0.875rem',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '8px',
-                  boxShadow: role === 'student' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                  boxShadow: role === 'student' ? '0 0 15px rgba(124, 58, 237, 0.3)' : 'none',
                 }}
               >
-                <GraduationCap size={18} /> Student / Fresher
+                <GraduationCap size={18} color={role === 'student' ? '#C084FC' : 'currentColor'} /> Student / Fresher
               </button>
 
               <button
                 type="button"
                 onClick={() => setRole('employer')}
                 style={{
-                  padding: '10px',
+                  padding: '11px',
                   borderRadius: 'var(--radius-md)',
-                  backgroundColor: role === 'employer' ? '#FFFFFF' : 'transparent',
-                  color: role === 'employer' ? '#7C3AED' : 'var(--secondary-text)',
-                  fontWeight: 600,
+                  backgroundColor: role === 'employer' ? 'rgba(236, 72, 153, 0.3)' : 'transparent',
+                  color: role === 'employer' ? '#FFFFFF' : 'var(--secondary-text)',
+                  border: role === 'employer' ? '1px solid #EC4899' : '1px solid transparent',
+                  fontWeight: 700,
                   fontSize: '0.875rem',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '8px',
-                  boxShadow: role === 'employer' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                  boxShadow: role === 'employer' ? '0 0 15px rgba(236, 72, 153, 0.3)' : 'none',
                 }}
               >
-                <Briefcase size={18} /> Employer / Hiring
+                <Briefcase size={18} color={role === 'employer' ? '#F472B6' : 'currentColor'} /> Employer / Hiring
               </button>
             </div>
 
@@ -202,10 +210,10 @@ export default function RegisterPage() {
               <div
                 style={{
                   padding: '12px',
-                  backgroundColor: '#FEF2F2',
-                  border: '1px solid #FECACA',
+                  backgroundColor: 'rgba(239, 68, 68, 0.15)',
+                  border: '1px solid rgba(239, 68, 68, 0.4)',
                   borderRadius: 'var(--radius-md)',
-                  color: '#DC2626',
+                  color: '#FCA5A5',
                   fontSize: '0.85rem',
                   marginBottom: '16px',
                 }}
@@ -220,7 +228,7 @@ export default function RegisterPage() {
                 <div style={{ position: 'relative' }}>
                   <User
                     size={18}
-                    color="#94A3B8"
+                    color="#64748B"
                     style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }}
                   />
                   <input
@@ -240,7 +248,7 @@ export default function RegisterPage() {
                 <div style={{ position: 'relative' }}>
                   <Mail
                     size={18}
-                    color="#94A3B8"
+                    color="#64748B"
                     style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }}
                   />
                   <input
@@ -260,7 +268,7 @@ export default function RegisterPage() {
                 <div style={{ position: 'relative' }}>
                   <Lock
                     size={18}
-                    color="#94A3B8"
+                    color="#64748B"
                     style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }}
                   />
                   <input
@@ -281,7 +289,7 @@ export default function RegisterPage() {
                 <div style={{ position: 'relative' }}>
                   <Lock
                     size={18}
-                    color="#94A3B8"
+                    color="#64748B"
                     style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }}
                   />
                   <input
@@ -308,7 +316,7 @@ export default function RegisterPage() {
 
             <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '0.875rem', color: 'var(--secondary-text)' }}>
               Already registered?{' '}
-              <button onClick={() => navigate('login')} style={{ color: 'var(--primary-blue)', fontWeight: 600 }}>
+              <button onClick={() => navigate('login')} style={{ color: '#F472B6', fontWeight: 700 }}>
                 Sign In
               </button>
             </p>
@@ -319,20 +327,22 @@ export default function RegisterPage() {
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>
               <div
                 style={{
-                  width: '54px',
-                  height: '54px',
+                  width: '56px',
+                  height: '56px',
                   borderRadius: '50%',
-                  backgroundColor: '#EFF6FF',
-                  color: 'var(--primary-blue)',
+                  backgroundColor: 'rgba(124, 58, 237, 0.2)',
+                  border: '1px solid rgba(168, 85, 247, 0.4)',
+                  color: '#C084FC',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   margin: '0 auto 16px auto',
+                  boxShadow: '0 0 20px rgba(124, 58, 237, 0.3)',
                 }}
               >
                 <ShieldCheck size={28} />
               </div>
-              <h2 style={{ fontSize: '1.6rem', fontWeight: 700 }}>Enter Verification Code</h2>
+              <h2 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#FFFFFF' }}>Enter Verification Code</h2>
               <p style={{ fontSize: '0.875rem', color: 'var(--secondary-text)', marginTop: '4px' }}>
                 We sent a 6-digit OTP code to <strong>{email}</strong>
               </p>
@@ -340,16 +350,17 @@ export default function RegisterPage() {
 
             <div
               style={{
-                padding: '12px',
-                backgroundColor: '#EFF6FF',
-                borderRadius: '8px',
-                border: '1px solid #BFDBFE',
+                padding: '14px',
+                backgroundColor: 'rgba(124, 58, 237, 0.15)',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid rgba(168, 85, 247, 0.35)',
                 textAlign: 'center',
                 marginBottom: '20px',
                 fontSize: '0.85rem',
+                color: '#E2E8F0',
               }}
             >
-              Demo Auto-Filled Code: <strong>{demoCode}</strong>
+              Demo Auto-Filled Code: <strong style={{ color: '#F472B6' }}>{demoCode}</strong>
             </div>
 
             <form onSubmit={handleVerifyOtp}>
@@ -360,10 +371,11 @@ export default function RegisterPage() {
                   required
                   className="form-input"
                   style={{
-                    fontSize: '1.8rem',
+                    fontSize: '2rem',
                     textAlign: 'center',
-                    letterSpacing: '8px',
-                    fontWeight: 700,
+                    letterSpacing: '10px',
+                    fontWeight: 800,
+                    color: '#FFFFFF',
                   }}
                   value={otpCode || demoCode}
                   onChange={(e) => setOtpCode(e.target.value)}
