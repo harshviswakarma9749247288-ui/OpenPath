@@ -86,11 +86,11 @@ export default function SkillGapPage({ opportunityId }) {
           >
             SKILL GAP ANALYSIS
           </span>
-          <h1 style={{ fontSize: '2rem', marginTop: '12px', color: '#FFFFFF' }}>
+          <h1 style={{ fontSize: '2rem', marginTop: '12px', color: 'var(--primary-text)' }}>
             Target Skill Readiness
           </h1>
           <p style={{ fontSize: '1rem', color: 'var(--secondary-text)', marginTop: '4px' }}>
-            For <strong style={{ color: '#FFFFFF' }}>{opportunityTitle}</strong> at {organization}
+            For <strong style={{ color: 'var(--primary-text)' }}>{opportunityTitle}</strong> at {organization}
           </p>
           <p style={{ fontSize: '0.9rem', color: 'var(--primary-text)', marginTop: '12px', maxWidth: '540px' }}>
             {recommendationNote}
@@ -101,7 +101,7 @@ export default function SkillGapPage({ opportunityId }) {
         <div
           style={{
             padding: '24px 28px',
-            backgroundColor: 'rgba(15, 23, 42, 0.75)',
+            backgroundColor: 'var(--card-bg)',
             backdropFilter: 'blur(12px)',
             borderRadius: 'var(--radius-lg)',
             border: '1px solid rgba(168, 85, 247, 0.35)',
@@ -125,7 +125,7 @@ export default function SkillGapPage({ opportunityId }) {
       <div style={{ marginBottom: '32px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
           <CheckCircle2 size={20} color="#34D399" />
-          <h3 style={{ fontSize: '1.25rem', color: '#FFFFFF' }}>
+          <h3 style={{ fontSize: '1.25rem', color: 'var(--primary-text)' }}>
             Verified In Your Profile ({matchedSkills.length})
           </h3>
         </div>
@@ -138,17 +138,17 @@ export default function SkillGapPage({ opportunityId }) {
               style={{
                 padding: '16px',
                 borderLeft: '4px solid #10B981',
-                backgroundColor: 'rgba(16, 185, 129, 0.08)',
-                border: '1px solid rgba(16, 185, 129, 0.25)',
+                backgroundColor: 'var(--status-green-bg)',
+                border: '1px solid var(--status-green-border)',
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                <strong style={{ fontSize: '1rem', color: '#6EE7B7' }}>{s.name}</strong>
-                <span style={{ fontSize: '0.7rem', color: '#34D399', backgroundColor: 'rgba(16, 185, 129, 0.2)', padding: '2px 8px', borderRadius: '4px', fontWeight: 600 }}>
+                <strong style={{ fontSize: '1rem', color: 'var(--status-green-text)' }}>{s.name}</strong>
+                <span style={{ fontSize: '0.7rem', color: 'var(--status-green-text)', backgroundColor: 'var(--status-green-bg)', border: '1px solid var(--status-green-border)', padding: '2px 8px', borderRadius: '4px', fontWeight: 600 }}>
                   {s.category || 'Skill'}
                 </span>
               </div>
-              <p style={{ fontSize: '0.8rem', color: '#A7F3D0' }}>
+              <p style={{ fontSize: '0.8rem', color: 'var(--secondary-text)' }}>
                 Proficiency verified. Contributes to your 40% skill factor.
               </p>
             </div>
@@ -163,7 +163,7 @@ export default function SkillGapPage({ opportunityId }) {
       <div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
           <AlertTriangle size={20} color="#FBBF24" />
-          <h3 style={{ fontSize: '1.25rem', color: '#FFFFFF' }}>
+          <h3 style={{ fontSize: '1.25rem', color: 'var(--primary-text)' }}>
             Missing Competencies to Bridge ({missingSkills.length})
           </h3>
         </div>

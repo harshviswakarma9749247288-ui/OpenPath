@@ -107,7 +107,7 @@ export default function CandidateReviewPage({ opportunityId }) {
           >
             CANDIDATE INTELLIGENCE
           </span>
-          <h1 style={{ fontSize: '1.85rem', marginTop: '10px', color: '#FFFFFF' }}>
+          <h1 style={{ fontSize: '1.85rem', marginTop: '10px', color: 'var(--primary-text)' }}>
             Candidate Review & Matching
           </h1>
           <p style={{ fontSize: '0.9rem', color: 'var(--secondary-text)', marginTop: '4px' }}>

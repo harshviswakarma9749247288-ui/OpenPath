@@ -135,19 +135,19 @@ export default function MatchExplanationPage({ opportunityId }) {
           >
             EXPLAINABLE AI TRANSPARENCY
           </span>
-          <h1 style={{ fontSize: '2rem', marginTop: '12px', color: '#FFFFFF' }}>
+          <h1 style={{ fontSize: '2rem', marginTop: '12px', color: 'var(--primary-text)' }}>
             Why This Role Matches You
           </h1>
           <p style={{ fontSize: '1rem', color: 'var(--secondary-text)', marginTop: '4px' }}>
-            Match calculation for <strong style={{ color: '#FFFFFF' }}>{opp?.title}</strong> at {opp?.organization}
+            Match calculation for <strong style={{ color: 'var(--primary-text)' }}>{opp?.title}</strong> at {opp?.organization}
           </p>
           <div
             style={{
               marginTop: '16px',
               padding: '14px 18px',
-              backgroundColor: 'rgba(255, 255, 255, 0.04)',
+              backgroundColor: 'var(--box-subtle)',
               borderRadius: '10px',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
+              border: '1px solid var(--box-subtle-border)',
               maxWidth: '560px',
               fontSize: '0.9rem',
               color: 'var(--primary-text)',
@@ -169,7 +169,7 @@ export default function MatchExplanationPage({ opportunityId }) {
 
       {/* 5-Factor Detail Cards */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '32px' }}>
-        <h3 style={{ fontSize: '1.25rem', color: '#FFFFFF', marginBottom: '8px' }}>
+        <h3 style={{ fontSize: '1.25rem', color: 'var(--primary-text)', marginBottom: '8px' }}>
           5 Weighted Decision Factors
         </h3>
 
@@ -200,7 +200,7 @@ export default function MatchExplanationPage({ opportunityId }) {
                     <Icon size={18} />
                   </div>
                   <div>
-                    <h4 style={{ fontSize: '1.05rem', color: '#FFFFFF' }}>{f.title}</h4>
+                    <h4 style={{ fontSize: '1.05rem', color: 'var(--primary-text)' }}>{f.title}</h4>
                     <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>{f.formula}</span>
                   </div>
                 </div>
@@ -216,7 +216,7 @@ export default function MatchExplanationPage({ opportunityId }) {
               </div>
 
               {/* Progress Bar */}
-              <div style={{ height: '8px', backgroundColor: 'rgba(255, 255, 255, 0.08)', borderRadius: '4px', overflow: 'hidden', marginBottom: '10px' }}>
+              <div style={{ height: '8px', backgroundColor: 'var(--box-subtle)', borderRadius: '4px', overflow: 'hidden', marginBottom: '10px' }}>
                 <div
                   style={{
                     height: '100%',
@@ -228,8 +228,8 @@ export default function MatchExplanationPage({ opportunityId }) {
                 />
               </div>
 
-              <div style={{ fontSize: '0.85rem', color: '#CBD5E1', backgroundColor: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', padding: '10px 14px', borderRadius: '8px' }}>
-                <strong style={{ color: '#F8FAFC' }}>Assessment: </strong> {details}
+              <div style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', backgroundColor: 'var(--box-subtle)', border: '1px solid var(--box-subtle-border)', padding: '10px 14px', borderRadius: '8px' }}>
+                <strong style={{ color: 'var(--primary-text)' }}>Assessment: </strong> {details}
               </div>
             </div>
           );

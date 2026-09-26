@@ -212,10 +212,10 @@ export default function Navbar() {
                 maxHeight: '420px',
                 display: 'flex',
                 flexDirection: 'column',
-                backgroundColor: 'rgba(13, 18, 34, 0.95)',
+                backgroundColor: 'var(--card-bg)',
                 backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(168, 85, 247, 0.3)',
-                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(124, 58, 237, 0.25)',
+                border: '1px solid var(--border-color)',
+                boxShadow: 'var(--shadow-lg), 0 0 20px rgba(124, 58, 237, 0.1)',
                 zIndex: 100,
                 overflow: 'hidden',
                 borderRadius: 'var(--radius-lg)',
@@ -224,16 +224,16 @@ export default function Navbar() {
               <div
                 style={{
                   padding: '14px 18px',
-                  borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+                  borderBottom: '1px solid var(--border-color)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                  backgroundColor: 'var(--box-subtle)',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Bell size={16} color="#A78BFA" />
-                  <strong style={{ fontSize: '0.875rem', color: '#F8FAFC' }}>Notifications</strong>
+                  <Bell size={16} color="#7C3AED" />
+                  <strong style={{ fontSize: '0.875rem', color: 'var(--primary-text)' }}>Notifications</strong>
                   {unreadCount > 0 && (
                     <span
                       style={{
@@ -255,7 +255,7 @@ export default function Navbar() {
                     onClick={handleMarkAllRead}
                     style={{
                       fontSize: '0.75rem',
-                      color: '#C084FC',
+                      color: '#7C3AED',
                       display: 'flex',
                       alignItems: 'center',
                       gap: '4px',
@@ -278,8 +278,8 @@ export default function Navbar() {
                       key={n._id}
                       style={{
                         padding: '12px 18px',
-                        borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
-                        backgroundColor: n.isRead ? 'transparent' : 'rgba(124, 58, 237, 0.1)',
+                        borderBottom: '1px solid var(--border-color)',
+                        backgroundColor: n.isRead ? 'transparent' : 'rgba(124, 58, 237, 0.08)',
                         cursor: 'pointer',
                         transition: 'background-color 0.2s',
                       }}
@@ -291,10 +291,10 @@ export default function Navbar() {
                       }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                        <span style={{ fontSize: '0.825rem', fontWeight: 600, color: '#F8FAFC' }}>
+                        <span style={{ fontSize: '0.825rem', fontWeight: 600, color: 'var(--primary-text)' }}>
                           {n.title}
                         </span>
-                        <span style={{ fontSize: '0.7rem', color: '#64748B' }}>
+                        <span style={{ fontSize: '0.7rem', color: 'var(--secondary-text)' }}>
                           {new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
@@ -319,8 +319,8 @@ export default function Navbar() {
               gap: '10px',
               padding: '4px 12px 4px 4px',
               borderRadius: '9999px',
-              backgroundColor: 'rgba(255, 255, 255, 0.06)',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
+              backgroundColor: 'var(--box-subtle)',
+              border: '1px solid var(--border-color)',
               cursor: 'pointer',
               backdropFilter: 'blur(8px)',
             }}
@@ -333,7 +333,7 @@ export default function Navbar() {
               alt={user.name}
               style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }}
             />
-            <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#F8FAFC' }}>
+            <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--primary-text)' }}>
               {user.name.split(' ')[0]}
             </span>
             <span

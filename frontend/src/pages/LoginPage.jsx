@@ -193,10 +193,10 @@ export default function LoginPage() {
           <div
             style={{
               padding: '12px 14px',
-              backgroundColor: 'rgba(239, 68, 68, 0.15)',
-              border: '1px solid rgba(239, 68, 68, 0.4)',
+              backgroundColor: 'var(--status-red-bg)',
+              border: '1px solid var(--status-red-border)',
               borderRadius: 'var(--radius-md)',
-              color: '#FCA5A5',
+              color: 'var(--status-red-text)',
               fontSize: '0.85rem',
               marginBottom: '18px',
             }}
@@ -304,8 +304,8 @@ export default function LoginPage() {
             padding: '16px',
           }}
         >
-          <div className="card" style={{ maxWidth: '420px', width: '100%', padding: '28px', backgroundColor: 'rgba(15, 23, 42, 0.95)' }}>
-            <h3 style={{ fontSize: '1.25rem', marginBottom: '8px', color: '#FFFFFF' }}>Reset Your Password</h3>
+          <div className="card" style={{ maxWidth: '420px', width: '100%', padding: '28px', backgroundColor: 'var(--card-bg)' }}>
+            <h3 style={{ fontSize: '1.25rem', marginBottom: '8px', color: 'var(--primary-text)' }}>Reset Your Password</h3>
             <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', marginBottom: '18px' }}>
               Enter your registered email address to receive an OTP verification code.
             </p>

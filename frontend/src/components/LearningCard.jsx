@@ -39,7 +39,7 @@ export default function LearningCard({ resource, onToggleComplete, isCompleted =
         justifyContent: 'space-between',
         borderRadius: 'var(--radius-lg)',
         border: completed ? '1.5px solid #10B981' : '1px solid var(--border-color)',
-        backgroundColor: completed ? 'rgba(16, 185, 129, 0.08)' : 'rgba(15, 23, 42, 0.65)',
+        backgroundColor: completed ? 'var(--status-green-bg)' : 'var(--card-bg)',
         boxShadow: completed ? '0 0 20px rgba(16, 185, 129, 0.2)' : 'var(--shadow-subtle)',
         transition: 'var(--transition-normal)',
       }}
@@ -52,8 +52,8 @@ export default function LearningCard({ resource, onToggleComplete, isCompleted =
                 width: '32px',
                 height: '32px',
                 borderRadius: '8px',
-                backgroundColor: 'rgba(255, 255, 255, 0.06)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
+                backgroundColor: 'var(--box-subtle)',
+                border: '1px solid var(--box-subtle-border)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -81,7 +81,7 @@ export default function LearningCard({ resource, onToggleComplete, isCompleted =
           </span>
         </div>
 
-        <h4 style={{ fontSize: '1rem', fontWeight: 700, color: '#FFFFFF', marginBottom: '6px' }}>
+        <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--primary-text)', marginBottom: '6px' }}>
           {resource.title}
         </h4>
 
@@ -108,14 +108,14 @@ export default function LearningCard({ resource, onToggleComplete, isCompleted =
 
       <div
         style={{
-          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+          borderTop: '1px solid var(--border-color)',
           paddingTop: '14px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
         }}
       >
-        <span style={{ fontSize: '0.75rem', color: '#94A3B8', display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)', display: 'flex', alignItems: 'center', gap: '4px' }}>
           <Clock size={12} /> {resource.estimatedDuration || '2 hours'}
         </span>
 

@@ -45,7 +45,7 @@ export default function ApplicationsPage() {
     <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
       {/* 1. Header & Summary Metric Dashboard */}
       <div style={{ marginBottom: '28px' }}>
-        <h1 style={{ fontSize: '2rem', color: '#FFFFFF', marginBottom: '6px' }}>
+        <h1 style={{ fontSize: '2rem', color: 'var(--primary-text)', marginBottom: '6px' }}>
           My Applications
         </h1>
         <p style={{ color: 'var(--secondary-text)', fontSize: '0.95rem' }}>
@@ -114,9 +114,9 @@ export default function ApplicationsPage() {
                 borderRadius: 'var(--radius-md)',
                 fontSize: '0.85rem',
                 fontWeight: activeTab === tab.id ? 600 : 500,
-                backgroundColor: activeTab === tab.id ? 'rgba(168, 85, 247, 0.2)' : 'rgba(255, 255, 255, 0.04)',
-                color: activeTab === tab.id ? '#C084FC' : 'var(--secondary-text)',
-                border: activeTab === tab.id ? '1px solid rgba(168, 85, 247, 0.4)' : '1px solid rgba(255, 255, 255, 0.08)',
+                backgroundColor: activeTab === tab.id ? 'rgba(124, 58, 237, 0.15)' : 'var(--chip-bg)',
+                color: activeTab === tab.id ? '#7C3AED' : 'var(--secondary-text)',
+                border: activeTab === tab.id ? '1px solid rgba(124, 58, 237, 0.4)' : '1px solid var(--chip-border)',
                 backdropFilter: 'blur(8px)',
               }}
             >
@@ -126,7 +126,7 @@ export default function ApplicationsPage() {
         </div>
 
         {/* View toggle */}
-        <div style={{ display: 'flex', gap: '4px', backgroundColor: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(255, 255, 255, 0.1)', padding: '3px', borderRadius: '8px' }}>
+        <div style={{ display: 'flex', gap: '4px', backgroundColor: 'var(--box-subtle)', border: '1px solid var(--border-color)', padding: '3px', borderRadius: '8px' }}>
           <button
             onClick={() => setViewMode('cards')}
             style={{
@@ -134,8 +134,9 @@ export default function ApplicationsPage() {
               borderRadius: '6px',
               fontSize: '0.8rem',
               fontWeight: 500,
-              backgroundColor: viewMode === 'cards' ? 'rgba(255, 255, 255, 0.12)' : 'transparent',
-              color: viewMode === 'cards' ? '#A78BFA' : '#64748B',
+              backgroundColor: viewMode === 'cards' ? 'var(--card-bg)' : 'transparent',
+              color: viewMode === 'cards' ? '#7C3AED' : 'var(--secondary-text)',
+              boxShadow: viewMode === 'cards' ? 'var(--shadow-subtle)' : 'none',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
@@ -150,8 +151,9 @@ export default function ApplicationsPage() {
               borderRadius: '6px',
               fontSize: '0.8rem',
               fontWeight: 500,
-              backgroundColor: viewMode === 'kanban' ? 'rgba(255, 255, 255, 0.12)' : 'transparent',
-              color: viewMode === 'kanban' ? '#A78BFA' : '#64748B',
+              backgroundColor: viewMode === 'kanban' ? 'var(--card-bg)' : 'transparent',
+              color: viewMode === 'kanban' ? '#7C3AED' : 'var(--secondary-text)',
+              boxShadow: viewMode === 'kanban' ? 'var(--shadow-subtle)' : 'none',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
@@ -238,25 +240,25 @@ export default function ApplicationsPage() {
               <div
                 key={stage}
                 style={{
-                  backgroundColor: 'rgba(15, 23, 42, 0.65)',
+                  backgroundColor: 'var(--box-subtle)',
                   backdropFilter: 'blur(12px)',
                   borderRadius: 'var(--radius-lg)',
                   padding: '16px',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  border: '1px solid var(--box-subtle-border)',
                   minHeight: '400px',
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                  <strong style={{ fontSize: '0.85rem', color: '#FFFFFF' }}>{stage}</strong>
+                  <strong style={{ fontSize: '0.85rem', color: 'var(--primary-text)' }}>{stage}</strong>
                   <span
                     style={{
                       fontSize: '0.75rem',
                       fontWeight: 700,
-                      backgroundColor: 'rgba(255, 255, 255, 0.08)',
-                      color: '#A78BFA',
+                      backgroundColor: 'var(--card-bg)',
+                      color: '#7C3AED',
                       padding: '2px 8px',
                       borderRadius: '10px',
-                      border: '1px solid rgba(255, 255, 255, 0.12)',
+                      border: '1px solid var(--border-color)',
                     }}
                   >
                     {stageApps.length}
@@ -277,13 +279,13 @@ export default function ApplicationsPage() {
                       <p style={{ fontSize: '0.75rem', color: 'var(--secondary-text)', marginBottom: '8px' }}>
                         {app.opportunity?.organization}
                       </p>
-                      <span style={{ fontSize: '0.7rem', color: '#94A3B8' }}>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--secondary-text)' }}>
                         {new Date(app.appliedAt).toLocaleDateString()}
                       </span>
                     </div>
                   ))}
                   {stageApps.length === 0 && (
-                    <div style={{ padding: '20px 10px', textAlign: 'center', color: '#94A3B8', fontSize: '0.75rem' }}>
+                    <div style={{ padding: '20px 10px', textAlign: 'center', color: 'var(--secondary-text)', fontSize: '0.75rem' }}>
                       Empty stage
                     </div>
                   )}

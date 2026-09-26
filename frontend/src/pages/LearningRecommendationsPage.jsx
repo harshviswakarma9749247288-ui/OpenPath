@@ -103,7 +103,7 @@ export default function LearningRecommendationsPage({ skillId, skillName }) {
           >
             ACTIONABLE CAREER PATHWAY
           </span>
-          <h1 style={{ fontSize: '2rem', marginTop: '12px', color: '#FFFFFF' }}>
+          <h1 style={{ fontSize: '2rem', marginTop: '12px', color: 'var(--primary-text)' }}>
             {skillName ? `Curated Roadmap for ${skillName}` : 'Personalized Learning Roadmap'}
           </h1>
           <p style={{ fontSize: '0.95rem', color: 'var(--secondary-text)', marginTop: '4px', maxWidth: '560px' }}>
@@ -116,7 +116,7 @@ export default function LearningRecommendationsPage({ skillId, skillName }) {
         <div
           style={{
             padding: '24px 28px',
-            backgroundColor: 'rgba(15, 23, 42, 0.75)',
+            backgroundColor: 'var(--card-bg)',
             backdropFilter: 'blur(12px)',
             borderRadius: 'var(--radius-lg)',
             border: '1px solid rgba(168, 85, 247, 0.35)',
@@ -155,7 +155,7 @@ export default function LearningRecommendationsPage({ skillId, skillName }) {
               style={{
                 padding: '14px 16px',
                 borderRadius: 'var(--radius-md)',
-                background: isActive ? 'var(--primary-gradient)' : 'rgba(15, 23, 42, 0.65)',
+                background: isActive ? 'var(--primary-gradient)' : 'var(--card-bg)',
                 color: isActive ? '#FFFFFF' : 'var(--primary-text)',
                 border: isActive ? '1px solid rgba(255, 255, 255, 0.3)' : '1px solid var(--border-color)',
                 textAlign: 'left',

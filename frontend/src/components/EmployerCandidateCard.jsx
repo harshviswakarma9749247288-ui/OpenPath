@@ -43,7 +43,7 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
           />
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#FFFFFF' }}>
+              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--primary-text)' }}>
                 {user.name}
               </h3>
               <ApplicationStatusBadge status={selectedStatus} />
@@ -78,16 +78,16 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
           gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
           gap: '12px',
           padding: '14px',
-          backgroundColor: 'rgba(255, 255, 255, 0.03)',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
+          backgroundColor: 'var(--box-subtle)',
+          border: '1px solid var(--box-subtle-border)',
           borderRadius: 'var(--radius-md)',
           fontSize: '0.85rem',
         }}
       >
         <div style={{ display: 'flex', gap: '8px' }}>
-          <GraduationCap size={16} color="#A78BFA" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <GraduationCap size={16} color="#7C3AED" style={{ flexShrink: 0, marginTop: '2px' }} />
           <div>
-            <strong style={{ color: '#F8FAFC' }}>
+            <strong style={{ color: 'var(--primary-text)' }}>
               {user.education?.degree || 'Undergraduate Degree'}
             </strong>
             <p style={{ color: 'var(--secondary-text)', fontSize: '0.8rem' }}>
@@ -99,7 +99,7 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
         <div style={{ display: 'flex', gap: '8px' }}>
           <Briefcase size={16} color="#EC4899" style={{ flexShrink: 0, marginTop: '2px' }} />
           <div>
-            <strong style={{ color: '#F8FAFC' }}>
+            <strong style={{ color: 'var(--primary-text)' }}>
               {user.experience?.role || 'Fresher / Project Contributor'}
             </strong>
             <p style={{ color: 'var(--secondary-text)', fontSize: '0.8rem' }}>
@@ -142,7 +142,7 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
       {/* Bottom Action Bar: Resume + Status Change Pipeline */}
       <div
         style={{
-          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+          borderTop: '1px solid var(--border-color)',
           paddingTop: '14px',
           display: 'flex',
           justifyContent: 'space-between',
@@ -176,10 +176,10 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
                 fontWeight: 700,
                 padding: '4px 10px',
                 borderRadius: '8px',
-                border: selectedStatus === st ? '1.5px solid #C026D3' : '1px solid rgba(255, 255, 255, 0.12)',
-                backgroundColor: selectedStatus === st ? 'rgba(192, 38, 211, 0.25)' : 'rgba(255, 255, 255, 0.04)',
-                color: selectedStatus === st ? '#F0ABFC' : '#94A3B8',
-                boxShadow: selectedStatus === st ? '0 0 12px rgba(192, 38, 211, 0.35)' : 'none',
+                border: selectedStatus === st ? '1.5px solid #C026D3' : '1px solid var(--border-color)',
+                backgroundColor: selectedStatus === st ? 'rgba(192, 38, 211, 0.2)' : 'var(--box-subtle)',
+                color: selectedStatus === st ? '#C026D3' : 'var(--secondary-text)',
+                boxShadow: selectedStatus === st ? '0 0 12px rgba(192, 38, 211, 0.25)' : 'none',
                 cursor: selectedStatus === st ? 'default' : 'pointer',
               }}
             >

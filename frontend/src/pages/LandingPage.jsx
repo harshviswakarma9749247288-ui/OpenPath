@@ -250,7 +250,7 @@ export default function LandingPage() {
               style={{
                 fontSize: 'clamp(2.6rem, 5vw, 4rem)',
                 fontWeight: 800,
-                color: '#FFFFFF',
+                color: 'var(--primary-text)',
                 letterSpacing: '-1.5px',
                 marginBottom: '20px',
                 lineHeight: '1.15',
@@ -265,7 +265,7 @@ export default function LandingPage() {
             <p
               style={{
                 fontSize: '1.15rem',
-                color: '#94A3B8',
+                color: 'var(--secondary-text)',
                 marginBottom: '32px',
                 lineHeight: '1.6',
                 maxWidth: '540px',
@@ -296,18 +296,18 @@ export default function LandingPage() {
             <div
               style={{
                 padding: '14px 20px',
-                backgroundColor: 'rgba(15, 23, 42, 0.65)',
+                backgroundColor: 'var(--card-bg)',
                 backdropFilter: 'blur(16px)',
                 borderRadius: 'var(--radius-lg)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                boxShadow: '0 10px 25px rgba(0, 0, 0, 0.5)',
+                border: '1px solid var(--border-color)',
+                boxShadow: 'var(--shadow-md)',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '12px',
                 flexWrap: 'wrap',
               }}
             >
-              <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#A78BFA' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#7C3AED' }}>
                 ⚡ Instant Demo:
               </span>
               <button
@@ -355,7 +355,7 @@ export default function LandingPage() {
                 <MatchScoreBadge score={94} size={48} showLabel={true} />
               </div>
 
-              <h3 style={{ fontSize: '1.25rem', marginBottom: '4px', color: '#FFFFFF' }}>
+              <h3 style={{ fontSize: '1.25rem', marginBottom: '4px', color: 'var(--primary-text)' }}>
                 Frontend Engineering Intern
               </h3>
               <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', marginBottom: '16px' }}>
@@ -367,19 +367,19 @@ export default function LandingPage() {
                 style={{
                   marginBottom: '16px',
                   padding: '12px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                  backgroundColor: 'var(--box-subtle)',
                   borderRadius: '10px',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  border: '1px solid var(--box-subtle-border)',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '6px',
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.775rem' }}>
-                  <span style={{ color: '#E2E8F0' }}>Skill Match (40%)</span>
-                  <strong style={{ color: '#34D399' }}>100% matched</strong>
+                  <span style={{ color: 'var(--primary-text)' }}>Skill Match (40%)</span>
+                  <strong style={{ color: '#10B981' }}>100% matched</strong>
                 </div>
-                <div style={{ height: '6px', backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: '3px', overflow: 'hidden' }}>
+                <div style={{ height: '6px', backgroundColor: 'var(--border-color)', borderRadius: '3px', overflow: 'hidden' }}>
                   <div style={{ width: '100%', height: '100%', background: 'linear-gradient(90deg, #10B981, #34D399)', boxShadow: '0 0 10px #10B981' }} />
                 </div>
               </div>
@@ -392,8 +392,8 @@ export default function LandingPage() {
                 <span className="skill-chip skill-chip-matched">Git</span>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '16px' }}>
-                <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#F8FAFC' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '16px' }}>
+                <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--primary-text)' }}>
                   ₹35,000 / month
                 </span>
                 <button
@@ -416,12 +416,12 @@ export default function LandingPage() {
                 padding: '18px',
                 width: '270px',
                 zIndex: 3,
-                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(236, 72, 153, 0.25)',
+                boxShadow: 'var(--shadow-lg), 0 0 20px rgba(236, 72, 153, 0.15)',
                 border: '1px solid rgba(236, 72, 153, 0.35)',
-                backgroundColor: 'rgba(13, 18, 34, 0.95)',
+                backgroundColor: 'var(--card-bg)',
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FDA4AF', marginBottom: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#EC4899', marginBottom: '8px' }}>
                 <TrendingUp size={16} />
                 <strong style={{ fontSize: '0.8rem' }}>Skill Gap Guidance</strong>
               </div>
@@ -538,7 +538,7 @@ export default function LandingPage() {
                   >
                     <Icon size={24} />
                   </div>
-                  <h3 style={{ fontSize: '1.2rem', marginBottom: '10px', color: '#FFFFFF' }}>{feat.title}</h3>
+                  <h3 style={{ fontSize: '1.2rem', marginBottom: '10px', color: 'var(--primary-text)' }}>{feat.title}</h3>
                   <p style={{ fontSize: '0.875rem', color: 'var(--secondary-text)', lineHeight: '1.6' }}>
                     {feat.desc}
                   </p>
@@ -550,7 +550,7 @@ export default function LandingPage() {
       </section>
 
       {/* 4. FOR STUDENTS & FOR EMPLOYERS SPLIT */}
-      <section style={{ padding: '80px 24px', backgroundColor: 'rgba(10, 15, 29, 0.6)', borderTop: '1px solid var(--border-color)' }}>
+      <section style={{ padding: '80px 24px', backgroundColor: 'rgba(124, 58, 237, 0.03)', borderTop: '1px solid var(--border-color)' }}>
         <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '32px' }}>
             {/* For Students */}
@@ -558,25 +558,25 @@ export default function LandingPage() {
               className="card"
               style={{
                 padding: '36px',
-                background: 'linear-gradient(180deg, rgba(20, 27, 45, 0.8) 0%, rgba(13, 18, 34, 0.9) 100%)',
+                background: 'var(--card-bg)',
                 border: '1.5px solid rgba(124, 58, 237, 0.35)',
               }}
             >
               <span className="badge badge-internship" style={{ marginBottom: '14px' }}>
                 FOR STUDENTS & FRESHERS
               </span>
-              <h3 style={{ fontSize: '1.6rem', marginBottom: '12px', color: '#FFFFFF' }}>Discover Roles That Fit Your True Potential</h3>
+              <h3 style={{ fontSize: '1.6rem', marginBottom: '12px', color: 'var(--primary-text)' }}>Discover Roles That Fit Your True Potential</h3>
               <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
                 <li style={{ display: 'flex', gap: '10px', fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
-                  <CheckCircle size={18} color="#A78BFA" style={{ flexShrink: 0 }} />
+                  <CheckCircle size={18} color="#7C3AED" style={{ flexShrink: 0 }} />
                   Understand why an opportunity matches you with 5 distinct factor scores.
                 </li>
                 <li style={{ display: 'flex', gap: '10px', fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
-                  <CheckCircle size={18} color="#A78BFA" style={{ flexShrink: 0 }} />
+                  <CheckCircle size={18} color="#7C3AED" style={{ flexShrink: 0 }} />
                   Access 5-stage learning roadmaps to conquer missing skills.
                 </li>
                 <li style={{ display: 'flex', gap: '10px', fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
-                  <CheckCircle size={18} color="#A78BFA" style={{ flexShrink: 0 }} />
+                  <CheckCircle size={18} color="#7C3AED" style={{ flexShrink: 0 }} />
                   Track applications in a real-time status progression pipeline.
                 </li>
               </ul>
@@ -590,25 +590,25 @@ export default function LandingPage() {
               className="card"
               style={{
                 padding: '36px',
-                background: 'linear-gradient(180deg, rgba(30, 20, 45, 0.8) 0%, rgba(13, 18, 34, 0.9) 100%)',
+                background: 'var(--card-bg)',
                 border: '1.5px solid rgba(236, 72, 153, 0.35)',
               }}
             >
               <span className="badge badge-entry" style={{ marginBottom: '14px' }}>
                 FOR EMPLOYERS & STARTUPS
               </span>
-              <h3 style={{ fontSize: '1.6rem', marginBottom: '12px', color: '#FFFFFF' }}>Find Early-Career Talent With Proven Skills</h3>
+              <h3 style={{ fontSize: '1.6rem', marginBottom: '12px', color: 'var(--primary-text)' }}>Find Early-Career Talent With Proven Skills</h3>
               <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
                 <li style={{ display: 'flex', gap: '10px', fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
-                  <CheckCircle size={18} color="#F472B6" style={{ flexShrink: 0 }} />
+                  <CheckCircle size={18} color="#EC4899" style={{ flexShrink: 0 }} />
                   Post internships & entry jobs using our 5-step structured wizard.
                 </li>
                 <li style={{ display: 'flex', gap: '10px', fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
-                  <CheckCircle size={18} color="#F472B6" style={{ flexShrink: 0 }} />
+                  <CheckCircle size={18} color="#EC4899" style={{ flexShrink: 0 }} />
                   Review candidates ranked by algorithmic skill compatibility scores.
                 </li>
                 <li style={{ display: 'flex', gap: '10px', fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
-                  <CheckCircle size={18} color="#F472B6" style={{ flexShrink: 0 }} />
+                  <CheckCircle size={18} color="#EC4899" style={{ flexShrink: 0 }} />
                   Manage applications from review to shortlist and interview scheduling.
                 </li>
               </ul>
@@ -618,7 +618,7 @@ export default function LandingPage() {
                   navigate('employer-dashboard');
                 }}
                 className="btn-secondary"
-                style={{ width: '100%', borderColor: 'rgba(236, 72, 153, 0.4)', color: '#F472B6' }}
+                style={{ width: '100%', borderColor: 'rgba(236, 72, 153, 0.4)', color: '#EC4899' }}
               >
                 Employer Portal <ArrowRight size={16} />
               </button>
@@ -636,7 +636,7 @@ export default function LandingPage() {
                 <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#C084FC', textTransform: 'uppercase', letterSpacing: '1px' }}>
                   LIVE PREVIEW
                 </span>
-                <h2 style={{ fontSize: '2.2rem', marginTop: '6px', color: '#FFFFFF' }}>Featured Open Opportunities</h2>
+                <h2 style={{ fontSize: '2.2rem', marginTop: '6px', color: 'var(--primary-text)' }}>Featured Open Opportunities</h2>
               </div>
               <button onClick={() => navigate('opportunities')} className="btn-secondary">
                 View All Opportunities <ArrowRight size={16} />
@@ -653,7 +653,7 @@ export default function LandingPage() {
       )}
 
       {/* 6. TRUST & STATISTICS SECTION */}
-      <section style={{ padding: '60px 24px', backgroundColor: 'rgba(10, 15, 29, 0.7)', borderTop: '1px solid var(--border-color)' }}>
+      <section style={{ padding: '60px 24px', backgroundColor: 'rgba(124, 58, 237, 0.03)', borderTop: '1px solid var(--border-color)' }}>
         <div style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center' }}>
           <div
             style={{
@@ -732,10 +732,10 @@ export default function LandingPage() {
       {/* 8. FOOTER */}
       <footer
         style={{
-          backgroundColor: '#04060C',
-          color: '#64748B',
+          backgroundColor: 'var(--card-bg)',
+          color: 'var(--secondary-text)',
           padding: '60px 24px 30px 24px',
-          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+          borderTop: '1px solid var(--border-color)',
         }}
       >
         <div
@@ -749,7 +749,7 @@ export default function LandingPage() {
           }}
         >
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#FFFFFF', marginBottom: '14px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--primary-text)', marginBottom: '14px' }}>
               <div
                 style={{
                   width: '32px',
@@ -760,6 +760,7 @@ export default function LandingPage() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontWeight: 800,
+                  color: '#FFFFFF',
                 }}
               >
                 OP
@@ -772,29 +773,29 @@ export default function LandingPage() {
           </div>
 
           <div>
-            <h4 style={{ color: '#FFFFFF', fontSize: '0.95rem', marginBottom: '14px' }}>For Candidates</h4>
+            <h4 style={{ color: 'var(--primary-text)', fontSize: '0.95rem', marginBottom: '14px' }}>For Candidates</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.85rem' }}>
-              <a onClick={() => navigate('opportunities')} style={{ cursor: 'pointer', color: '#94A3B8' }}>
+              <a onClick={() => navigate('opportunities')} style={{ cursor: 'pointer', color: 'var(--secondary-text)' }}>
                 Browse Internships
               </a>
-              <a onClick={() => navigate('learning')} style={{ cursor: 'pointer', color: '#94A3B8' }}>
+              <a onClick={() => navigate('learning')} style={{ cursor: 'pointer', color: 'var(--secondary-text)' }}>
                 Skill Roadmaps
               </a>
-              <a onClick={() => navigate('register')} style={{ cursor: 'pointer', color: '#94A3B8' }}>
+              <a onClick={() => navigate('register')} style={{ cursor: 'pointer', color: 'var(--secondary-text)' }}>
                 Student Registration
               </a>
             </div>
           </div>
 
           <div>
-            <h4 style={{ color: '#FFFFFF', fontSize: '0.95rem', marginBottom: '14px' }}>For Employers</h4>
+            <h4 style={{ color: 'var(--primary-text)', fontSize: '0.95rem', marginBottom: '14px' }}>For Employers</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.85rem' }}>
               <a
                 onClick={() => {
                   demoLogin('employer');
                   navigate('employer-dashboard');
                 }}
-                style={{ cursor: 'pointer', color: '#94A3B8' }}
+                style={{ cursor: 'pointer', color: 'var(--secondary-text)' }}
               >
                 Post an Opportunity
               </a>
@@ -803,7 +804,7 @@ export default function LandingPage() {
                   demoLogin('employer');
                   navigate('candidate-review');
                 }}
-                style={{ cursor: 'pointer', color: '#94A3B8' }}
+                style={{ cursor: 'pointer', color: 'var(--secondary-text)' }}
               >
                 Candidate Match Review
               </a>
@@ -811,7 +812,7 @@ export default function LandingPage() {
           </div>
 
           <div>
-            <h4 style={{ color: '#FFFFFF', fontSize: '0.95rem', marginBottom: '14px' }}>Product Principles</h4>
+            <h4 style={{ color: 'var(--primary-text)', fontSize: '0.95rem', marginBottom: '14px' }}>Product Principles</h4>
             <p style={{ fontSize: '0.85rem', lineHeight: '1.6' }}>
               Explainable AI • Accessibility • Actionable Guidance • Privacy-First Data Protection.
             </p>
@@ -822,7 +823,7 @@ export default function LandingPage() {
           style={{
             maxWidth: '1240px',
             margin: '0 auto',
-            borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+            borderTop: '1px solid var(--border-color)',
             paddingTop: '20px',
             display: 'flex',
             justifyContent: 'space-between',

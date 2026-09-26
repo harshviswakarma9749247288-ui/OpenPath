@@ -105,28 +105,23 @@ export default function App() {
             gap: '10px',
             backgroundColor:
               toast.type === 'success'
-                ? 'rgba(16, 185, 129, 0.2)'
+                ? 'var(--status-green-bg)'
                 : toast.type === 'error'
-                ? 'rgba(239, 68, 68, 0.2)'
-                : 'rgba(168, 85, 247, 0.2)',
+                ? 'var(--status-red-bg)'
+                : 'var(--status-purple-bg)',
             border:
               toast.type === 'success'
-                ? '1px solid rgba(16, 185, 129, 0.4)'
+                ? '1px solid var(--status-green-border)'
                 : toast.type === 'error'
-                ? '1px solid rgba(239, 68, 68, 0.4)'
-                : '1px solid rgba(168, 85, 247, 0.4)',
+                ? '1px solid var(--status-red-border)'
+                : '1px solid var(--status-purple-border)',
             color:
               toast.type === 'success'
-                ? '#34D399'
+                ? 'var(--status-green-text)'
                 : toast.type === 'error'
-                ? '#F87171'
-                : '#C084FC',
-            boxShadow:
-              toast.type === 'success'
-                ? '0 0 20px rgba(16, 185, 129, 0.3)'
-                : toast.type === 'error'
-                ? '0 0 20px rgba(239, 68, 68, 0.3)'
-                : '0 0 20px rgba(124, 58, 237, 0.3)',
+                ? 'var(--status-red-text)'
+                : 'var(--status-purple-text)',
+            boxShadow: 'var(--shadow-md)',
             zIndex: 9999,
             borderRadius: 'var(--radius-md)',
             fontSize: '0.875rem',

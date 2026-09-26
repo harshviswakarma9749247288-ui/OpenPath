@@ -108,9 +108,9 @@ export default function OpportunitiesPage() {
                 fontSize: '0.8rem',
                 padding: '6px 14px',
                 borderRadius: '9999px',
-                background: selectedType === t ? 'var(--primary-gradient)' : 'rgba(255, 255, 255, 0.05)',
+                background: selectedType === t ? 'var(--primary-gradient)' : 'var(--chip-bg)',
                 color: selectedType === t ? '#FFFFFF' : 'var(--secondary-text)',
-                border: selectedType === t ? '1px solid rgba(255, 255, 255, 0.3)' : '1px solid rgba(255, 255, 255, 0.12)',
+                border: selectedType === t ? '1px solid transparent' : '1px solid var(--chip-border)',
                 boxShadow: selectedType === t ? '0 0 15px rgba(168, 85, 247, 0.4)' : 'none',
                 fontWeight: 600,
                 backdropFilter: 'blur(8px)',
@@ -127,9 +127,9 @@ export default function OpportunitiesPage() {
                 fontSize: '0.8rem',
                 padding: '6px 14px',
                 borderRadius: '9999px',
-                background: selectedLocation === loc ? 'linear-gradient(135deg, #06B6D4, #3B82F6)' : 'rgba(255, 255, 255, 0.05)',
+                background: selectedLocation === loc ? 'linear-gradient(135deg, #06B6D4, #3B82F6)' : 'var(--chip-bg)',
                 color: selectedLocation === loc ? '#FFFFFF' : 'var(--secondary-text)',
-                border: selectedLocation === loc ? '1px solid rgba(255, 255, 255, 0.3)' : '1px solid rgba(255, 255, 255, 0.12)',
+                border: selectedLocation === loc ? '1px solid transparent' : '1px solid var(--chip-border)',
                 boxShadow: selectedLocation === loc ? '0 0 15px rgba(6, 182, 212, 0.4)' : 'none',
                 fontWeight: 600,
                 backdropFilter: 'blur(8px)',
@@ -197,7 +197,7 @@ export default function OpportunitiesPage() {
             />
           </div>
 
-          <div style={{ padding: '12px', backgroundColor: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: '10px', fontSize: '0.775rem', color: '#38BDF8', marginTop: '16px' }}>
+          <div style={{ padding: '12px', backgroundColor: 'var(--status-blue-bg)', border: '1px solid var(--border-color)', borderRadius: '10px', fontSize: '0.775rem', color: 'var(--status-blue)', marginTop: '16px' }}>
             💡 <strong>Pro Tip:</strong> Matches above 80% have strong overlap with your profile skills & coursework.
           </div>
         </div>
@@ -207,17 +207,18 @@ export default function OpportunitiesPage() {
           {/* Header with Results count & Grid/List view toggle */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
             <span style={{ fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
-              Showing <strong style={{ color: '#FFFFFF' }}>{filteredOpportunities.length}</strong> available opportunities
+              Showing <strong style={{ color: 'var(--primary-text)' }}>{filteredOpportunities.length}</strong> available opportunities
             </span>
 
-            <div style={{ display: 'flex', gap: '4px', backgroundColor: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(255, 255, 255, 0.1)', padding: '3px', borderRadius: '8px' }}>
+            <div style={{ display: 'flex', gap: '4px', backgroundColor: 'var(--box-subtle)', border: '1px solid var(--border-color)', padding: '3px', borderRadius: '8px' }}>
               <button
                 onClick={() => setViewMode('grid')}
                 style={{
                   padding: '6px',
                   borderRadius: '6px',
-                  backgroundColor: viewMode === 'grid' ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
-                  color: viewMode === 'grid' ? '#A78BFA' : '#64748B',
+                  backgroundColor: viewMode === 'grid' ? 'var(--card-bg)' : 'transparent',
+                  color: viewMode === 'grid' ? '#7C3AED' : 'var(--secondary-text)',
+                  boxShadow: viewMode === 'grid' ? 'var(--shadow-subtle)' : 'none',
                 }}
               >
                 <Grid size={16} />
@@ -227,8 +228,9 @@ export default function OpportunitiesPage() {
                 style={{
                   padding: '6px',
                   borderRadius: '6px',
-                  backgroundColor: viewMode === 'list' ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
-                  color: viewMode === 'list' ? '#A78BFA' : '#64748B',
+                  backgroundColor: viewMode === 'list' ? 'var(--card-bg)' : 'transparent',
+                  color: viewMode === 'list' ? '#7C3AED' : 'var(--secondary-text)',
+                  boxShadow: viewMode === 'list' ? 'var(--shadow-subtle)' : 'none',
                 }}
               >
                 <List size={16} />

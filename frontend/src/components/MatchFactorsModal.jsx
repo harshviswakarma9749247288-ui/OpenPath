@@ -45,15 +45,15 @@ export default function MatchFactorsModal({ matchData, opportunityTitle, onClose
           padding: '28px',
           position: 'relative',
           borderRadius: 'var(--radius-lg)',
-          backgroundColor: 'rgba(13, 18, 34, 0.95)',
-          border: '1px solid rgba(168, 85, 247, 0.35)',
-          boxShadow: 'var(--shadow-lg), 0 0 35px rgba(124, 58, 237, 0.3)',
+          backgroundColor: 'var(--card-bg)',
+          border: '1px solid var(--border-color)',
+          boxShadow: 'var(--shadow-lg), 0 0 35px rgba(124, 58, 237, 0.15)',
         }}
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          style={{ position: 'absolute', top: '20px', right: '20px', color: '#94A3B8' }}
+          style={{ position: 'absolute', top: '20px', right: '20px', color: 'var(--secondary-text)' }}
         >
           <X size={20} />
         </button>
@@ -62,12 +62,12 @@ export default function MatchFactorsModal({ matchData, opportunityTitle, onClose
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
           <MatchScoreBadge score={overallScore} size={64} strokeWidth={5} showLabel={false} />
           <div>
-            <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#FFFFFF' }}>
+            <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--primary-text)' }}>
               Explainable Match Breakdown
             </h3>
             <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)' }}>
               Computed algorithmically across 5 core dimensions for{' '}
-              <strong style={{ color: '#F8FAFC' }}>{opportunityTitle}</strong>
+              <strong style={{ color: 'var(--primary-text)' }}>{opportunityTitle}</strong>
             </p>
           </div>
         </div>
@@ -84,25 +84,25 @@ export default function MatchFactorsModal({ matchData, opportunityTitle, onClose
                 key={f.key}
                 style={{
                   padding: '14px 18px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                  backgroundColor: 'var(--box-subtle)',
                   borderRadius: 'var(--radius-md)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  border: '1px solid var(--box-subtle-border)',
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <strong style={{ fontSize: '0.9rem', color: '#F8FAFC' }}>{f.name}</strong>
-                    <span style={{ fontSize: '0.75rem', color: '#A78BFA', backgroundColor: 'rgba(124, 58, 237, 0.15)', padding: '1px 8px', borderRadius: '9999px', border: '1px solid rgba(124, 58, 237, 0.3)' }}>
+                    <strong style={{ fontSize: '0.9rem', color: 'var(--primary-text)' }}>{f.name}</strong>
+                    <span style={{ fontSize: '0.75rem', color: '#7C3AED', backgroundColor: 'rgba(124, 58, 237, 0.12)', padding: '1px 8px', borderRadius: '9999px', border: '1px solid rgba(124, 58, 237, 0.25)' }}>
                       Weight: {f.weight}%
                     </span>
                   </div>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#C084FC' }}>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#C026D3' }}>
                     +{contrib}% / {f.weight}%
                   </span>
                 </div>
 
                 {/* Progress bar */}
-                <div style={{ height: '7px', backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: '4px', overflow: 'hidden', marginBottom: '6px' }}>
+                <div style={{ height: '7px', backgroundColor: 'var(--border-color)', borderRadius: '4px', overflow: 'hidden', marginBottom: '6px' }}>
                   <div
                     style={{
                       height: '100%',

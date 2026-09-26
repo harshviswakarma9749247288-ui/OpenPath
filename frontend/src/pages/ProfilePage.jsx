@@ -128,7 +128,7 @@ ${user?.bio || 'Passionate software developer.'}
 
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: '#FFFFFF' }}>
+              <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--primary-text)' }}>
                 {user?.name}
               </h1>
               <span className="badge badge-internship" style={{ textTransform: 'uppercase' }}>
@@ -176,7 +176,7 @@ ${user?.bio || 'Passionate software developer.'}
       {isEditing ? (
         /* Edit Profile Form */
         <form onSubmit={handleSaveProfile} className="card card-featured" style={{ padding: '32px', marginBottom: '28px' }}>
-          <h3 style={{ fontSize: '1.25rem', marginBottom: '20px', color: '#FFFFFF' }}>Edit Profile Information</h3>
+          <h3 style={{ fontSize: '1.25rem', marginBottom: '20px', color: 'var(--primary-text)' }}>Edit Profile Information</h3>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <div className="form-group">
@@ -247,17 +247,17 @@ ${user?.bio || 'Passionate software developer.'}
         <div className="card" style={{ padding: '24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
             <GraduationCap size={20} color="#38BDF8" />
-            <h3 style={{ fontSize: '1.15rem', color: '#FFFFFF' }}>Education</h3>
+            <h3 style={{ fontSize: '1.15rem', color: 'var(--primary-text)' }}>Education</h3>
           </div>
 
-          <div style={{ padding: '16px', backgroundColor: 'rgba(255, 255, 255, 0.04)', borderRadius: '10px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+          <div style={{ padding: '16px', backgroundColor: 'var(--box-subtle)', borderRadius: '10px', border: '1px solid var(--box-subtle-border)' }}>
             <strong style={{ fontSize: '1rem', color: 'var(--primary-text)' }}>
               {user?.education?.degree || 'Bachelor of Technology'}
             </strong>
             <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', marginTop: '2px' }}>
               {user?.education?.institution || 'Indian Institute of Information Technology'}
             </p>
-            <div style={{ display: 'flex', gap: '10px', marginTop: '8px', fontSize: '0.8rem', color: '#94A3B8' }}>
+            <div style={{ display: 'flex', gap: '10px', marginTop: '8px', fontSize: '0.8rem', color: 'var(--secondary-text)' }}>
               <span>Major: {user?.education?.fieldOfStudy || 'Computer Science'}</span>
               <span>•</span>
               <span>Class of {user?.education?.endYear || '2026'}</span>
@@ -269,10 +269,10 @@ ${user?.bio || 'Passionate software developer.'}
         <div className="card" style={{ padding: '24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
             <Briefcase size={20} color="#F472B6" />
-            <h3 style={{ fontSize: '1.15rem', color: '#FFFFFF' }}>Experience & Projects</h3>
+            <h3 style={{ fontSize: '1.15rem', color: 'var(--primary-text)' }}>Experience & Projects</h3>
           </div>
 
-          <div style={{ padding: '16px', backgroundColor: 'rgba(255, 255, 255, 0.04)', borderRadius: '10px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+          <div style={{ padding: '16px', backgroundColor: 'var(--box-subtle)', borderRadius: '10px', border: '1px solid var(--box-subtle-border)' }}>
             <strong style={{ fontSize: '1rem', color: 'var(--primary-text)' }}>
               {user?.experience?.role || 'Frontend Contributor'}
             </strong>
@@ -290,7 +290,7 @@ ${user?.bio || 'Passionate software developer.'}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Sparkles size={20} color="#C084FC" />
-              <h3 style={{ fontSize: '1.15rem', color: '#FFFFFF' }}>Verified Candidate Skills</h3>
+              <h3 style={{ fontSize: '1.15rem', color: 'var(--primary-text)' }}>Verified Candidate Skills</h3>
             </div>
             <button onClick={() => navigate('profile-setup')} className="btn-outline" style={{ padding: '4px 10px', fontSize: '0.75rem' }}>
               Manage Skills

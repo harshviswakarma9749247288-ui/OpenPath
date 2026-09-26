@@ -126,7 +126,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
 
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-              <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: '#FFFFFF' }}>
+              <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--primary-text)' }}>
                 {opp.title}
               </h1>
               <span className="badge badge-internship">{opp.type}</span>
@@ -148,17 +148,17 @@ export default function OpportunityDetailsPage({ opportunityId }) {
                 alignItems: 'center',
                 gap: '10px',
                 padding: '8px 14px',
-                backgroundColor: 'rgba(15, 23, 42, 0.7)',
+                backgroundColor: 'var(--card-bg)',
                 borderRadius: 'var(--radius-md)',
-                border: '1px solid rgba(168, 85, 247, 0.3)',
-                boxShadow: '0 0 15px rgba(124, 58, 237, 0.15)',
+                border: '1px solid var(--border-color)',
+                boxShadow: 'var(--shadow-subtle)',
                 backdropFilter: 'blur(8px)',
               }}
               title="Click to view 5-factor mathematical breakdown"
             >
               <MatchScoreBadge score={matchScore} size={46} showLabel={false} />
               <div style={{ textAlign: 'left' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#C084FC', display: 'block' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#7C3AED', display: 'block' }}>
                   VIEW BREAKDOWN
                 </span>
                 <span style={{ fontSize: '0.7rem', color: 'var(--secondary-text)' }}>
@@ -173,9 +173,9 @@ export default function OpportunityDetailsPage({ opportunityId }) {
             style={{
               padding: '10px',
               borderRadius: 'var(--radius-md)',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
-              color: isSaved ? '#EC4899' : '#94A3B8',
-              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid var(--border-color)',
+              color: isSaved ? '#EC4899' : 'var(--secondary-text)',
+              backgroundColor: 'var(--chip-bg)',
               backdropFilter: 'blur(8px)',
             }}
           >
@@ -222,40 +222,40 @@ export default function OpportunityDetailsPage({ opportunityId }) {
         }}
       >
         <div className="card" style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <IndianRupee size={22} color="#38BDF8" />
+          <IndianRupee size={22} color="#06B6D4" />
           <div>
             <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>STIPEND / SALARY</span>
-            <strong style={{ fontSize: '0.95rem', display: 'block', color: '#FFFFFF' }}>
+            <strong style={{ fontSize: '0.95rem', display: 'block', color: 'var(--primary-text)' }}>
               {opp.salary?.amount} / {opp.salary?.period}
             </strong>
           </div>
         </div>
 
         <div className="card" style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Calendar size={22} color="#A78BFA" />
+          <Calendar size={22} color="#7C3AED" />
           <div>
             <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>APPLICATION DEADLINE</span>
-            <strong style={{ fontSize: '0.95rem', display: 'block', color: '#FFFFFF' }}>
+            <strong style={{ fontSize: '0.95rem', display: 'block', color: 'var(--primary-text)' }}>
               {new Date(opp.deadline).toLocaleDateString()}
             </strong>
           </div>
         </div>
 
         <div className="card" style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <GraduationCap size={22} color="#F472B6" />
+          <GraduationCap size={22} color="#EC4899" />
           <div>
             <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>ELIGIBILITY</span>
-            <strong style={{ fontSize: '0.95rem', display: 'block', color: '#FFFFFF' }}>
+            <strong style={{ fontSize: '0.95rem', display: 'block', color: 'var(--primary-text)' }}>
               {opp.qualification?.degree || 'Open to All'}
             </strong>
           </div>
         </div>
 
         <div className="card" style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Briefcase size={22} color="#34D399" />
+          <Briefcase size={22} color="#10B981" />
           <div>
             <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>EXPERIENCE</span>
-            <strong style={{ fontSize: '0.95rem', display: 'block', color: '#FFFFFF' }}>
+            <strong style={{ fontSize: '0.95rem', display: 'block', color: 'var(--primary-text)' }}>
               {opp.experienceRequired?.level || 'Fresher Friendly'}
             </strong>
           </div>
@@ -268,13 +268,13 @@ export default function OpportunityDetailsPage({ opportunityId }) {
         style={{
           padding: '22px',
           marginBottom: '28px',
-          borderLeft: '4px solid #C084FC',
+          borderLeft: '4px solid #7C3AED',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '10px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Sparkles size={18} color="#C084FC" />
-            <h3 style={{ fontSize: '1.1rem', color: '#FFFFFF' }}>Candidate Skill Alignment</h3>
+            <Sparkles size={18} color="#7C3AED" />
+            <h3 style={{ fontSize: '1.1rem', color: 'var(--primary-text)' }}>Candidate Skill Alignment</h3>
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
             <button
@@ -380,13 +380,13 @@ export default function OpportunityDetailsPage({ opportunityId }) {
             padding: '16px',
           }}
         >
-          <div className="card card-featured animate-fade-in" style={{ maxWidth: '540px', width: '100%', padding: '28px' }}>
-            <h3 style={{ fontSize: '1.3rem', marginBottom: '8px', color: '#FFFFFF' }}>Submit Your Application</h3>
+          <div className="card card-featured animate-fade-in" style={{ maxWidth: '540px', width: '100%', padding: '28px', backgroundColor: 'var(--card-bg)' }}>
+            <h3 style={{ fontSize: '1.3rem', marginBottom: '8px', color: 'var(--primary-text)' }}>Submit Your Application</h3>
             <p style={{ fontSize: '0.875rem', color: 'var(--secondary-text)', marginBottom: '18px' }}>
               Your profile details and verified skills will be automatically shared with {opp.organization}.
             </p>
 
-            <div style={{ padding: '14px', backgroundColor: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '10px', marginBottom: '16px', fontSize: '0.85rem', color: '#F8FAFC' }}>
+            <div style={{ padding: '14px', backgroundColor: 'var(--box-subtle)', border: '1px solid var(--box-subtle-border)', borderRadius: '10px', marginBottom: '16px', fontSize: '0.85rem', color: 'var(--primary-text)' }}>
               <strong>Applicant: </strong> {user?.name || 'Alex Rivera'} ({user?.email})<br />
               <strong>Degree: </strong> {user?.education?.degree || 'B.Tech CS'} • {user?.location?.city || 'Bengaluru'}
             </div>
@@ -425,7 +425,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
           style={{
             position: 'fixed',
             inset: 0,
-            backgroundColor: 'rgba(7, 10, 19, 0.85)',
+            backgroundColor: 'rgba(7, 10, 19, 0.7)',
             backdropFilter: 'blur(12px)',
             display: 'flex',
             alignItems: 'center',
@@ -442,6 +442,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
               padding: '36px',
               textAlign: 'center',
               borderRadius: 'var(--radius-lg)',
+              backgroundColor: 'var(--card-bg)',
             }}
           >
             <div
@@ -451,8 +452,8 @@ export default function OpportunityDetailsPage({ opportunityId }) {
                 borderRadius: '50%',
                 backgroundColor: 'rgba(16, 185, 129, 0.15)',
                 border: '1px solid rgba(16, 185, 129, 0.35)',
-                color: '#34D399',
-                boxShadow: '0 0 25px rgba(16, 185, 129, 0.3)',
+                color: '#10B981',
+                boxShadow: '0 0 25px rgba(16, 185, 129, 0.2)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -462,12 +463,12 @@ export default function OpportunityDetailsPage({ opportunityId }) {
               <CheckCircle2 size={36} />
             </div>
 
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '8px', color: '#FFFFFF' }}>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '8px', color: 'var(--primary-text)' }}>
               Application Submitted!
             </h3>
             <p style={{ fontSize: '0.9rem', color: 'var(--secondary-text)', marginBottom: '24px', lineHeight: '1.6' }}>
-              Your application for <strong style={{ color: '#FFFFFF' }}>{opp.title}</strong> has been logged with ID{' '}
-              <code style={{ background: 'rgba(6, 182, 212, 0.15)', color: '#67E8F9', padding: '2px 8px', borderRadius: '4px', border: '1px solid rgba(6, 182, 212, 0.3)' }}>
+              Your application for <strong style={{ color: 'var(--primary-text)' }}>{opp.title}</strong> has been logged with ID{' '}
+              <code style={{ background: 'rgba(6, 182, 212, 0.15)', color: '#0891B2', padding: '2px 8px', borderRadius: '4px', border: '1px solid rgba(6, 182, 212, 0.3)' }}>
                 #OP-{Math.floor(100000 + Math.random() * 900000)}
               </code>. The employer has been notified.
             </p>

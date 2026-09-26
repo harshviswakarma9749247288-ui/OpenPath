@@ -170,7 +170,7 @@ export default function Sidebar() {
                   background: isActive
                     ? 'linear-gradient(135deg, rgba(124, 58, 237, 0.25) 0%, rgba(236, 72, 153, 0.2) 100%)'
                     : 'transparent',
-                  color: isActive ? '#FFFFFF' : 'var(--secondary-text)',
+                  color: isActive ? 'var(--primary-text)' : 'var(--secondary-text)',
                   fontWeight: isActive ? 600 : 500,
                   fontSize: '0.9rem',
                   border: isActive
@@ -253,7 +253,7 @@ export default function Sidebar() {
                 fontSize: '0.75rem',
                 fontWeight: 600,
                 color: 'var(--primary-text)',
-                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                backgroundColor: 'var(--box-subtle)',
                 border: '1px solid var(--border-color)',
                 borderRadius: '8px',
                 display: 'flex',
@@ -288,7 +288,7 @@ export default function Sidebar() {
                   'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120'
                 }
                 alt={user?.name || 'User'}
-                style={{ width: '34px', height: '34px', borderRadius: '50%', objectFit: 'cover', border: '1px solid rgba(255, 255, 255, 0.2)' }}
+                style={{ width: '34px', height: '34px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--border-color)' }}
               />
               <div style={{ overflow: 'hidden' }}>
                 <p

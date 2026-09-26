@@ -126,7 +126,7 @@ export default function ProfileSetupPage() {
         >
           STEP 2 OF 2: PROFILE SETUP
         </span>
-        <h1 style={{ fontSize: '2.2rem', marginTop: '12px', color: '#FFFFFF' }}>
+        <h1 style={{ fontSize: '2.2rem', marginTop: '12px', color: 'var(--primary-text)' }}>
           Build Your Candidate Profile
         </h1>
         <p style={{ color: 'var(--secondary-text)', fontSize: '0.95rem', marginTop: '6px' }}>
@@ -139,7 +139,7 @@ export default function ProfileSetupPage() {
         <div style={{ marginBottom: '28px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
             <GraduationCap size={20} color="#38BDF8" />
-            <h3 style={{ fontSize: '1.15rem', color: '#FFFFFF' }}>1. Academic Background</h3>
+            <h3 style={{ fontSize: '1.15rem', color: 'var(--primary-text)' }}>1. Academic Background</h3>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
@@ -200,7 +200,7 @@ export default function ProfileSetupPage() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Sparkles size={20} color="#C084FC" />
-              <h3 style={{ fontSize: '1.15rem', color: '#FFFFFF' }}>2. Technical Skills</h3>
+              <h3 style={{ fontSize: '1.15rem', color: 'var(--primary-text)' }}>2. Technical Skills</h3>
             </div>
             <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#C084FC', backgroundColor: 'rgba(168, 85, 247, 0.15)', border: '1px solid rgba(168, 85, 247, 0.3)', padding: '3px 10px', borderRadius: '4px' }}>
               Carries 40% Weight in Matching
@@ -211,7 +211,7 @@ export default function ProfileSetupPage() {
           </p>
 
           {/* Current selected chips */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px', minHeight: '40px', padding: '12px', backgroundColor: 'rgba(255, 255, 255, 0.04)', borderRadius: '10px', border: '1px dashed rgba(255, 255, 255, 0.15)' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px', minHeight: '40px', padding: '12px', backgroundColor: 'var(--box-subtle)', borderRadius: '10px', border: '1px dashed var(--box-subtle-border)' }}>
             {selectedSkills.map((s) => (
               <span key={s._id || s.name} className="skill-chip skill-chip-matched">
                 {s.name}
@@ -221,7 +221,7 @@ export default function ProfileSetupPage() {
               </span>
             ))}
             {selectedSkills.length === 0 && (
-              <span style={{ fontSize: '0.825rem', color: '#94A3B8' }}>Select skills from suggestions below or type a custom skill</span>
+              <span style={{ fontSize: '0.825rem', color: 'var(--secondary-text)' }}>Select skills from suggestions below or type a custom skill</span>
             )}
           </div>
 
@@ -243,9 +243,9 @@ export default function ProfileSetupPage() {
                       fontSize: '0.775rem',
                       padding: '5px 12px',
                       borderRadius: '6px',
-                      border: isSelected ? '1px solid rgba(16, 185, 129, 0.35)' : '1px solid rgba(255, 255, 255, 0.12)',
-                      backgroundColor: isSelected ? 'rgba(16, 185, 129, 0.15)' : 'rgba(255, 255, 255, 0.05)',
-                      color: isSelected ? '#34D399' : '#E2E8F0',
+                      border: isSelected ? '1px solid rgba(16, 185, 129, 0.35)' : '1px solid var(--border-color)',
+                      backgroundColor: isSelected ? 'rgba(16, 185, 129, 0.15)' : 'var(--chip-bg)',
+                      color: isSelected ? '#34D399' : 'var(--chip-text)',
                       cursor: isSelected ? 'default' : 'pointer',
                       display: 'inline-flex',
                       alignItems: 'center',
@@ -266,7 +266,7 @@ export default function ProfileSetupPage() {
         <div style={{ marginBottom: '28px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
             <MapPin size={20} color="#F472B6" />
-            <h3 style={{ fontSize: '1.15rem', color: '#FFFFFF' }}>3. Location & Preferences</h3>
+            <h3 style={{ fontSize: '1.15rem', color: 'var(--primary-text)' }}>3. Location & Preferences</h3>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>

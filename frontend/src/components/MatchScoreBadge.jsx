@@ -8,36 +8,36 @@ export default function MatchScoreBadge({ score, size = 48, strokeWidth = 4, sho
   const progress = Math.min(100, Math.max(0, score));
   const strokeDashoffset = circumference - (progress / 100) * circumference;
 
-  let strokeColor = '#34D399'; // Neon Emerald >= 80%
-  let textColor = '#6EE7B7';
+  let strokeColor = 'var(--status-green)';
+  let textColor = 'var(--status-green-text)';
   let badgeLabel = 'High Match';
-  let bgColor = 'rgba(16, 185, 129, 0.15)';
-  let borderColor = 'rgba(16, 185, 129, 0.35)';
+  let bgColor = 'var(--status-green-bg)';
+  let borderColor = 'var(--status-green-border)';
 
   if (score < 50) {
-    strokeColor = '#F87171'; // Neon Rose < 50%
-    textColor = '#FCA5A5';
+    strokeColor = 'var(--status-red)';
+    textColor = 'var(--status-red-text)';
     badgeLabel = 'Low Match';
-    bgColor = 'rgba(239, 68, 68, 0.15)';
-    borderColor = 'rgba(239, 68, 68, 0.35)';
+    bgColor = 'var(--status-red-bg)';
+    borderColor = 'var(--status-red-border)';
   } else if (score < 80) {
-    strokeColor = '#FBBF24'; // Neon Amber 50-79%
-    textColor = '#FDE68A';
+    strokeColor = 'var(--status-yellow)';
+    textColor = 'var(--status-yellow-text)';
     badgeLabel = 'Good Match';
-    bgColor = 'rgba(245, 158, 11, 0.15)';
-    borderColor = 'rgba(245, 158, 11, 0.35)';
+    bgColor = 'var(--status-yellow-bg)';
+    borderColor = 'var(--status-yellow-border)';
   }
 
   return (
     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
       <div style={{ position: 'relative', width: size, height: size }}>
-        <svg width={size} height={size} style={{ transform: 'rotate(-90deg)', filter: `drop-shadow(0 0 6px ${strokeColor}44)` }}>
+        <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
           {/* Background circle */}
           <circle
             cx={size / 2}
             cy={size / 2}
             r={radius}
-            stroke="rgba(255, 255, 255, 0.1)"
+            stroke="var(--border-color)"
             strokeWidth={strokeWidth}
             fill="transparent"
           />

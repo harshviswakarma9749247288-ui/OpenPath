@@ -4,7 +4,7 @@ import { Calendar, Video } from 'lucide-react';
 export default function ApplicationTimeline({ timeline = [], interviewDetails = null }) {
   return (
     <div style={{ padding: '16px 0' }}>
-      <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#F8FAFC', marginBottom: '16px' }}>
+      <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--primary-text)', marginBottom: '16px' }}>
         Application Progression Timeline
       </h4>
 
@@ -17,7 +17,7 @@ export default function ApplicationTimeline({ timeline = [], interviewDetails = 
             bottom: '8px',
             left: '8px',
             width: '2px',
-            background: 'linear-gradient(180deg, #A855F7 0%, rgba(255, 255, 255, 0.1) 100%)',
+            background: 'linear-gradient(180deg, #A855F7 0%, var(--border-color) 100%)',
           }}
         />
 
@@ -40,15 +40,15 @@ export default function ApplicationTimeline({ timeline = [], interviewDetails = 
                   width: '12px',
                   height: '12px',
                   borderRadius: '50%',
-                  backgroundColor: isLatest ? '#EC4899' : '#475569',
-                  border: '2px solid #070A13',
+                  backgroundColor: isLatest ? '#EC4899' : '#94A3B8',
+                  border: '2px solid var(--background)',
                   boxShadow: isLatest ? '0 0 12px #EC4899' : 'none',
                 }}
               />
 
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontWeight: 700, fontSize: '0.9rem', color: isLatest ? '#F8FAFC' : '#CBD5E1' }}>
+                  <span style={{ fontWeight: 700, fontSize: '0.9rem', color: isLatest ? 'var(--primary-text)' : 'var(--secondary-text)' }}>
                     {item.stage}
                   </span>
                   <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>
@@ -72,25 +72,25 @@ export default function ApplicationTimeline({ timeline = [], interviewDetails = 
             marginTop: '16px',
             padding: '16px',
             borderRadius: 'var(--radius-md)',
-            backgroundColor: 'rgba(124, 58, 237, 0.12)',
+            backgroundColor: 'rgba(124, 58, 237, 0.08)',
             border: '1px solid rgba(168, 85, 247, 0.35)',
-            boxShadow: '0 0 20px rgba(124, 58, 237, 0.2)',
+            boxShadow: '0 0 20px rgba(124, 58, 237, 0.12)',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#C084FC', marginBottom: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#7C3AED', marginBottom: '10px' }}>
             <Calendar size={18} />
             <strong style={{ fontSize: '0.9rem' }}>Interview Schedule Confirmed</strong>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px', fontSize: '0.85rem' }}>
             <div>
               <span style={{ color: 'var(--secondary-text)' }}>Date & Time: </span>
-              <strong style={{ color: '#F8FAFC' }}>
+              <strong style={{ color: 'var(--primary-text)' }}>
                 {new Date(interviewDetails.date).toLocaleDateString()} at {interviewDetails.time || '11:00 AM'}
               </strong>
             </div>
             <div>
               <span style={{ color: 'var(--secondary-text)' }}>Format: </span>
-              <strong style={{ color: '#F8FAFC' }}>{interviewDetails.type || 'Virtual Video Call'}</strong>
+              <strong style={{ color: 'var(--primary-text)' }}>{interviewDetails.type || 'Virtual Video Call'}</strong>
             </div>
             {interviewDetails.link && (
               <div style={{ gridColumn: '1 / -1', marginTop: '6px' }}>

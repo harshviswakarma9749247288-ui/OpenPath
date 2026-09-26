@@ -67,7 +67,7 @@ export default function EmployerDashboard() {
           >
             EMPLOYER COMMAND CENTER
           </span>
-          <h1 style={{ fontSize: '1.9rem', marginTop: '10px', color: '#FFFFFF' }}>
+          <h1 style={{ fontSize: '1.9rem', marginTop: '10px', color: 'var(--primary-text)' }}>
             Recruitment Overview
           </h1>
           <p style={{ fontSize: '0.95rem', color: 'var(--secondary-text)', marginTop: '4px' }}>
@@ -147,7 +147,7 @@ export default function EmployerDashboard() {
       <div className="card" style={{ padding: '28px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <div>
-            <h3 style={{ fontSize: '1.25rem', color: '#FFFFFF' }}>
+            <h3 style={{ fontSize: '1.25rem', color: 'var(--primary-text)' }}>
               Recent Candidate Applications
             </h3>
             <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)' }}>
@@ -176,7 +176,7 @@ export default function EmployerDashboard() {
             </thead>
             <tbody>
               {recentApplications.map((app) => (
-                <tr key={app._id} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                <tr key={app._id} style={{ borderBottom: '1px solid var(--border-color)' }}>
                   <td style={{ padding: '14px', fontWeight: 600, color: 'var(--primary-text)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                       <div

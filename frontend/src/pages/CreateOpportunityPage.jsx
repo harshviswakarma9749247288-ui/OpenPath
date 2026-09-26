@@ -107,7 +107,7 @@ export default function CreateOpportunityPage() {
 
       {/* Progress Steps Header */}
       <div style={{ marginBottom: '32px' }}>
-        <h1 style={{ fontSize: '1.85rem', color: '#FFFFFF', marginBottom: '8px' }}>
+        <h1 style={{ fontSize: '1.85rem', color: 'var(--primary-text)', marginBottom: '8px' }}>
           Post a New Opportunity
         </h1>
         <p style={{ color: 'var(--secondary-text)', fontSize: '0.9rem' }}>
@@ -132,19 +132,19 @@ export default function CreateOpportunityPage() {
                 borderRadius: 'var(--radius-md)',
                 backgroundColor:
                   step === s.num
-                    ? 'rgba(168, 85, 247, 0.2)'
+                    ? 'rgba(124, 58, 237, 0.15)'
                     : step > s.num
                     ? 'rgba(16, 185, 129, 0.15)'
-                    : 'rgba(255, 255, 255, 0.04)',
+                    : 'var(--box-subtle)',
                 border:
                   step === s.num
-                    ? '1.5px solid rgba(168, 85, 247, 0.5)'
+                    ? '1.5px solid rgba(124, 58, 237, 0.5)'
                     : step > s.num
                     ? '1px solid rgba(16, 185, 129, 0.35)'
-                    : '1px solid rgba(255, 255, 255, 0.08)',
-                boxShadow: step === s.num ? '0 0 15px rgba(124, 58, 237, 0.3)' : 'none',
+                    : '1px solid var(--box-subtle-border)',
+                boxShadow: step === s.num ? '0 0 15px rgba(124, 58, 237, 0.15)' : 'none',
                 fontSize: '0.8rem',
-                color: step === s.num ? '#C084FC' : step > s.num ? '#34D399' : 'var(--secondary-text)',
+                color: step === s.num ? '#7C3AED' : step > s.num ? '#059669' : 'var(--secondary-text)',
                 fontWeight: 600,
                 display: 'flex',
                 alignItems: 'center',
@@ -162,7 +162,7 @@ export default function CreateOpportunityPage() {
         {/* STEP 1: BASIC INFORMATION */}
         {step === 1 && (
           <div className="animate-fade-in">
-            <h3 style={{ fontSize: '1.2rem', marginBottom: '18px', color: '#FFFFFF' }}>Step 1: Role Overview</h3>
+            <h3 style={{ fontSize: '1.2rem', marginBottom: '18px', color: 'var(--primary-text)' }}>Step 1: Role Overview</h3>
 
             <div className="form-group">
               <label className="form-label">Opportunity Title *</label>
@@ -309,8 +309,8 @@ export default function CreateOpportunityPage() {
         {step === 4 && (
           <div className="animate-fade-in">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-              <h3 style={{ fontSize: '1.2rem', color: '#FFFFFF' }}>Step 4: Mandatory & Preferred Skills</h3>
-              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#C084FC' }}>
+              <h3 style={{ fontSize: '1.2rem', color: 'var(--primary-text)' }}>Step 4: Mandatory & Preferred Skills</h3>
+              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#7C3AED' }}>
                 Directly feeds the 40% Skill Match algorithm
               </span>
             </div>
@@ -331,9 +331,9 @@ export default function CreateOpportunityPage() {
                       borderRadius: '8px',
                       fontSize: '0.85rem',
                       fontWeight: 600,
-                      background: isSelected ? 'var(--primary-gradient)' : 'rgba(255, 255, 255, 0.05)',
-                      color: isSelected ? '#FFFFFF' : '#E2E8F0',
-                      border: isSelected ? '1px solid rgba(255, 255, 255, 0.3)' : '1px solid rgba(255, 255, 255, 0.12)',
+                      background: isSelected ? 'var(--primary-gradient)' : 'var(--chip-bg)',
+                      color: isSelected ? '#FFFFFF' : 'var(--chip-text)',
+                      border: isSelected ? '1px solid transparent' : '1px solid var(--chip-border)',
                       boxShadow: isSelected ? '0 0 10px rgba(168, 85, 247, 0.4)' : 'none',
                       display: 'flex',
                       alignItems: 'center',
@@ -347,8 +347,8 @@ export default function CreateOpportunityPage() {
               })}
             </div>
 
-            <div style={{ padding: '14px', backgroundColor: 'rgba(255, 255, 255, 0.04)', borderRadius: '10px', border: '1px solid rgba(255, 255, 255, 0.08)', fontSize: '0.85rem' }}>
-              <strong style={{ color: '#F8FAFC' }}>Selected Skills ({selectedSkills.length}): </strong>
+            <div style={{ padding: '14px', backgroundColor: 'var(--box-subtle)', borderRadius: '10px', border: '1px solid var(--box-subtle-border)', fontSize: '0.85rem' }}>
+              <strong style={{ color: 'var(--primary-text)' }}>Selected Skills ({selectedSkills.length}): </strong>
               <span style={{ color: 'var(--secondary-text)' }}>
                 {selectedSkills.map((s) => s.name).join(', ') || 'None selected yet'}
               </span>
@@ -359,10 +359,10 @@ export default function CreateOpportunityPage() {
         {/* STEP 5: REVIEW & PUBLISH */}
         {step === 5 && (
           <div className="animate-fade-in">
-            <h3 style={{ fontSize: '1.2rem', marginBottom: '18px', color: '#FFFFFF' }}>Step 5: Review & Publish</h3>
+            <h3 style={{ fontSize: '1.2rem', marginBottom: '18px', color: 'var(--primary-text)' }}>Step 5: Review & Publish</h3>
 
-            <div style={{ padding: '24px', backgroundColor: 'rgba(255, 255, 255, 0.04)', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)', marginBottom: '20px' }}>
-              <h4 style={{ fontSize: '1.2rem', color: '#FFFFFF', marginBottom: '6px' }}>
+            <div style={{ padding: '24px', backgroundColor: 'var(--box-subtle)', borderRadius: '12px', border: '1px solid var(--box-subtle-border)', marginBottom: '20px' }}>
+              <h4 style={{ fontSize: '1.2rem', color: 'var(--primary-text)', marginBottom: '6px' }}>
                 {title || 'Untitled Opportunity'}
               </h4>
               <p style={{ fontSize: '0.9rem', color: 'var(--secondary-text)', marginBottom: '14px' }}>
@@ -370,19 +370,19 @@ export default function CreateOpportunityPage() {
               </p>
 
               <div style={{ marginBottom: '12px' }}>
-                <strong style={{ fontSize: '0.85rem', display: 'block', marginBottom: '6px', color: '#F8FAFC' }}>Required Skills:</strong>
+                <strong style={{ fontSize: '0.85rem', display: 'block', marginBottom: '6px', color: 'var(--primary-text)' }}>Required Skills:</strong>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                   {selectedSkills.map((s, idx) => (
                     <span key={idx} className="skill-chip skill-chip-matched">
                       {s.name}
                     </span>
                   ))}
-                  {selectedSkills.length === 0 && <span style={{ color: '#94A3B8' }}>None</span>}
+                  {selectedSkills.length === 0 && <span style={{ color: 'var(--secondary-text)' }}>None</span>}
                 </div>
               </div>
 
               <div>
-                <strong style={{ fontSize: '0.85rem', display: 'block', marginBottom: '4px', color: '#F8FAFC' }}>Deadline:</strong>
+                <strong style={{ fontSize: '0.85rem', display: 'block', marginBottom: '4px', color: 'var(--primary-text)' }}>Deadline:</strong>
                 <span style={{ fontSize: '0.85rem', color: 'var(--primary-text)' }}>
                   {new Date(deadline).toLocaleDateString()}
                 </span>

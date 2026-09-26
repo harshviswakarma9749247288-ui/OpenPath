@@ -176,8 +176,8 @@ export default function RegisterPage() {
                 style={{
                   padding: '11px',
                   borderRadius: 'var(--radius-md)',
-                  backgroundColor: role === 'student' ? 'rgba(124, 58, 237, 0.3)' : 'transparent',
-                  color: role === 'student' ? '#FFFFFF' : 'var(--secondary-text)',
+                  backgroundColor: role === 'student' ? 'rgba(124, 58, 237, 0.2)' : 'transparent',
+                  color: role === 'student' ? 'var(--primary-text)' : 'var(--secondary-text)',
                   border: role === 'student' ? '1px solid #A855F7' : '1px solid transparent',
                   fontWeight: 700,
                   fontSize: '0.875rem',
@@ -197,8 +197,8 @@ export default function RegisterPage() {
                 style={{
                   padding: '11px',
                   borderRadius: 'var(--radius-md)',
-                  backgroundColor: role === 'employer' ? 'rgba(236, 72, 153, 0.3)' : 'transparent',
-                  color: role === 'employer' ? '#FFFFFF' : 'var(--secondary-text)',
+                  backgroundColor: role === 'employer' ? 'rgba(236, 72, 153, 0.2)' : 'transparent',
+                  color: role === 'employer' ? 'var(--primary-text)' : 'var(--secondary-text)',
                   border: role === 'employer' ? '1px solid #EC4899' : '1px solid transparent',
                   fontWeight: 700,
                   fontSize: '0.875rem',
@@ -217,10 +217,10 @@ export default function RegisterPage() {
               <div
                 style={{
                   padding: '12px',
-                  backgroundColor: 'rgba(239, 68, 68, 0.15)',
-                  border: '1px solid rgba(239, 68, 68, 0.4)',
+                  backgroundColor: 'var(--status-red-bg)',
+                  border: '1px solid var(--status-red-border)',
                   borderRadius: 'var(--radius-md)',
-                  color: '#FCA5A5',
+                  color: 'var(--status-red-text)',
                   fontSize: '0.85rem',
                   marginBottom: '16px',
                 }}
@@ -349,7 +349,7 @@ export default function RegisterPage() {
               >
                 <ShieldCheck size={28} />
               </div>
-              <h2 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#FFFFFF' }}>Enter Verification Code</h2>
+              <h2 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--primary-text)' }}>Enter Verification Code</h2>
               <p style={{ fontSize: '0.875rem', color: 'var(--secondary-text)', marginTop: '4px' }}>
                 We sent a 6-digit OTP code to <strong>{email}</strong>
               </p>
@@ -364,7 +364,7 @@ export default function RegisterPage() {
                 textAlign: 'center',
                 marginBottom: '20px',
                 fontSize: '0.85rem',
-                color: '#E2E8F0',
+                color: 'var(--primary-text)',
               }}
             >
               Demo Auto-Filled Code: <strong style={{ color: '#F472B6' }}>{demoCode}</strong>
@@ -382,7 +382,7 @@ export default function RegisterPage() {
                     textAlign: 'center',
                     letterSpacing: '10px',
                     fontWeight: 800,
-                    color: '#FFFFFF',
+                    color: 'var(--primary-text)',
                   }}
                   value={otpCode || demoCode}
                   onChange={(e) => setOtpCode(e.target.value)}

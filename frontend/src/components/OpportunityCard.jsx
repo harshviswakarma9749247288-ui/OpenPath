@@ -77,7 +77,7 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
                 style={{
                   fontSize: '1.05rem',
                   fontWeight: 700,
-                  color: '#FFFFFF',
+                  color: 'var(--primary-text)',
                   cursor: 'pointer',
                   lineHeight: '1.3',
                 }}
@@ -99,7 +99,7 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
               onClick={() => toggleSaveOpportunity(opportunity._id)}
               title={isSaved ? 'Remove Bookmark' : 'Save Opportunity'}
               style={{
-                color: isSaved ? '#EC4899' : '#64748B',
+                color: isSaved ? '#EC4899' : 'var(--secondary-text)',
                 padding: '6px',
                 borderRadius: '8px',
                 transition: 'var(--transition-normal)',
@@ -121,12 +121,12 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
           {opportunity.salary && (
             <span
               style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
+                backgroundColor: 'var(--chip-bg)',
+                border: '1px solid var(--chip-border)',
                 padding: '3px 10px',
                 borderRadius: '9999px',
                 fontSize: '0.75rem',
-                color: '#E2E8F0',
+                color: 'var(--primary-text)',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '4px',
@@ -161,10 +161,10 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
               style={{
                 fontSize: '0.75rem',
                 padding: '3px 9px',
-                backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
+                backgroundColor: 'var(--chip-bg)',
+                border: '1px solid var(--chip-border)',
                 borderRadius: '9999px',
-                color: '#CBD5E1',
+                color: 'var(--chip-text)',
                 fontWeight: 500,
               }}
             >
@@ -172,7 +172,7 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
             </span>
           ))}
           {(opportunity.requiredSkills || []).length > 4 && (
-            <span style={{ fontSize: '0.75rem', color: '#64748B', alignSelf: 'center' }}>
+            <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)', alignSelf: 'center' }}>
               +{opportunity.requiredSkills.length - 4} more
             </span>
           )}
@@ -182,14 +182,14 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
       {/* Card Footer: Deadline & Action Buttons */}
       <div
         style={{
-          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+          borderTop: '1px solid var(--border-color)',
           paddingTop: '14px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
         }}
       >
-        <span style={{ fontSize: '0.775rem', color: '#94A3B8', display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <span style={{ fontSize: '0.775rem', color: 'var(--secondary-text)', display: 'flex', alignItems: 'center', gap: '4px' }}>
           <Calendar size={13} /> {deadlineText}
         </span>
 
@@ -205,8 +205,8 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
             <button
               disabled
               style={{
-                backgroundColor: 'rgba(16, 185, 129, 0.15)',
-                color: '#6EE7B7',
+                backgroundColor: 'var(--status-green-bg)',
+                color: 'var(--status-green)',
                 border: '1px solid rgba(16, 185, 129, 0.35)',
                 padding: '6px 14px',
                 borderRadius: '9999px',
