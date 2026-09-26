@@ -9,10 +9,12 @@
    ========================================================= */
 
 :root {
+  /* Default Dark Glassmorphism + Cyber Aurora */
   --background: #070A13;
   --bg-secondary: #0D1222;
   --card-bg: rgba(15, 23, 42, 0.7);
   --card-glass: rgba(17, 24, 39, 0.68);
+  --card-featured-bg: linear-gradient(180deg, rgba(30, 27, 75, 0.7) 0%, rgba(15, 23, 42, 0.75) 100%);
   --card-border: rgba(255, 255, 255, 0.09);
   --card-border-hover: rgba(168, 85, 247, 0.45);
   --border-color: rgba(255, 255, 255, 0.09);
@@ -38,7 +40,7 @@
                  radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.2) 0px, transparent 50%),
                  radial-gradient(at 50% 100%, rgba(6, 182, 212, 0.15) 0px, transparent 50%);
 
-  /* Status Colors (Glowing for Dark Glass) */
+  /* Status Colors */
   --status-green: #34D399;
   --status-green-bg: rgba(16, 185, 129, 0.12);
   --status-yellow: #FBBF24;
@@ -49,6 +51,15 @@
   --status-blue-bg: rgba(99, 102, 241, 0.14);
   --status-purple: #C084FC;
   --status-purple-bg: rgba(168, 85, 247, 0.14);
+
+  /* Structure Tokens */
+  --nav-bg: rgba(7, 10, 19, 0.85);
+  --sidebar-bg: rgba(8, 12, 24, 0.92);
+  --chip-bg: rgba(255, 255, 255, 0.05);
+  --chip-text: #E2E8F0;
+  --chip-border: rgba(255, 255, 255, 0.12);
+  --box-subtle: rgba(255, 255, 255, 0.04);
+  --box-subtle-border: rgba(255, 255, 255, 0.08);
 
   /* Radii */
   --radius-sm: 8px;
@@ -71,6 +82,57 @@
   --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Light Theme Variables & Tokens */
+[data-theme='light'] {
+  --background: #F8FAFC;
+  --bg-secondary: #FFFFFF;
+  --card-bg: rgba(255, 255, 255, 0.88);
+  --card-glass: rgba(255, 255, 255, 0.85);
+  --card-featured-bg: linear-gradient(180deg, rgba(245, 243, 255, 0.9) 0%, rgba(255, 255, 255, 0.95) 100%);
+  --card-border: rgba(203, 213, 225, 0.65);
+  --card-border-hover: rgba(124, 58, 237, 0.45);
+  --border-color: rgba(226, 232, 240, 0.9);
+  --border-hover: rgba(203, 213, 225, 0.9);
+
+  --primary-blue: #7C3AED;
+  --secondary-navy: #0F172A;
+  --accent-blue: #C026D3;
+  --primary-text: #0F172A;
+  --secondary-text: #64748B;
+
+  --aurora-mesh: radial-gradient(at 0% 0%, rgba(124, 58, 237, 0.08) 0px, transparent 50%),
+                 radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.07) 0px, transparent 50%),
+                 radial-gradient(at 50% 100%, rgba(6, 182, 212, 0.06) 0px, transparent 50%);
+
+  /* Status Colors (Light Mode) */
+  --status-green: #059669;
+  --status-green-bg: rgba(16, 185, 129, 0.12);
+  --status-yellow: #D97706;
+  --status-yellow-bg: rgba(245, 158, 11, 0.12);
+  --status-red: #DC2626;
+  --status-red-bg: rgba(239, 68, 68, 0.12);
+  --status-blue: #4F46E5;
+  --status-blue-bg: rgba(99, 102, 241, 0.12);
+  --status-purple: #7C3AED;
+  --status-purple-bg: rgba(124, 58, 237, 0.12);
+
+  /* Structure Tokens */
+  --nav-bg: rgba(255, 255, 255, 0.85);
+  --sidebar-bg: rgba(255, 255, 255, 0.92);
+  --chip-bg: rgba(0, 0, 0, 0.04);
+  --chip-text: #334155;
+  --chip-border: rgba(203, 213, 225, 0.8);
+  --box-subtle: rgba(0, 0, 0, 0.03);
+  --box-subtle-border: rgba(0, 0, 0, 0.06);
+
+  /* Shadows (Light Mode) */
+  --shadow-subtle: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 10px 30px -5px rgba(0, 0, 0, 0.08), 0 0 20px rgba(124, 58, 237, 0.08);
+  --shadow-lg: 0 20px 40px -10px rgba(0, 0, 0, 0.12), 0 0 35px rgba(124, 58, 237, 0.12);
+  --shadow-neon: 0 0 20px rgba(124, 58, 237, 0.25);
+  --shadow-pink: 0 0 20px rgba(236, 72, 153, 0.25);
+}
+
 /* Reset & Base */
 * {
   box-sizing: border-box;
@@ -88,11 +150,12 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
-  color: #FFFFFF;
+  color: var(--primary-text);
   font-weight: 700;
   line-height: 1.25;
 }
@@ -233,7 +296,7 @@ button {
 
 /* Frosted Glass Cards */
 .card {
-  background: rgba(15, 23, 42, 0.65);
+  background: var(--card-bg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-color);
@@ -248,11 +311,11 @@ button {
 }
 
 .card-featured {
-  background: linear-gradient(180deg, rgba(30, 27, 75, 0.7) 0%, rgba(15, 23, 42, 0.75) 100%);
+  background: var(--card-featured-bg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(168, 85, 247, 0.35);
-  box-shadow: 0 12px 35px -5px rgba(0, 0, 0, 0.6), 0 0 25px rgba(124, 58, 237, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 /* Neon Pill Badges */
@@ -268,38 +331,38 @@ button {
 }
 .badge-internship {
   background: rgba(99, 102, 241, 0.18);
-  color: #A5B4FC;
+  color: #818CF8;
   border: 1px solid rgba(99, 102, 241, 0.35);
 }
 .badge-apprenticeship {
   background: rgba(16, 185, 129, 0.18);
-  color: #6EE7B7;
+  color: #10B981;
   border: 1px solid rgba(16, 185, 129, 0.35);
 }
 .badge-entry {
   background: rgba(192, 38, 211, 0.18);
-  color: #F0ABFC;
+  color: #C026D3;
   border: 1px solid rgba(192, 38, 211, 0.35);
 }
 .badge-parttime {
   background: rgba(245, 158, 11, 0.18);
-  color: #FDE68A;
+  color: #D97706;
   border: 1px solid rgba(245, 158, 11, 0.35);
 }
 .badge-remote {
   background: rgba(6, 182, 212, 0.18);
-  color: #67E8F9;
+  color: #0891B2;
   border: 1px solid rgba(6, 182, 212, 0.35);
 }
 .badge-hybrid {
   background: rgba(236, 72, 153, 0.18);
-  color: #F472B6;
+  color: #DB2777;
   border: 1px solid rgba(236, 72, 153, 0.35);
 }
 .badge-onsite {
-  background: rgba(148, 163, 184, 0.15);
-  color: #CBD5E1;
-  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(148, 163, 184, 0.18);
+  color: #475569;
+  border: 1px solid rgba(148, 163, 184, 0.28);
 }
 
 /* Status Badges */
@@ -330,7 +393,7 @@ button {
 }
 .status-interview {
   background: rgba(6, 182, 212, 0.15);
-  color: #22D3EE;
+  color: #0891B2;
   border: 1px solid rgba(6, 182, 212, 0.35);
 }
 .status-selected {
@@ -344,7 +407,7 @@ button {
   border: 1px solid rgba(239, 68, 68, 0.35);
 }
 
-/* Dark Glass Form Controls */
+/* Form Controls */
 .form-group {
   margin-bottom: 18px;
 }
@@ -352,31 +415,31 @@ button {
   display: block;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #E2E8F0;
+  color: var(--primary-text);
   margin-bottom: 6px;
 }
 .form-input, .form-select, .form-textarea {
   width: 100%;
   padding: 11px 14px;
-  background-color: rgba(15, 23, 42, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background-color: var(--box-subtle, rgba(15, 23, 42, 0.75));
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   font-size: 0.938rem;
-  color: #F8FAFC;
+  color: var(--primary-text);
   outline: none;
   transition: var(--transition-normal);
   backdrop-filter: blur(8px);
 }
 .form-input::placeholder, .form-textarea::placeholder {
-  color: #64748B;
+  color: var(--secondary-text);
 }
 .form-input:focus, .form-select:focus, .form-textarea:focus {
   border-color: #A855F7;
-  background-color: rgba(15, 23, 42, 0.9);
+  background-color: var(--card-bg);
   box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.25), 0 0 15px rgba(168, 85, 247, 0.3);
 }
 
-/* Skill Chips with Dark Glass Glow */
+/* Skill Chips */
 .skill-chip {
   display: inline-flex;
   align-items: center;
@@ -385,22 +448,68 @@ button {
   border-radius: var(--radius-full);
   font-size: 0.8rem;
   font-weight: 600;
-  background: rgba(255, 255, 255, 0.05);
-  color: #E2E8F0;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--chip-bg);
+  color: var(--chip-text);
+  border: 1px solid var(--chip-border);
   transition: var(--transition-normal);
 }
 .skill-chip-matched {
   background: rgba(16, 185, 129, 0.15);
-  color: #6EE7B7;
+  color: var(--status-green);
   border-color: rgba(16, 185, 129, 0.4);
   box-shadow: 0 0 10px rgba(16, 185, 129, 0.15);
 }
 .skill-chip-missing {
   background: rgba(244, 63, 94, 0.15);
-  color: #FDA4AF;
+  color: var(--status-red);
   border-color: rgba(244, 63, 94, 0.4);
   box-shadow: 0 0 10px rgba(244, 63, 94, 0.15);
+}
+
+/* Theme Toggle Button Micro-interactions */
+.theme-toggle-btn:hover {
+  transform: scale(1.05);
+  border-color: rgba(168, 85, 247, 0.45);
+}
+.theme-toggle-btn:active {
+  transform: scale(0.96);
+}
+
+/* Light Mode Overrides */
+[data-theme='light'] .card {
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+}
+[data-theme='light'] .card:hover {
+  box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.08), 0 0 15px rgba(124, 58, 237, 0.1);
+}
+[data-theme='light'] .btn-secondary {
+  background: rgba(0, 0, 0, 0.05);
+  color: #0F172A;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+[data-theme='light'] .btn-secondary:hover {
+  background: rgba(0, 0, 0, 0.08);
+  border-color: rgba(124, 58, 237, 0.35);
+}
+[data-theme='light'] .btn-ghost {
+  color: #475569;
+}
+[data-theme='light'] .btn-ghost:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #0F172A;
+}
+[data-theme='light'] .form-input,
+[data-theme='light'] .form-select,
+[data-theme='light'] .form-textarea {
+  background-color: #FFFFFF;
+  border: 1px solid #CBD5E1;
+}
+[data-theme='light'] .form-input:focus,
+[data-theme='light'] .form-select:focus,
+[data-theme='light'] .form-textarea:focus {
+  background-color: #FFFFFF;
+  border-color: #7C3AED;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
 }
 
 /* Ambient Glowing Background Aurora Elements */

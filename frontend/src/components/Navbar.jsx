@@ -13,6 +13,7 @@ import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
 import { useOpportunityStore } from '../store/useOpportunityStore';
 import api from '../utils/api';
+import ThemeToggle from './ThemeToggle';
 
 export default function Navbar() {
   const { user, isAuthenticated } = useAuthStore();
@@ -88,7 +89,7 @@ export default function Navbar() {
     <header
       style={{
         height: '68px',
-        backgroundColor: 'rgba(7, 10, 19, 0.8)',
+        backgroundColor: 'var(--nav-bg)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
         borderBottom: '1px solid var(--border-color)',
@@ -99,6 +100,7 @@ export default function Navbar() {
         position: 'sticky',
         top: 0,
         zIndex: 40,
+        transition: 'background-color 0.3s ease, border-color 0.3s ease',
       }}
     >
       {/* Left: Mobile hamburger + Page Title & Welcome */}
@@ -116,7 +118,7 @@ export default function Navbar() {
         </button>
 
         <div>
-          <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#FFFFFF' }}>
+          <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--primary-text)' }}>
             {getPageTitle()}
           </h2>
           {isAuthenticated && user && (
@@ -143,11 +145,11 @@ export default function Navbar() {
             style={{
               width: '100%',
               padding: '9px 14px 9px 40px',
-              backgroundColor: 'rgba(15, 23, 42, 0.65)',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
+              backgroundColor: 'var(--card-bg)',
+              border: '1px solid var(--border-color)',
               borderRadius: '9999px',
               fontSize: '0.875rem',
-              color: '#F8FAFC',
+              color: 'var(--primary-text)',
               outline: 'none',
               backdropFilter: 'blur(10px)',
               transition: 'var(--transition-normal)',
@@ -156,8 +158,11 @@ export default function Navbar() {
         </form>
       </div>
 
-      {/* Right: Notifications Bell & User Pill */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+      {/* Right: Theme Toggle, Notifications Bell & User Pill */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+        {/* Light / Dark Mode Toggle Button */}
+        <ThemeToggle size="default" />
+
         {/* Notifications Dropdown */}
         <div style={{ position: 'relative' }}>
           <button
@@ -166,14 +171,16 @@ export default function Navbar() {
               width: '40px',
               height: '40px',
               borderRadius: '50%',
-              backgroundColor: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
+              backgroundColor: 'var(--chip-bg)',
+              border: '1px solid var(--border-color)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#CBD5E1',
+              color: 'var(--primary-text)',
               position: 'relative',
               backdropFilter: 'blur(8px)',
+              cursor: 'pointer',
+              transition: 'var(--transition-normal)',
             }}
           >
             <Bell size={18} />

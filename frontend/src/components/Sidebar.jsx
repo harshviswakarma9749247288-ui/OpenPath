@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
+import ThemeToggle from './ThemeToggle';
 
 export default function Sidebar() {
   const { user, logout, demoLogin } = useAuthStore();
@@ -46,7 +47,7 @@ export default function Sidebar() {
       className="sidebar-desktop"
       style={{
         width: isSidebarCollapsed ? '72px' : '240px',
-        backgroundColor: 'rgba(8, 12, 24, 0.92)',
+        backgroundColor: 'var(--sidebar-bg)',
         backdropFilter: 'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
         borderRight: '1px solid var(--border-color)',
@@ -104,7 +105,7 @@ export default function Sidebar() {
                     fontFamily: 'var(--font-heading)',
                     fontSize: '1.25rem',
                     fontWeight: 800,
-                    color: '#FFFFFF',
+                    color: 'var(--primary-text)',
                     letterSpacing: '-0.3px',
                   }}
                 >
@@ -191,16 +192,34 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      {/* Bottom Section: Role Switcher & User Profile / Logout */}
+      {/* Bottom Section: Theme Toggle, Role Switcher & User Profile / Logout */}
       <div style={{ padding: '14px 10px', borderTop: '1px solid var(--border-color)' }}>
+        {/* Appearance / Theme Toggle */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: isSidebarCollapsed ? 'center' : 'space-between',
+            marginBottom: '12px',
+            padding: isSidebarCollapsed ? '0' : '0 4px',
+          }}
+        >
+          {!isSidebarCollapsed && (
+            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--secondary-text)', letterSpacing: '0.5px' }}>
+              THEME
+            </span>
+          )}
+          <ThemeToggle showLabel={!isSidebarCollapsed} size="sm" />
+        </div>
+
         {/* Quick Demo Switcher */}
         {!isSidebarCollapsed && (
           <div
             style={{
               padding: '10px',
-              backgroundColor: 'rgba(255, 255, 255, 0.03)',
+              backgroundColor: 'var(--card-bg)',
               borderRadius: 'var(--radius-md)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
+              border: '1px solid var(--border-color)',
               marginBottom: '12px',
             }}
           >
@@ -233,14 +252,15 @@ export default function Sidebar() {
                 padding: '6px',
                 fontSize: '0.75rem',
                 fontWeight: 600,
-                color: '#E2E8F0',
+                color: 'var(--primary-text)',
                 backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid rgba(255, 255, 255, 0.12)',
+                border: '1px solid var(--border-color)',
                 borderRadius: '8px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '6px',
+                cursor: 'pointer',
               }}
             >
               <ArrowRightLeft size={12} /> Switch to {isEmployer ? 'Student Hub' : 'Employer Hub'}
@@ -275,7 +295,7 @@ export default function Sidebar() {
                   style={{
                     fontSize: '0.85rem',
                     fontWeight: 600,
-                    color: '#F8FAFC',
+                    color: 'var(--primary-text)',
                     whiteSpace: 'nowrap',
                     textOverflow: 'ellipsis',
                     overflow: 'hidden',

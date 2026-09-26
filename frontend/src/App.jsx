@@ -5,6 +5,7 @@ import { useUIStore } from './store/useUIStore';
 // Components
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
+import ThemeToggle from './components/ThemeToggle';
 
 // Pages (All 16 Approved Screens)
 import LandingPage from './pages/LandingPage';
@@ -164,8 +165,8 @@ export default function App() {
             style={{
               width: '280px',
               height: '100%',
-              backgroundColor: '#0D1222',
-              borderRight: '1px solid rgba(255, 255, 255, 0.1)',
+              backgroundColor: 'var(--sidebar-bg)',
+              borderRight: '1px solid var(--border-color)',
               backdropFilter: 'blur(20px)',
               padding: '24px',
               display: 'flex',
@@ -175,8 +176,8 @@ export default function App() {
           >
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                <strong style={{ fontSize: '1.2rem', color: '#FFFFFF' }}>OpenPath</strong>
-                <button onClick={() => setMobileDrawerOpen(false)} style={{ color: '#94A3B8' }}>
+                <strong style={{ fontSize: '1.2rem', color: 'var(--primary-text)' }}>OpenPath</strong>
+                <button onClick={() => setMobileDrawerOpen(false)} style={{ color: 'var(--secondary-text)' }}>
                   <X size={20} />
                 </button>
               </div>
@@ -197,7 +198,7 @@ export default function App() {
                 <button onClick={() => navigate('profile')} className="btn-ghost" style={{ justifyContent: 'flex-start' }}>
                   Digital Resume
                 </button>
-                <hr style={{ margin: '12px 0', border: 'none', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }} />
+                <hr style={{ margin: '12px 0', border: 'none', borderTop: '1px solid var(--border-color)' }} />
                 <button onClick={() => navigate('employer-dashboard')} className="btn-ghost" style={{ justifyContent: 'flex-start' }}>
                   Employer Hub
                 </button>
@@ -211,6 +212,11 @@ export default function App() {
                   Candidate Review
                 </button>
               </div>
+            </div>
+
+            <div style={{ paddingTop: '16px', borderTop: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--secondary-text)' }}>Appearance</span>
+              <ThemeToggle showLabel={true} size="sm" />
             </div>
           </div>
         </div>

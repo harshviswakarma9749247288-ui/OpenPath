@@ -17,10 +17,11 @@ import { useAuthStore } from '../store/useAuthStore';
 import api from '../utils/api';
 import OpportunityCard from '../components/OpportunityCard';
 import MatchScoreBadge from '../components/MatchScoreBadge';
+import ThemeToggle from '../components/ThemeToggle';
 
 export default function LandingPage() {
   const { navigate } = useUIStore();
-  const { isAuthenticated, demoLogin } = useAuthStore();
+  const { isAuthenticated, user, demoLogin } = useAuthStore();
   const [featuredOpps, setFeaturedOpps] = useState([]);
 
   useEffect(() => {
@@ -73,10 +74,142 @@ export default function LandingPage() {
       <div className="bg-subtle-glow animate-pulse-glow" />
       <div className="bg-subtle-wave animate-pulse-glow" />
 
+      {/* Top Header Navigation Bar */}
+      <header
+        style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 50,
+          backgroundColor: 'var(--nav-bg)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          borderBottom: '1px solid var(--border-color)',
+          padding: '12px 24px',
+        }}
+      >
+        <div
+          style={{
+            maxWidth: '1240px',
+            margin: '0 auto',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '16px',
+          }}
+        >
+          {/* Logo */}
+          <div
+            onClick={() => navigate('landing')}
+            style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
+          >
+            <div
+              style={{
+                width: '38px',
+                height: '38px',
+                borderRadius: '10px',
+                background: 'linear-gradient(135deg, #7C3AED 0%, #C026D3 50%, #EC4899 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#FFFFFF',
+                fontWeight: 800,
+                fontSize: '1.15rem',
+                boxShadow: '0 0 15px rgba(236, 72, 153, 0.45)',
+                border: '1px solid rgba(255, 255, 255, 0.25)',
+              }}
+            >
+              OP
+            </div>
+            <span
+              style={{
+                fontFamily: 'var(--font-heading)',
+                fontSize: '1.35rem',
+                fontWeight: 800,
+                color: 'var(--primary-text)',
+                letterSpacing: '-0.4px',
+              }}
+            >
+              Open<span className="gradient-text">Path</span>
+            </span>
+          </div>
+
+          {/* Quick Nav Links */}
+          <nav style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <button
+              onClick={() => navigate('opportunities')}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'var(--secondary-text)',
+                fontWeight: 600,
+                fontSize: '0.9rem',
+                cursor: 'pointer',
+              }}
+            >
+              Browse Roles
+            </button>
+            <a
+              href="#features"
+              style={{
+                fontSize: '0.9rem',
+                fontWeight: 600,
+                color: 'var(--secondary-text)',
+                textDecoration: 'none',
+              }}
+            >
+              Features
+            </a>
+            <a
+              href="#how-it-works"
+              style={{
+                fontSize: '0.9rem',
+                fontWeight: 600,
+                color: 'var(--secondary-text)',
+                textDecoration: 'none',
+              }}
+            >
+              How It Works
+            </a>
+          </nav>
+
+          {/* Actions & Theme Toggle */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <ThemeToggle showLabel={true} size="default" />
+
+            {isAuthenticated ? (
+              <button
+                onClick={() => navigate(user?.role === 'employer' ? 'employer-dashboard' : 'dashboard')}
+                className="btn-primary"
+                style={{ padding: '8px 18px', fontSize: '0.875rem' }}
+              >
+                Dashboard <ArrowRight size={15} />
+              </button>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <button
+                  onClick={() => navigate('login')}
+                  className="btn-secondary"
+                  style={{ padding: '8px 18px', fontSize: '0.875rem' }}
+                >
+                  Sign In
+                </button>
+                <button
+                  onClick={() => navigate('register')}
+                  className="btn-primary"
+                  style={{ padding: '8px 18px', fontSize: '0.875rem' }}
+                >
+                  Get Started
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </header>
+
       {/* 1. HERO SECTION */}
       <section
         style={{
-          padding: '80px 24px 70px 24px',
+          padding: '60px 24px 70px 24px',
           maxWidth: '1240px',
           margin: '0 auto',
           position: 'relative',
@@ -304,13 +437,20 @@ export default function LandingPage() {
       </section>
 
       {/* 2. HOW IT WORKS SECTION (5-Step Visual Journey) */}
-      <section style={{ padding: '80px 24px', backgroundColor: 'rgba(10, 15, 29, 0.6)', borderTop: '1px solid var(--border-color)' }}>
+      <section
+        id="how-it-works"
+        style={{
+          padding: '80px 24px',
+          backgroundColor: 'rgba(124, 58, 237, 0.04)',
+          borderTop: '1px solid var(--border-color)',
+        }}
+      >
         <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '48px' }}>
             <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#C084FC', textTransform: 'uppercase', letterSpacing: '1px' }}>
               HOW IT WORKS
             </span>
-            <h2 style={{ fontSize: '2.4rem', marginTop: '8px', color: '#FFFFFF' }}>A Five-Step Visual Journey to Your Career</h2>
+            <h2 style={{ fontSize: '2.4rem', marginTop: '8px', color: 'var(--primary-text)' }}>A Five-Step Visual Journey to Your Career</h2>
             <p style={{ fontSize: '1rem', color: 'var(--secondary-text)', marginTop: '8px' }}>
               From initial registration to landing interviews with guided skill enhancement.
             </p>
@@ -348,7 +488,7 @@ export default function LandingPage() {
                 >
                   {step.step}
                 </span>
-                <h3 style={{ fontSize: '1.1rem', marginBottom: '8px', color: '#FFFFFF' }}>
+                <h3 style={{ fontSize: '1.1rem', marginBottom: '8px', color: 'var(--primary-text)' }}>
                   {step.title}
                 </h3>
                 <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', lineHeight: '1.6' }}>
@@ -361,13 +501,13 @@ export default function LandingPage() {
       </section>
 
       {/* 3. CORE FEATURES SECTION */}
-      <section style={{ padding: '80px 24px' }}>
+      <section id="features" style={{ padding: '80px 24px' }}>
         <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '48px' }}>
             <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#C084FC', textTransform: 'uppercase', letterSpacing: '1px' }}>
               CORE CAPABILITIES
             </span>
-            <h2 style={{ fontSize: '2.4rem', marginTop: '8px', color: '#FFFFFF' }}>Built Exclusively for Early Career Success</h2>
+            <h2 style={{ fontSize: '2.4rem', marginTop: '8px', color: 'var(--primary-text)' }}>Built Exclusively for Early Career Success</h2>
           </div>
 
           <div

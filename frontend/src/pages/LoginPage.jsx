@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Eye, EyeOff, Lock, Mail, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
+import ThemeToggle from '../components/ThemeToggle';
 
 export default function LoginPage() {
   const { login, demoLogin, isLoading, error } = useAuthStore();
@@ -38,10 +39,16 @@ export default function LoginPage() {
         minHeight: '100vh',
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
-        backgroundColor: '#070A13',
+        backgroundColor: 'var(--background)',
+        position: 'relative',
       }}
       className="split-auth-layout"
     >
+      {/* Floating Theme Toggle in Auth Screen */}
+      <div style={{ position: 'fixed', top: '20px', right: '24px', zIndex: 100 }}>
+        <ThemeToggle showLabel={true} size="sm" />
+      </div>
+
       {/* Left Branding Pane */}
       <div
         className="auth-branding-pane"
@@ -130,7 +137,7 @@ export default function LoginPage() {
         }}
       >
         <div style={{ marginBottom: '32px' }}>
-          <h2 style={{ fontSize: '2rem', fontWeight: 800, color: '#FFFFFF' }}>
+          <h2 style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--primary-text)' }}>
             Welcome Back
           </h2>
           <p style={{ fontSize: '0.9rem', color: 'var(--secondary-text)', marginTop: '6px' }}>
@@ -142,16 +149,16 @@ export default function LoginPage() {
         <div
           style={{
             padding: '16px',
-            backgroundColor: 'rgba(15, 23, 42, 0.7)',
+            backgroundColor: 'var(--card-bg)',
             backdropFilter: 'blur(16px)',
             borderRadius: 'var(--radius-lg)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            border: '1px solid var(--border-color)',
             marginBottom: '24px',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
             <Sparkles size={16} color="#C084FC" />
-            <strong style={{ fontSize: '0.825rem', color: '#F8FAFC' }}>
+            <strong style={{ fontSize: '0.825rem', color: 'var(--primary-text)' }}>
               Hackathon Quick Access:
             </strong>
           </div>

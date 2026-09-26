@@ -7,6 +7,23 @@ export const useUIStore = create((set) => ({
   pageParams: {},
   toast: null,
 
+  theme: localStorage.getItem('openpath_theme') || 'dark',
+
+  toggleTheme: () => {
+    set((state) => {
+      const next = state.theme === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('openpath_theme', next);
+      document.documentElement.setAttribute('data-theme', next);
+      return { theme: next };
+    });
+  },
+
+  setTheme: (theme) => {
+    localStorage.setItem('openpath_theme', theme);
+    document.documentElement.setAttribute('data-theme', theme);
+    set({ theme });
+  },
+
   toggleSidebar: () => {
     set((state) => {
       const next = !state.isSidebarCollapsed;

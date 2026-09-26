@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Mail, Lock, User, Briefcase, GraduationCap, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
+import ThemeToggle from '../components/ThemeToggle';
 
 export default function RegisterPage() {
   const { register, isLoading, error } = useAuthStore();
@@ -56,10 +57,16 @@ export default function RegisterPage() {
         minHeight: '100vh',
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
-        backgroundColor: '#070A13',
+        backgroundColor: 'var(--background)',
+        position: 'relative',
       }}
       className="split-auth-layout"
     >
+      {/* Floating Theme Toggle in Auth Screen */}
+      <div style={{ position: 'fixed', top: '20px', right: '24px', zIndex: 100 }}>
+        <ThemeToggle showLabel={true} size="sm" />
+      </div>
+
       {/* Left Branding Pane */}
       <div
         className="auth-branding-pane"
@@ -142,7 +149,7 @@ export default function RegisterPage() {
         {step === 'form' ? (
           <div>
             <div style={{ marginBottom: '24px' }}>
-              <h2 style={{ fontSize: '2rem', fontWeight: 800, color: '#FFFFFF' }}>
+              <h2 style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--primary-text)' }}>
                 Create Your Account
               </h2>
               <p style={{ fontSize: '0.9rem', color: 'var(--secondary-text)', marginTop: '4px' }}>
@@ -158,8 +165,8 @@ export default function RegisterPage() {
                 gap: '12px',
                 marginBottom: '24px',
                 padding: '6px',
-                backgroundColor: 'rgba(15, 23, 42, 0.8)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
+                backgroundColor: 'var(--card-bg)',
+                border: '1px solid var(--border-color)',
                 borderRadius: 'var(--radius-lg)',
               }}
             >
