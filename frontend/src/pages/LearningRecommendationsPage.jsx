@@ -13,6 +13,8 @@ import {
 import { useUIStore } from '../store/useUIStore';
 import api from '../utils/api';
 import LearningCard from '../components/LearningCard';
+import CyberLoader from '../components/CyberLoader';
+import Tilt3DCard from '../components/Tilt3DCard';
 
 export default function LearningRecommendationsPage({ skillId, skillName }) {
   const { navigate } = useUIStore();
@@ -72,6 +74,10 @@ export default function LearningRecommendationsPage({ skillId, skillName }) {
     { id: 'ready', title: '4. Job Ready', desc: 'Interview prep & production patterns' },
   ];
 
+  if (isLoading) {
+    return <CyberLoader message="Compiling Curated 5-Stage Learning Roadmap..." />;
+  }
+
   return (
     <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
       {/* Header Banner */}
@@ -112,8 +118,8 @@ export default function LearningRecommendationsPage({ skillId, skillName }) {
           </p>
         </div>
 
-        {/* Learning Progress Meter */}
-        <div
+        {/* Learning Progress Meter with 3D Tilt */}
+        <Tilt3DCard
           style={{
             padding: '24px 28px',
             backgroundColor: 'var(--card-bg)',
@@ -134,7 +140,7 @@ export default function LearningRecommendationsPage({ skillId, skillName }) {
           <span style={{ fontSize: '0.8rem', color: '#34D399', fontWeight: 600 }}>
             {completedCount} of {totalCount} Completed
           </span>
-        </div>
+        </Tilt3DCard>
       </div>
 
       {/* 5-Step Visual Roadmap Tabs (Desktop Horizontal, Mobile Responsive) */}

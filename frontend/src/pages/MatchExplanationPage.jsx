@@ -15,6 +15,9 @@ import { useUIStore } from '../store/useUIStore';
 import { useOpportunityStore } from '../store/useOpportunityStore';
 import api from '../utils/api';
 import MatchScoreBadge from '../components/MatchScoreBadge';
+import HoloRadar3D from '../components/HoloRadar3D';
+import Tilt3DCard from '../components/Tilt3DCard';
+import CyberLoader from '../components/CyberLoader';
 
 export default function MatchExplanationPage({ opportunityId }) {
   const { navigate } = useUIStore();
@@ -44,11 +47,7 @@ export default function MatchExplanationPage({ opportunityId }) {
   }, [targetId]);
 
   if (isLoading || !matchData) {
-    return (
-      <div style={{ padding: '60px', textAlign: 'center' }}>
-        <p>Loading algorithmic match breakdown...</p>
-      </div>
-    );
+    return <CyberLoader message="Synthesizing 5-Factor Algorithmic Match Breakdown..." />;
   }
 
   const { overallScore, breakdown, matchedSkills = [], missingSkills = [], summary } = matchData;
@@ -167,7 +166,12 @@ export default function MatchExplanationPage({ opportunityId }) {
         </div>
       </div>
 
-      {/* 5-Factor Detail Cards */}
+      {/* 3D Holographic Factor Topology Radar */}
+      <div style={{ marginBottom: '28px' }}>
+        <HoloRadar3D breakdown={breakdown} overallScore={overallScore} />
+      </div>
+
+      {/* 5-Factor Detail Cards with 3D Tilt */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '32px' }}>
         <h3 style={{ fontSize: '1.25rem', color: 'var(--primary-text)', marginBottom: '8px' }}>
           5 Weighted Decision Factors
@@ -180,7 +184,7 @@ export default function MatchExplanationPage({ opportunityId }) {
           const Icon = f.icon;
 
           return (
-            <div key={idx} className="card" style={{ padding: '22px' }}>
+            <Tilt3DCard key={idx} className="card" maxTilt={5} style={{ padding: '22px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <div
@@ -231,7 +235,7 @@ export default function MatchExplanationPage({ opportunityId }) {
               <div style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', backgroundColor: 'var(--box-subtle)', border: '1px solid var(--box-subtle-border)', padding: '10px 14px', borderRadius: '8px' }}>
                 <strong style={{ color: 'var(--primary-text)' }}>Assessment: </strong> {details}
               </div>
-            </div>
+            </Tilt3DCard>
           );
         })}
       </div>

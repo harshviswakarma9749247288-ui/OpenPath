@@ -11,6 +11,8 @@ import {
 import { useUIStore } from '../store/useUIStore';
 import { useOpportunityStore } from '../store/useOpportunityStore';
 import api from '../utils/api';
+import CyberLoader from '../components/CyberLoader';
+import Tilt3DCard from '../components/Tilt3DCard';
 
 export default function SkillGapPage({ opportunityId }) {
   const { navigate } = useUIStore();
@@ -37,11 +39,7 @@ export default function SkillGapPage({ opportunityId }) {
   }, [targetId]);
 
   if (isLoading || !gapData) {
-    return (
-      <div style={{ padding: '60px', textAlign: 'center' }}>
-        <p>Loading skill gap analysis...</p>
-      </div>
-    );
+    return <CyberLoader message="Auditing Skill Competencies & Curating Roadmaps..." />;
   }
 
   const { opportunityTitle, organization, readinessPercentage, matchedSkills, missingSkills, recommendationNote } =
@@ -97,8 +95,8 @@ export default function SkillGapPage({ opportunityId }) {
           </p>
         </div>
 
-        {/* Readiness Meter */}
-        <div
+        {/* Readiness Meter with 3D Tilt */}
+        <Tilt3DCard
           style={{
             padding: '24px 28px',
             backgroundColor: 'var(--card-bg)',
@@ -118,7 +116,7 @@ export default function SkillGapPage({ opportunityId }) {
           <span style={{ fontSize: '0.8rem', color: '#34D399', fontWeight: 600 }}>
             {matchedSkills.length} of {matchedSkills.length + missingSkills.length} Required Skills
           </span>
-        </div>
+        </Tilt3DCard>
       </div>
 
       {/* Matched Skills Section */}
@@ -170,9 +168,10 @@ export default function SkillGapPage({ opportunityId }) {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
           {missingSkills.map((s, idx) => (
-            <div
+            <Tilt3DCard
               key={idx}
               className="card"
+              maxTilt={6}
               style={{
                 padding: '18px',
                 borderLeft: '4px solid #F43F5E',
@@ -210,7 +209,7 @@ export default function SkillGapPage({ opportunityId }) {
               >
                 <BookOpen size={14} /> View Learning Roadmap <ArrowRight size={14} />
               </button>
-            </div>
+            </Tilt3DCard>
           ))}
           {missingSkills.length === 0 && (
             <div className="card" style={{ padding: '24px', gridColumn: '1 / -1', backgroundColor: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.35)' }}>

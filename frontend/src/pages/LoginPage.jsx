@@ -3,6 +3,8 @@ import { Eye, EyeOff, Lock, Mail, ArrowRight, Sparkles, CheckCircle2 } from 'luc
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
 import ThemeToggle from '../components/ThemeToggle';
+import AnimatedLogo from '../components/AnimatedLogo';
+import Tilt3DCard from '../components/Tilt3DCard';
 
 export default function LoginPage() {
   const { login, demoLogin, isLoading, error } = useAuthStore();
@@ -72,23 +74,7 @@ export default function LoginPage() {
             onClick={() => navigate('landing')}
             style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', marginBottom: '48px' }}
           >
-            <div
-              style={{
-                width: '42px',
-                height: '42px',
-                borderRadius: '12px',
-                background: 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)',
-                color: '#FFFFFF',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 800,
-                fontSize: '1.25rem',
-                boxShadow: '0 0 15px rgba(236, 72, 153, 0.45)',
-              }}
-            >
-              OP
-            </div>
+            <AnimatedLogo size="md" />
             <span style={{ fontSize: '1.4rem', fontWeight: 800, letterSpacing: '-0.5px' }}>
               Open<span className="gradient-text">Path</span>
             </span>
@@ -145,8 +131,8 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* 1-Click Demo Evaluation Bar */}
-        <div
+        {/* 1-Click Demo Evaluation Bar with 3D Tilt */}
+        <Tilt3DCard
           style={{
             padding: '16px',
             backgroundColor: 'var(--card-bg)',
@@ -187,7 +173,7 @@ export default function LoginPage() {
               Sign In as Employer
             </button>
           </div>
-        </div>
+        </Tilt3DCard>
 
         {error && (
           <div

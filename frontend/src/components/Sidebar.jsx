@@ -18,6 +18,7 @@ import {
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
 import ThemeToggle from './ThemeToggle';
+import AnimatedLogo from './AnimatedLogo';
 
 export default function Sidebar() {
   const { user, logout, demoLogin } = useAuthStore();
@@ -78,26 +79,8 @@ export default function Sidebar() {
             onClick={() => navigate('landing')}
             style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
           >
-            {/* Cyber Aurora Logo Mark */}
-            <div
-              style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '10px',
-                background: 'linear-gradient(135deg, #7C3AED 0%, #C026D3 50%, #EC4899 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#FFFFFF',
-                fontWeight: 800,
-                fontSize: '1.1rem',
-                boxShadow: '0 0 15px rgba(236, 72, 153, 0.45)',
-                border: '1px solid rgba(255, 255, 255, 0.25)',
-                flexShrink: 0,
-              }}
-            >
-              OP
-            </div>
+            {/* 3D Animated Logo Mark */}
+            <AnimatedLogo size="sm" showRings={!isSidebarCollapsed} />
             {!isSidebarCollapsed && (
               <div>
                 <span

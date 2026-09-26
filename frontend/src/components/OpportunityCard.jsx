@@ -1,6 +1,7 @@
 import React from 'react';
 import { Bookmark, MapPin, IndianRupee, Calendar, Briefcase, ChevronRight, Check } from 'lucide-react';
 import MatchScoreBadge from './MatchScoreBadge';
+import Tilt3DCard from './Tilt3DCard';
 import { useOpportunityStore } from '../store/useOpportunityStore';
 import { useUIStore } from '../store/useUIStore';
 
@@ -30,8 +31,10 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
       : 'badge-onsite';
 
   return (
-    <div
+    <Tilt3DCard
       className="card"
+      maxTilt={6}
+      scale={1.015}
       style={{
         padding: '22px',
         display: 'flex',
@@ -230,6 +233,6 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
           )}
         </div>
       </div>
-    </div>
+    </Tilt3DCard>
   );
 }

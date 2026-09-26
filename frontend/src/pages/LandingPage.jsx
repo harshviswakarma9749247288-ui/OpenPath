@@ -18,6 +18,9 @@ import api from '../utils/api';
 import OpportunityCard from '../components/OpportunityCard';
 import MatchScoreBadge from '../components/MatchScoreBadge';
 import ThemeToggle from '../components/ThemeToggle';
+import ThreeHeroScene from '../components/ThreeHeroScene';
+import Tilt3DCard from '../components/Tilt3DCard';
+import AnimatedLogo from '../components/AnimatedLogo';
 
 export default function LandingPage() {
   const { navigate } = useUIStore();
@@ -102,24 +105,7 @@ export default function LandingPage() {
             onClick={() => navigate('landing')}
             style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
           >
-            <div
-              style={{
-                width: '38px',
-                height: '38px',
-                borderRadius: '10px',
-                background: 'linear-gradient(135deg, #7C3AED 0%, #C026D3 50%, #EC4899 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#FFFFFF',
-                fontWeight: 800,
-                fontSize: '1.15rem',
-                boxShadow: '0 0 15px rgba(236, 72, 153, 0.45)',
-                border: '1px solid rgba(255, 255, 255, 0.25)',
-              }}
-            >
-              OP
-            </div>
+            <AnimatedLogo size="sm" />
             <span
               style={{
                 fontFamily: 'var(--font-heading)',
@@ -339,15 +325,31 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Right Column: Real OpenPath UI Preview Cards */}
-          <div style={{ position: 'relative' }}>
-            {/* Featured Match Card Preview */}
+          {/* Right Column: 3D Interactive WebGL Scene & 3D Tilt Preview Cards */}
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '440px' }}>
+            {/* Interactive 3D Three.js WebGL Floating Crystalline Core */}
             <div
-              className="card card-featured animate-fade-in"
+              style={{
+                position: 'absolute',
+                inset: '-40px',
+                zIndex: 1,
+                pointerEvents: 'auto',
+                opacity: 0.9,
+              }}
+            >
+              <ThreeHeroScene />
+            </div>
+
+            {/* Featured Match Card Preview with 3D Tilt */}
+            <Tilt3DCard
+              className="card card-featured animate-fade-in anim-float-3d"
               style={{
                 padding: '28px',
                 position: 'relative',
                 zIndex: 2,
+                maxWidth: '430px',
+                width: '100%',
+                backdropFilter: 'blur(16px)',
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
@@ -404,21 +406,22 @@ export default function LandingPage() {
                   View Live Match
                 </button>
               </div>
-            </div>
+            </Tilt3DCard>
 
-            {/* Overlapping Skill Gap Preview Card */}
-            <div
+            {/* Overlapping Skill Gap Preview Card with 3D Tilt */}
+            <Tilt3DCard
               className="card"
               style={{
                 position: 'absolute',
-                bottom: '-25px',
-                right: '-15px',
+                bottom: '-20px',
+                right: '-10px',
                 padding: '18px',
                 width: '270px',
                 zIndex: 3,
-                boxShadow: 'var(--shadow-lg), 0 0 20px rgba(236, 72, 153, 0.15)',
-                border: '1px solid rgba(236, 72, 153, 0.35)',
+                boxShadow: 'var(--shadow-lg), 0 0 20px rgba(236, 72, 153, 0.25)',
+                border: '1px solid rgba(236, 72, 153, 0.45)',
                 backgroundColor: 'var(--card-bg)',
+                backdropFilter: 'blur(16px)',
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#EC4899', marginBottom: '8px' }}>
@@ -431,7 +434,7 @@ export default function LandingPage() {
               <span className="skill-chip skill-chip-missing" style={{ fontSize: '0.7rem' }}>
                 Docker Hands-on (3.5h)
               </span>
-            </div>
+            </Tilt3DCard>
           </div>
         </div>
       </section>
@@ -520,7 +523,7 @@ export default function LandingPage() {
             {features.map((feat, idx) => {
               const Icon = feat.icon;
               return (
-                <div key={idx} className="card" style={{ padding: '28px' }}>
+                <Tilt3DCard key={idx} className="card" style={{ padding: '28px' }}>
                   <div
                     style={{
                       width: '48px',
@@ -542,7 +545,7 @@ export default function LandingPage() {
                   <p style={{ fontSize: '0.875rem', color: 'var(--secondary-text)', lineHeight: '1.6' }}>
                     {feat.desc}
                   </p>
-                </div>
+                </Tilt3DCard>
               );
             })}
           </div>
@@ -554,7 +557,7 @@ export default function LandingPage() {
         <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '32px' }}>
             {/* For Students */}
-            <div
+            <Tilt3DCard
               className="card"
               style={{
                 padding: '36px',
@@ -583,10 +586,10 @@ export default function LandingPage() {
               <button onClick={() => navigate('register')} className="btn-primary" style={{ width: '100%' }}>
                 Create Student Profile <ArrowRight size={16} />
               </button>
-            </div>
+            </Tilt3DCard>
 
             {/* For Employers */}
-            <div
+            <Tilt3DCard
               className="card"
               style={{
                 padding: '36px',
@@ -622,7 +625,7 @@ export default function LandingPage() {
               >
                 Employer Portal <ArrowRight size={16} />
               </button>
-            </div>
+            </Tilt3DCard>
           </div>
         </div>
       </section>

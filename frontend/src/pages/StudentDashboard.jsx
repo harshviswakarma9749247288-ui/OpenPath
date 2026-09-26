@@ -15,6 +15,8 @@ import { useUIStore } from '../store/useUIStore';
 import api from '../utils/api';
 import OpportunityCard from '../components/OpportunityCard';
 import MatchScoreBadge from '../components/MatchScoreBadge';
+import Tilt3DCard from '../components/Tilt3DCard';
+import CyberLoader from '../components/CyberLoader';
 
 export default function StudentDashboard() {
   const { user, profileCompletion } = useAuthStore();
@@ -41,7 +43,9 @@ export default function StudentDashboard() {
   }, []);
 
   const percentage = profileCompletion?.percentage || 70;
-  const missing = profileCompletion?.missingFields || [];
+  if (isLoading && (!recommendations?.bestMatches || recommendations.bestMatches.length === 0)) {
+    return <CyberLoader message="Evaluating Algorithmic Student Recommendations..." />;
+  }
 
   return (
     <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
@@ -104,9 +108,10 @@ export default function StudentDashboard() {
           marginBottom: '36px',
         }}
       >
-        <div
+        <Tilt3DCard
           onClick={() => navigate('opportunities')}
           className="card"
+          maxTilt={8}
           style={{
             padding: '18px',
             cursor: 'pointer',
@@ -125,11 +130,12 @@ export default function StudentDashboard() {
             </strong>
             <span style={{ fontSize: '0.775rem', color: 'var(--secondary-text)' }}>Browse 1,000+ listings</span>
           </div>
-        </div>
+        </Tilt3DCard>
 
-        <div
+        <Tilt3DCard
           onClick={() => navigate('applications')}
           className="card"
+          maxTilt={8}
           style={{
             padding: '18px',
             cursor: 'pointer',
@@ -148,11 +154,12 @@ export default function StudentDashboard() {
             </strong>
             <span style={{ fontSize: '0.775rem', color: 'var(--secondary-text)' }}>Track interview stages</span>
           </div>
-        </div>
+        </Tilt3DCard>
 
-        <div
+        <Tilt3DCard
           onClick={() => navigate('learning')}
           className="card"
+          maxTilt={8}
           style={{
             padding: '18px',
             cursor: 'pointer',
@@ -171,7 +178,7 @@ export default function StudentDashboard() {
             </strong>
             <span style={{ fontSize: '0.775rem', color: 'var(--secondary-text)' }}>Bridge missing gaps</span>
           </div>
-        </div>
+        </Tilt3DCard>
       </div>
 
       {/* 3. Section: Best Matches (4 cards + View All) */}

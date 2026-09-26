@@ -6,6 +6,7 @@ import { useUIStore } from './store/useUIStore';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import ThemeToggle from './components/ThemeToggle';
+import FloatingParticles3D from './components/FloatingParticles3D';
 
 // Pages (All 16 Approved Screens)
 import LandingPage from './pages/LandingPage';
@@ -217,15 +218,22 @@ export default function App() {
         </div>
       )}
 
-      {/* Main Layout Rendering */}
+      {/* Floating 3D Depth Particles */}
+      <FloatingParticles3D count={28} />
+
+      {/* Main Layout Rendering with 3D Page Transitions */}
       {isPublicPage ? (
-        <div style={{ width: '100%' }}>{renderActiveScreen()}</div>
+        <div key={activePage} className="page-transition-3d" style={{ width: '100%', position: 'relative', zIndex: 1 }}>
+          {renderActiveScreen()}
+        </div>
       ) : (
         <>
           <Sidebar />
-          <div className="main-content">
+          <div className="main-content" style={{ position: 'relative', zIndex: 1 }}>
             <Navbar />
-            <main style={{ flex: 1 }}>{renderActiveScreen()}</main>
+            <main key={activePage} className="page-transition-3d" style={{ flex: 1 }}>
+              {renderActiveScreen()}
+            </main>
           </div>
         </>
       )}
