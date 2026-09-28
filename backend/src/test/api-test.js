@@ -109,11 +109,47 @@ const runTests = async () => {
       null,
       { Authorization: `Bearer ${empToken}` }
     );
-    console.log(
-      `[PASS] Candidate Review API (${candidatesRes.status}): ${candidatesRes.data.data.candidateCount} candidates evaluated with match scores`
-    );
+    // 9. OTP Verification Flow (Registration)
+    const testEmail = `testuser_${Date.now()}@example.com`;
+    const sendOtpRes = await testEndpoint('/api/auth/otp/send', 'POST', {
+      email: testEmail,
+      purpose: 'Registration',
+    });
+    console.log(`[PASS] OTP Send (${sendOtpRes.status}): Dispatched to ${testEmail}, Preview: ${sendOtpRes.data.data.previewOtp}`);
 
-    console.log('\n🎉 ALL BACKEND API ENDPOINTS VERIFIED SUCCESSFULLY!');
+    const verifyOtpRes = await testEndpoint('/api/auth/otp/verify', 'POST', {
+      email: testEmail,
+      code: sendOtpRes.data.data.previewOtp,
+    });
+    console.log(`[PASS] OTP Verify (${verifyOtpRes.status}): Email ${testEmail} verified = ${verifyOtpRes.data.data.verified}`);
+
+    // 10. Passwordless Login via OTP
+    const sendLoginOtp = await testEndpoint('/api/auth/otp/send', 'POST', {
+      email: 'alex.rivera@university.edu',
+      purpose: 'Login',
+    });
+    console.log(`[PASS] Login OTP Send (${sendLoginOtp.status}): Dispatched for alex.rivera@university.edu`);
+
+    const loginWithOtpRes = await testEndpoint('/api/auth/otp/login', 'POST', {
+      email: 'alex.rivera@university.edu',
+      code: sendLoginOtp.data.data.previewOtp,
+    });
+    console.log(`[PASS] Login with OTP (${loginWithOtpRes.status}): Authenticated user ${loginWithOtpRes.data.data.user.name}`);
+
+    // 11. Password Reset via OTP
+    const forgotRes = await testEndpoint('/api/auth/password/forgot', 'POST', {
+      email: 'alex.rivera@university.edu',
+    });
+    console.log(`[PASS] Forgot Password OTP (${forgotRes.status}): Reset code preview: ${forgotRes.data.data.previewOtp}`);
+
+    const resetRes = await testEndpoint('/api/auth/password/reset', 'POST', {
+      email: 'alex.rivera@university.edu',
+      code: forgotRes.data.data.previewOtp,
+      newPassword: 'password123',
+    });
+    console.log(`[PASS] Reset Password (${resetRes.status}): ${resetRes.data.message}`);
+
+    console.log('\n🎉 ALL BACKEND API & OTP ENDPOINTS VERIFIED SUCCESSFULLY!');
     process.exit(0);
   } catch (err) {
     console.error('❌ Test failed:', err.message);

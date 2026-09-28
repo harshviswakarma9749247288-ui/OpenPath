@@ -30,9 +30,13 @@ export default function CandidateReviewPage({ opportunityId }) {
         setOpportunities(opps);
         if (!selectedOppId && opps.length > 0) {
           setSelectedOppId(opps[0]._id);
+        } else if (opps.length === 0) {
+          setIsLoading(false);
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        setIsLoading(false);
+      });
   }, []);
 
   // Fetch candidates whenever selectedOppId changes
@@ -46,7 +50,7 @@ export default function CandidateReviewPage({ opportunityId }) {
           setOppDetails(res.data.opportunity);
           setIsLoading(false);
         })
-        .catch((err) => {
+        .catch(() => {
           setIsLoading(false);
         });
     }
@@ -122,7 +126,9 @@ export default function CandidateReviewPage({ opportunityId }) {
             className="form-select"
             value={selectedOppId}
             onChange={(e) => setSelectedOppId(e.target.value)}
+            disabled={opportunities.length === 0}
           >
+            {opportunities.length === 0 && <option value="">No opportunities posted</option>}
             {opportunities.map((opp) => (
               <option key={opp._id} value={opp._id}>
                 {opp.title} ({opp.totalApplicants || 0} applicants)
@@ -152,7 +158,22 @@ export default function CandidateReviewPage({ opportunityId }) {
           />
         ))}
 
-        {candidates.length === 0 && !isLoading && (
+        {opportunities.length === 0 && !isLoading && (
+          <div className="card" style={{ padding: '48px', textAlign: 'center', color: 'var(--secondary-text)' }}>
+            <Briefcase size={36} color="#CBD5E1" style={{ margin: '0 auto 12px auto' }} />
+            <h4 style={{ fontSize: '1.1rem', color: 'var(--primary-text)', marginBottom: '6px' }}>
+              No opportunities created yet
+            </h4>
+            <p style={{ fontSize: '0.85rem', marginBottom: '16px' }}>
+              Post an internship or entry-level job to start receiving algorithmically matched talent!
+            </p>
+            <button onClick={() => navigate('create-opportunity')} className="btn-primary">
+              Post an Opportunity
+            </button>
+          </div>
+        )}
+
+        {opportunities.length > 0 && candidates.length === 0 && !isLoading && (
           <div className="card" style={{ padding: '48px', textAlign: 'center', color: 'var(--secondary-text)' }}>
             <Users size={36} color="#CBD5E1" style={{ margin: '0 auto 12px auto' }} />
             <h4 style={{ fontSize: '1.1rem', color: 'var(--primary-text)', marginBottom: '6px' }}>

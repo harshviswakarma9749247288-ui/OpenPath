@@ -33,6 +33,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [applicationNotes, setApplicationNotes] = useState('');
+  const [submittedAppId, setSubmittedAppId] = useState('');
 
   useEffect(() => {
     if (opportunityId) {
@@ -68,6 +69,9 @@ export default function OpportunityDetailsPage({ opportunityId }) {
     setShowApplyModal(false);
 
     if (res.success) {
+      if (res.application?._id) {
+        setSubmittedAppId(res.application._id);
+      }
       // Trigger festive celebration confetti per UI/UX Brief!
       confetti({
         particleCount: 80,
@@ -387,8 +391,8 @@ export default function OpportunityDetailsPage({ opportunityId }) {
             </p>
 
             <div style={{ padding: '14px', backgroundColor: 'var(--box-subtle)', border: '1px solid var(--box-subtle-border)', borderRadius: '10px', marginBottom: '16px', fontSize: '0.85rem', color: 'var(--primary-text)' }}>
-              <strong>Applicant: </strong> {user?.name || 'Alex Rivera'} ({user?.email})<br />
-              <strong>Degree: </strong> {user?.education?.degree || 'B.Tech CS'} • {user?.location?.city || 'Bengaluru'}
+              <strong>Applicant: </strong> {user?.name || 'Applicant'} ({user?.email || 'No email specified'})<br />
+              <strong>Education: </strong> {user?.education?.degree ? `${user.education.degree}${user.education.fieldOfStudy ? ` in ${user.education.fieldOfStudy}` : ''}` : 'Education not specified'} • {user?.location?.city || 'Location not specified'}
             </div>
 
             <div className="form-group">
@@ -469,7 +473,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
             <p style={{ fontSize: '0.9rem', color: 'var(--secondary-text)', marginBottom: '24px', lineHeight: '1.6' }}>
               Your application for <strong style={{ color: 'var(--primary-text)' }}>{opp.title}</strong> has been logged with ID{' '}
               <code style={{ background: 'rgba(6, 182, 212, 0.15)', color: '#0891B2', padding: '2px 8px', borderRadius: '4px', border: '1px solid rgba(6, 182, 212, 0.3)' }}>
-                #OP-{Math.floor(100000 + Math.random() * 900000)}
+                #OP-{submittedAppId ? submittedAppId.slice(-6).toUpperCase() : 'CONFIRMED'}
               </code>. The employer has been notified.
             </p>
 

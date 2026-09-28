@@ -6,6 +6,7 @@ import {
   logout,
   sendOtp,
   verifyOtp,
+  loginWithOtp,
   googleAuth,
   forgotPassword,
   resetPassword,
@@ -19,6 +20,7 @@ router.post('/demo-login', demoLogin);
 router.post('/logout', logout);
 router.post('/otp/send', sendOtp);
 router.post('/otp/verify', verifyOtp);
+router.post('/otp/login', loginWithOtp);
 router.post('/google', googleAuth);
 router.post('/password/forgot', forgotPassword);
 router.post('/password/reset', resetPassword);

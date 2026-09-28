@@ -26,9 +26,28 @@ export default function MatchExplanationPage({ opportunityId }) {
   const [matchData, setMatchData] = useState(null);
   const [opp, setOpp] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [targetId, setTargetId] = useState(opportunityId || opportunities[0]?._id || null);
 
-  // If no specific opportunity was passed, pick the first one
-  const targetId = opportunityId || (opportunities[0]?._id);
+  useEffect(() => {
+    if (opportunityId) {
+      setTargetId(opportunityId);
+    } else if (opportunities.length > 0) {
+      setTargetId(opportunities[0]._id);
+    } else {
+      api
+        .get('/opportunities?limit=1')
+        .then((res) => {
+          if (res.data?.opportunities?.[0]?._id) {
+            setTargetId(res.data.opportunities[0]._id);
+          } else {
+            setIsLoading(false);
+          }
+        })
+        .catch(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [opportunityId, opportunities]);
 
   useEffect(() => {
     if (targetId) {
@@ -46,8 +65,23 @@ export default function MatchExplanationPage({ opportunityId }) {
     }
   }, [targetId]);
 
-  if (isLoading || !matchData) {
+  if (isLoading) {
     return <CyberLoader message="Synthesizing 5-Factor Algorithmic Match Breakdown..." />;
+  }
+
+  if (!matchData) {
+    return (
+      <div style={{ maxWidth: '700px', margin: '60px auto', textAlign: 'center', padding: '40px' }} className="card">
+        <AlertTriangle size={48} color="#F59E0B" style={{ margin: '0 auto 16px auto' }} />
+        <h2 style={{ fontSize: '1.4rem', marginBottom: '8px', color: 'var(--primary-text)' }}>No Opportunity Selected</h2>
+        <p style={{ color: 'var(--secondary-text)', marginBottom: '24px' }}>
+          Please select an opportunity from the dashboard or listings to analyze your personalized match breakdown.
+        </p>
+        <button onClick={() => navigate('opportunities')} className="btn-primary">
+          Browse Opportunities
+        </button>
+      </div>
+    );
   }
 
   const { overallScore, breakdown, matchedSkills = [], missingSkills = [], summary } = matchData;

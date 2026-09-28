@@ -111,7 +111,7 @@ export default function ManageOpportunitiesPage() {
                       {opp.type}
                     </span>
                     <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--secondary-text)' }}>
-                      {opp.location?.type} ({opp.location?.city || 'Bengaluru'})
+                      {opp.location?.type} ({opp.location?.city || (opp.location?.type === 'Remote' ? 'Remote' : 'Location not specified')})
                     </span>
                   </td>
 

@@ -13,28 +13,42 @@ import {
   FileCheck,
 } from 'lucide-react';
 import { useUIStore } from '../store/useUIStore';
+import { useAuthStore } from '../store/useAuthStore';
 import api from '../utils/api';
 
 export default function CreateOpportunityPage() {
   const { navigate, showToast } = useUIStore();
+  const { user } = useAuthStore();
 
   const [step, setStep] = useState(1);
   const [availableSkills, setAvailableSkills] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form State
+  const defaultDeadline = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
   const [title, setTitle] = useState('');
-  const [organization, setOrganization] = useState('TechCorp Labs');
+  const [organization, setOrganization] = useState(user?.companyDetails?.companyName || user?.name || '');
   const [type, setType] = useState('Internship');
   const [locationType, setLocationType] = useState('Remote');
-  const [city, setCity] = useState('Bengaluru');
-  const [salaryAmount, setSalaryAmount] = useState('₹35,000');
+  const [city, setCity] = useState(user?.location?.city || '');
+  const [salaryAmount, setSalaryAmount] = useState('');
   const [salaryPeriod, setSalaryPeriod] = useState('month');
-  const [deadline, setDeadline] = useState('2026-10-31');
+  const [deadline, setDeadline] = useState(defaultDeadline);
   const [description, setDescription] = useState('');
   const [responsibilities, setResponsibilities] = useState('');
   const [requirements, setRequirements] = useState('');
   const [selectedSkills, setSelectedSkills] = useState([]);
+
+  useEffect(() => {
+    if (user) {
+      if (!organization && (user.companyDetails?.companyName || user.name)) {
+        setOrganization(user.companyDetails?.companyName || user.name);
+      }
+      if (!city && user.location?.city) {
+        setCity(user.location.city);
+      }
+    }
+  }, [user]);
 
   useEffect(() => {
     api
@@ -62,15 +76,15 @@ export default function CreateOpportunityPage() {
         type,
         location: {
           type: locationType,
-          city,
-          state: 'Karnataka',
-          country: 'India',
+          city: city || (locationType === 'Remote' ? 'Remote' : 'Not specified'),
+          state: user?.location?.state || '',
+          country: user?.location?.country || 'India',
         },
         salary: {
-          amount: salaryAmount,
+          amount: salaryAmount || 'Competitive / Unpaid',
           period: salaryPeriod,
           currency: '₹',
-          isUnpaid: false,
+          isUnpaid: !salaryAmount,
         },
         deadline: new Date(deadline),
         description,

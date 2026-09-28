@@ -54,6 +54,35 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Public Platform Overview Stats
+app.get('/api/stats/overview', async (req, res, next) => {
+  try {
+    const { default: Opportunity } = await import('./models/Opportunity.js');
+    const { default: User } = await import('./models/User.js');
+    const { default: Skill } = await import('./models/Skill.js');
+    const { default: Application } = await import('./models/Application.js');
+
+    const totalOpportunities = await Opportunity.countDocuments({ status: 'Active' });
+    const totalStudents = await User.countDocuments({ role: 'student' });
+    const totalEmployers = await User.countDocuments({ role: 'employer' });
+    const totalSkills = await Skill.countDocuments();
+    const totalApplications = await Application.countDocuments();
+
+    res.status(200).json({
+      success: true,
+      data: {
+        totalOpportunities,
+        totalStudents,
+        totalEmployers,
+        totalSkills,
+        totalApplications,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 // Mount Routes (strict adherence to TRD & Backend Blueprint)
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);

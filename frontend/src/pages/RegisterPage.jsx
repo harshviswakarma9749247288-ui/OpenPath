@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { Mail, Lock, User, Briefcase, GraduationCap, ArrowRight, ShieldCheck } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Mail, Lock, User, Briefcase, GraduationCap, ArrowRight, ShieldCheck, RefreshCw, CheckCircle2 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
+import api from '../utils/api';
 import ThemeToggle from '../components/ThemeToggle';
 import AnimatedLogo from '../components/AnimatedLogo';
 import Tilt3DCard from '../components/Tilt3DCard';
@@ -17,39 +18,99 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [otpCode, setOtpCode] = useState('');
-  const [demoCode, setDemoCode] = useState('834920');
+  const [demoCode, setDemoCode] = useState('');
+  const [isSendingOtp, setIsSendingOtp] = useState(false);
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
+  const [deliveredViaSmtp, setDeliveredViaSmtp] = useState(false);
 
-  const handleInitialSubmit = (e) => {
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const timer = setInterval(() => {
+      setCooldown((prev) => Math.max(0, prev - 1));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [cooldown]);
+
+  const handleInitialSubmit = async (e) => {
     e.preventDefault();
     if (!name || !email || !password) return;
     if (password !== confirmPassword) {
-      alert('Passwords do not match');
+      showToast('Passwords do not match', 'error');
       return;
     }
 
-    const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
-    setDemoCode(generatedOtp);
-    setStep('otp');
-    showToast(`Verification code sent to ${email}! (Demo: ${generatedOtp})`, 'info');
+    setIsSendingOtp(true);
+    try {
+      const res = await api.post('/auth/otp/send', { email, purpose: 'Registration' });
+      const preview = res.data?.data?.previewOtp;
+      const delivered = res.data?.data?.delivered;
+      setDeliveredViaSmtp(!!delivered);
+      if (preview) {
+        setDemoCode(preview);
+        setOtpCode(preview);
+        showToast(`Verification code: ${preview}`, 'info');
+      } else {
+        showToast(`Verification code sent to ${email}`, 'success');
+      }
+      setCooldown(60);
+      setStep('otp');
+    } catch (err) {
+      showToast(err.response?.data?.message || err.message || 'Failed to send verification code', 'error');
+    } finally {
+      setIsSendingOtp(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    if (cooldown > 0 || isSendingOtp) return;
+    setIsSendingOtp(true);
+    try {
+      const res = await api.post('/auth/otp/send', { email, purpose: 'Registration' });
+      const preview = res.data?.data?.previewOtp;
+      const delivered = res.data?.data?.delivered;
+      setDeliveredViaSmtp(!!delivered);
+      if (preview) {
+        setDemoCode(preview);
+        setOtpCode(preview);
+        showToast(`New verification code: ${preview}`, 'info');
+      } else {
+        showToast(`A new verification code was sent to ${email}`, 'success');
+      }
+      setCooldown(60);
+    } catch (err) {
+      showToast(err.response?.data?.message || err.message || 'Failed to resend code', 'error');
+    } finally {
+      setIsSendingOtp(false);
+    }
   };
 
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
-    const res = await register({
-      name,
-      email,
-      password,
-      confirmPassword,
-      role,
-    });
+    setIsVerifyingOtp(true);
+    try {
+      await api.post('/auth/otp/verify', { email, code: otpCode });
 
-    if (res.success) {
-      showToast('Account created successfully! Let\'s setup your profile.', 'success');
-      if (role === 'student') {
-        navigate('profile-setup');
-      } else {
-        navigate('employer-dashboard');
+      const res = await register({
+        name,
+        email,
+        password,
+        confirmPassword,
+        role,
+      });
+
+      if (res.success) {
+        showToast('Account created successfully! Welcome to OpenPath.', 'success');
+        if (role === 'student') {
+          navigate('profile-setup');
+        } else {
+          navigate('employer-dashboard');
+        }
       }
+    } catch (err) {
+      showToast(err.response?.data?.message || err.message || 'OTP verification failed', 'error');
+    } finally {
+      setIsVerifyingOtp(false);
     }
   };
 
@@ -300,11 +361,11 @@ export default function RegisterPage() {
 
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || isSendingOtp}
                 className="btn-primary"
                 style={{ width: '100%', padding: '12px', marginTop: '6px' }}
               >
-                Continue to Verification <ArrowRight size={18} />
+                {isSendingOtp ? 'Sending Code...' : 'Continue to Verification'} <ArrowRight size={18} />
               </button>
             </form>
 
@@ -342,27 +403,56 @@ export default function RegisterPage() {
               </p>
             </div>
 
-            <div
-              style={{
-                padding: '14px',
-                backgroundColor: 'rgba(124, 58, 237, 0.15)',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid rgba(168, 85, 247, 0.35)',
-                textAlign: 'center',
-                marginBottom: '20px',
-                fontSize: '0.85rem',
-                color: 'var(--primary-text)',
-              }}
-            >
-              Demo Auto-Filled Code: <strong style={{ color: '#F472B6' }}>{demoCode}</strong>
-            </div>
+            {deliveredViaSmtp ? (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  padding: '10px 14px',
+                  backgroundColor: 'rgba(16, 185, 129, 0.12)',
+                  borderRadius: 'var(--radius-md)',
+                  border: '1px solid rgba(16, 185, 129, 0.3)',
+                  color: '#10B981',
+                  fontSize: '0.85rem',
+                  marginBottom: '18px',
+                }}
+              >
+                <CheckCircle2 size={16} /> Delivered to your inbox via SMTP
+              </div>
+            ) : demoCode ? (
+              <div
+                style={{
+                  padding: '12px 14px',
+                  backgroundColor: 'rgba(124, 58, 237, 0.15)',
+                  borderRadius: 'var(--radius-md)',
+                  border: '1px solid rgba(168, 85, 247, 0.35)',
+                  textAlign: 'center',
+                  marginBottom: '18px',
+                  fontSize: '0.85rem',
+                  color: 'var(--primary-text)',
+                }}
+              >
+                <span>Demo / Test OTP Code: </span>
+                <strong style={{ color: '#F472B6', letterSpacing: '2px', fontSize: '1.05rem' }}>{demoCode}</strong>
+                <div style={{ fontSize: '0.75rem', color: 'var(--secondary-text)', marginTop: '4px' }}>
+                  (Auto-filled for rapid testing & evaluation)
+                </div>
+              </div>
+            ) : null}
 
             <form onSubmit={handleVerifyOtp}>
-              <div className="form-group">
+              <div className="form-group" style={{ marginBottom: '18px' }}>
                 <input
                   type="text"
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  pattern="[0-9]*"
                   maxLength={6}
                   required
+                  autoFocus
+                  placeholder="000000"
                   className="form-input"
                   style={{
                     fontSize: '2rem',
@@ -371,33 +461,67 @@ export default function RegisterPage() {
                     fontWeight: 800,
                     color: 'var(--primary-text)',
                   }}
-                  value={otpCode || demoCode}
-                  onChange={(e) => setOtpCode(e.target.value)}
+                  value={otpCode}
+                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                 />
               </div>
 
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || isVerifyingOtp || otpCode.length < 6}
                 className="btn-primary"
                 style={{ width: '100%', padding: '12px' }}
               >
-                {isLoading ? 'Verifying...' : 'Verify & Launch Profile'} <ArrowRight size={18} />
+                {isLoading || isVerifyingOtp ? 'Verifying...' : 'Verify & Launch Profile'} <ArrowRight size={18} />
               </button>
             </form>
 
-            <button
-              onClick={() => setStep('form')}
+            <div
               style={{
-                width: '100%',
-                textAlign: 'center',
-                marginTop: '16px',
-                fontSize: '0.85rem',
-                color: 'var(--secondary-text)',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginTop: '18px',
+                paddingTop: '14px',
+                borderTop: '1px solid var(--border-color)',
               }}
             >
-              ← Edit details / Back
-            </button>
+              <button
+                type="button"
+                onClick={() => setStep('form')}
+                style={{
+                  fontSize: '0.825rem',
+                  color: 'var(--secondary-text)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: '4px 0',
+                }}
+              >
+                ← Edit details
+              </button>
+
+              <button
+                type="button"
+                disabled={cooldown > 0 || isSendingOtp}
+                onClick={handleResendOtp}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  fontSize: '0.825rem',
+                  fontWeight: 600,
+                  color: cooldown > 0 ? 'var(--secondary-text)' : '#A78BFA',
+                  background: 'none',
+                  border: 'none',
+                  cursor: cooldown > 0 ? 'not-allowed' : 'pointer',
+                  padding: '4px 0',
+                }}
+              >
+                <RefreshCw size={13} className={isSendingOtp ? 'spin' : ''} />
+                {cooldown > 0 ? `Resend Code (${cooldown}s)` : 'Resend Code'}
+              </button>
+            </div>
           </div>
         )}
       </div>

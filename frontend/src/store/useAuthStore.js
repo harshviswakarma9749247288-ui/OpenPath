@@ -51,6 +51,24 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
+  // Login with OTP
+  loginWithOtp: async (email, code) => {
+    set({ isLoading: true, error: null });
+    try {
+      const res = await api.post('/auth/otp/login', { email, code });
+      const { user, token } = res.data;
+      if (token) {
+        localStorage.setItem('openpath_token', token);
+      }
+      set({ user, token, isAuthenticated: true, isLoading: false });
+      get().initAuth();
+      return { success: true, user };
+    } catch (err) {
+      set({ isLoading: false, error: err.message });
+      return { success: false, error: err.message };
+    }
+  },
+
   // One-click demo login for fast hackathon evaluation
   demoLogin: async (role = 'student') => {
     set({ isLoading: true, error: null });

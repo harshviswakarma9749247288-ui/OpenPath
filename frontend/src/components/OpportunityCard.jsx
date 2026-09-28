@@ -72,7 +72,7 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
               ) : (
-                opportunity.organization.substring(0, 2).toUpperCase()
+                (opportunity.organization || 'OP').substring(0, 2).toUpperCase()
               )}
             </div>
             <div>

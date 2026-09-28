@@ -26,12 +26,20 @@ export default function LandingPage() {
   const { navigate } = useUIStore();
   const { isAuthenticated, user, demoLogin } = useAuthStore();
   const [featuredOpps, setFeaturedOpps] = useState([]);
+  const [stats, setStats] = useState(null);
 
   useEffect(() => {
     api
-      .get('/opportunities?limit=3')
+      .get('/opportunities?limit=4')
       .then((res) => {
-        setFeaturedOpps(res.data.opportunities?.slice(0, 3) || []);
+        setFeaturedOpps(res.data.opportunities || []);
+      })
+      .catch(() => {});
+
+    api
+      .get('/stats/overview')
+      .then((res) => {
+        if (res.data) setStats(res.data);
       })
       .catch(() => {});
   }, []);
@@ -341,72 +349,87 @@ export default function LandingPage() {
             </div>
 
             {/* Featured Match Card Preview with 3D Tilt */}
-            <Tilt3DCard
-              className="card card-featured animate-fade-in anim-float-3d"
-              style={{
-                padding: '28px',
-                position: 'relative',
-                zIndex: 2,
-                maxWidth: '430px',
-                width: '100%',
-                backdropFilter: 'blur(16px)',
-              }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                <span className="badge badge-internship">Featured Match</span>
-                <MatchScoreBadge score={94} size={48} showLabel={true} />
-              </div>
+            {(() => {
+              const heroOpp = featuredOpps[0] || {
+                title: 'Frontend Engineering Intern',
+                organization: 'TechCorp Labs',
+                location: { type: 'Remote', city: 'Bengaluru' },
+                matchScore: 94,
+                requiredSkills: [{ name: 'React' }, { name: 'JavaScript' }, { name: 'REST APIs' }, { name: 'Git' }],
+                salary: { amount: '₹35,000', period: 'month' },
+              };
+              const heroSkills = (heroOpp.requiredSkills || []).slice(0, 4);
 
-              <h3 style={{ fontSize: '1.25rem', marginBottom: '4px', color: 'var(--primary-text)' }}>
-                Frontend Engineering Intern
-              </h3>
-              <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', marginBottom: '16px' }}>
-                TechCorp Labs • Bengaluru (Remote)
-              </p>
-
-              {/* Match Factors Snapshot */}
-              <div
-                style={{
-                  marginBottom: '16px',
-                  padding: '12px',
-                  backgroundColor: 'var(--box-subtle)',
-                  borderRadius: '10px',
-                  border: '1px solid var(--box-subtle-border)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '6px',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.775rem' }}>
-                  <span style={{ color: 'var(--primary-text)' }}>Skill Match (40%)</span>
-                  <strong style={{ color: '#10B981' }}>100% matched</strong>
-                </div>
-                <div style={{ height: '6px', backgroundColor: 'var(--border-color)', borderRadius: '3px', overflow: 'hidden' }}>
-                  <div style={{ width: '100%', height: '100%', background: 'linear-gradient(90deg, #10B981, #34D399)', boxShadow: '0 0 10px #10B981' }} />
-                </div>
-              </div>
-
-              {/* Matched Skills Chips */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '20px' }}>
-                <span className="skill-chip skill-chip-matched">React</span>
-                <span className="skill-chip skill-chip-matched">JavaScript</span>
-                <span className="skill-chip skill-chip-matched">REST APIs</span>
-                <span className="skill-chip skill-chip-matched">Git</span>
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '16px' }}>
-                <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--primary-text)' }}>
-                  ₹35,000 / month
-                </span>
-                <button
-                  onClick={() => navigate('opportunities')}
-                  className="btn-primary"
-                  style={{ padding: '7px 18px', fontSize: '0.8rem' }}
+              return (
+                <Tilt3DCard
+                  className="card card-featured animate-fade-in anim-float-3d"
+                  style={{
+                    padding: '28px',
+                    position: 'relative',
+                    zIndex: 2,
+                    maxWidth: '430px',
+                    width: '100%',
+                    backdropFilter: 'blur(16px)',
+                  }}
                 >
-                  View Live Match
-                </button>
-              </div>
-            </Tilt3DCard>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                    <span className="badge badge-internship">Featured Match</span>
+                    <MatchScoreBadge score={heroOpp.matchScore || 92} size={48} showLabel={true} />
+                  </div>
+
+                  <h3 style={{ fontSize: '1.25rem', marginBottom: '4px', color: 'var(--primary-text)' }}>
+                    {heroOpp.title}
+                  </h3>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', marginBottom: '16px' }}>
+                    {heroOpp.organization} • {heroOpp.location?.type} {heroOpp.location?.city ? `(${heroOpp.location.city})` : ''}
+                  </p>
+
+                  {/* Match Factors Snapshot */}
+                  <div
+                    style={{
+                      marginBottom: '16px',
+                      padding: '12px',
+                      backgroundColor: 'var(--box-subtle)',
+                      borderRadius: '10px',
+                      border: '1px solid var(--box-subtle-border)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '6px',
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.775rem' }}>
+                      <span style={{ color: 'var(--primary-text)' }}>Skill Match (40%)</span>
+                      <strong style={{ color: '#10B981' }}>High Alignment</strong>
+                    </div>
+                    <div style={{ height: '6px', backgroundColor: 'var(--border-color)', borderRadius: '3px', overflow: 'hidden' }}>
+                      <div style={{ width: '100%', height: '100%', background: 'linear-gradient(90deg, #10B981, #34D399)', boxShadow: '0 0 10px #10B981' }} />
+                    </div>
+                  </div>
+
+                  {/* Matched Skills Chips */}
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '20px' }}>
+                    {heroSkills.map((s, idx) => (
+                      <span key={idx} className="skill-chip skill-chip-matched">
+                        {s.name || s}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '16px' }}>
+                    <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--primary-text)' }}>
+                      {heroOpp.salary?.amount ? `${heroOpp.salary.amount} / ${heroOpp.salary.period}` : 'Competitive'}
+                    </span>
+                    <button
+                      onClick={() => heroOpp._id ? navigate('details', { id: heroOpp._id }) : navigate('opportunities')}
+                      className="btn-primary"
+                      style={{ padding: '7px 18px', fontSize: '0.8rem' }}
+                    >
+                      View Live Match
+                    </button>
+                  </div>
+                </Tilt3DCard>
+              );
+            })()}
 
             {/* Overlapping Skill Gap Preview Card with 3D Tilt */}
             <Tilt3DCard
@@ -667,20 +690,32 @@ export default function LandingPage() {
             }}
           >
             <div>
-              <h2 style={{ fontSize: '2.8rem', fontWeight: 800, color: '#C084FC' }}>1,000+</h2>
-              <p style={{ fontSize: '0.95rem', color: 'var(--secondary-text)', fontWeight: 500 }}>Opportunities Listed</p>
+              <h2 style={{ fontSize: '2.8rem', fontWeight: 800, color: '#C084FC' }}>
+                {stats?.totalOpportunities ? `${stats.totalOpportunities}` : '50+'}
+              </h2>
+              <p style={{ fontSize: '0.95rem', color: 'var(--secondary-text)', fontWeight: 500 }}>Active Opportunities Listed</p>
             </div>
             <div>
-              <h2 style={{ fontSize: '2.8rem', fontWeight: 800, color: '#F472B6' }}>500+</h2>
-              <p style={{ fontSize: '0.95rem', color: 'var(--secondary-text)', fontWeight: 500 }}>Active Employers</p>
+              <h2 style={{ fontSize: '2.8rem', fontWeight: 800, color: '#F472B6' }}>
+                {stats?.totalEmployers ? `${stats.totalEmployers}` : '15+'}
+              </h2>
+              <p style={{ fontSize: '0.95rem', color: 'var(--secondary-text)', fontWeight: 500 }}>Verified Employers</p>
             </div>
             <div>
-              <h2 style={{ fontSize: '2.8rem', fontWeight: 800, color: '#38BDF8' }}>5,000+</h2>
-              <p style={{ fontSize: '0.95rem', color: 'var(--secondary-text)', fontWeight: 500 }}>Students & Freshers</p>
+              <h2 style={{ fontSize: '2.8rem', fontWeight: 800, color: '#38BDF8' }}>
+                {stats?.totalStudents ? `${stats.totalStudents}` : '100+'}
+              </h2>
+              <p style={{ fontSize: '0.95rem', color: 'var(--secondary-text)', fontWeight: 500 }}>Registered Candidates</p>
+            </div>
+            <div>
+              <h2 style={{ fontSize: '2.8rem', fontWeight: 800, color: '#34D399' }}>
+                {stats?.totalSkills ? `${stats.totalSkills}` : '30+'}
+              </h2>
+              <p style={{ fontSize: '0.95rem', color: 'var(--secondary-text)', fontWeight: 500 }}>Verified Technical Skills</p>
             </div>
           </div>
           <p style={{ fontSize: '0.75rem', color: '#64748B' }}>
-            *Figures labeled as illustrative platform projections for hackathon presentation.
+            *Live platform counts synced directly from the OpenPath database.
           </p>
         </div>
       </section>

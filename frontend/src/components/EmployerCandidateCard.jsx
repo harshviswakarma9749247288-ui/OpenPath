@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Mail, GraduationCap, Briefcase, MapPin, FileText } from 'lucide-react';
+import { Mail, GraduationCap, Briefcase, MapPin, FileText, X } from 'lucide-react';
 import MatchScoreBadge from './MatchScoreBadge';
 import ApplicationStatusBadge from './ApplicationStatusBadge';
 
 export default function EmployerCandidateCard({ candidate, onStatusChange }) {
   const [isUpdating, setIsUpdating] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState(candidate.status);
+  const [showResumeModal, setShowResumeModal] = useState(false);
 
   const statuses = ['Applied', 'Reviewing', 'Shortlisted', 'Interview', 'Selected', 'Rejected'];
 
@@ -16,7 +17,7 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
     setIsUpdating(false);
   };
 
-  const user = candidate.user;
+  const user = candidate.user || {};
 
   return (
     <div
@@ -44,16 +45,16 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--primary-text)' }}>
-                {user.name}
+                {user.name || 'Candidate'}
               </h3>
               <ApplicationStatusBadge status={selectedStatus} />
             </div>
             <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Mail size={14} /> {user.email}
+              <Mail size={14} /> {user.email || 'No email provided'}
               {user.location?.city && (
                 <>
                   <span>•</span>
-                  <MapPin size={14} /> {user.location.city}, {user.location.state}
+                  <MapPin size={14} /> {user.location.city}{user.location.state ? `, ${user.location.state}` : ''}
                 </>
               )}
             </p>
@@ -67,7 +68,7 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
               COMPUTED MATCH
             </span>
           </div>
-          <MatchScoreBadge score={candidate.matchScore} size={50} showLabel={false} />
+          <MatchScoreBadge score={candidate.matchScore ?? 0} size={50} showLabel={false} />
         </div>
       </div>
 
@@ -88,10 +89,10 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
           <GraduationCap size={16} color="#7C3AED" style={{ flexShrink: 0, marginTop: '2px' }} />
           <div>
             <strong style={{ color: 'var(--primary-text)' }}>
-              {user.education?.degree || 'Undergraduate Degree'}
+              {user.education?.degree || 'Education not specified'}
             </strong>
             <p style={{ color: 'var(--secondary-text)', fontSize: '0.8rem' }}>
-              {user.education?.institution || 'Academic Institution'} • Class of {user.education?.endYear || '2026'}
+              {user.education?.institution || 'Self-directed learning'}{user.education?.endYear ? ` • Class of ${user.education.endYear}` : ''}
             </p>
           </div>
         </div>
@@ -100,10 +101,10 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
           <Briefcase size={16} color="#EC4899" style={{ flexShrink: 0, marginTop: '2px' }} />
           <div>
             <strong style={{ color: 'var(--primary-text)' }}>
-              {user.experience?.role || 'Fresher / Project Contributor'}
+              {user.experience?.role || 'Projects / Fresher'}
             </strong>
             <p style={{ color: 'var(--secondary-text)', fontSize: '0.8rem' }}>
-              {user.experience?.organization || 'Personal Portfolio & Coursework'}
+              {user.experience?.organization || 'Portfolio & Coursework'}
             </p>
           </div>
         </div>
@@ -152,9 +153,7 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
         }}
       >
         <button
-          onClick={() => {
-            alert(`Opening candidate digital resume portfolio for ${user.name}`);
-          }}
+          onClick={() => setShowResumeModal(true)}
           className="btn-secondary"
           style={{ padding: '6px 14px', fontSize: '0.8rem' }}
         >
@@ -188,6 +187,141 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
           ))}
         </div>
       </div>
+
+      {/* Interactive Candidate Digital Resume Modal */}
+      {showResumeModal && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(3, 7, 18, 0.75)',
+            backdropFilter: 'blur(12px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            padding: '16px',
+          }}
+        >
+          <div
+            className="card card-featured animate-fade-in"
+            style={{
+              maxWidth: '560px',
+              width: '100%',
+              padding: '28px',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              backgroundColor: 'var(--card-bg)',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
+              <h3 style={{ fontSize: '1.25rem', color: 'var(--primary-text)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <FileText size={20} color="#C084FC" /> Digital Resume Profile
+              </h3>
+              <button
+                type="button"
+                onClick={() => setShowResumeModal(false)}
+                className="btn-ghost"
+                style={{ padding: '4px' }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', gap: '16px', alignItems: 'center', marginBottom: '20px', paddingBottom: '16px', borderBottom: '1px solid var(--border-color)' }}>
+              <img
+                src={
+                  user.avatar ||
+                  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150'
+                }
+                alt={user.name}
+                style={{ width: '60px', height: '60px', borderRadius: '50%', objectFit: 'cover' }}
+              />
+              <div>
+                <h4 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--primary-text)' }}>{user.name || 'Candidate'}</h4>
+                <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)' }}>{user.email || 'N/A'}</p>
+                <p style={{ fontSize: '0.825rem', color: 'var(--secondary-text)', marginTop: '2px' }}>
+                  {user.location?.city ? `${user.location.city}${user.location.country ? `, ${user.location.country}` : ''}` : 'Location not specified'} • {user.location?.remotePreference || 'Remote'}
+                </p>
+              </div>
+            </div>
+
+            {user.bio && (
+              <div style={{ marginBottom: '16px' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--secondary-text)', textTransform: 'uppercase' }}>Professional Bio</span>
+                <p style={{ fontSize: '0.875rem', color: 'var(--primary-text)', marginTop: '4px', lineHeight: '1.5' }}>{user.bio}</p>
+              </div>
+            )}
+
+            <div style={{ marginBottom: '16px' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--secondary-text)', textTransform: 'uppercase' }}>Academic Education</span>
+              <div style={{ padding: '12px', backgroundColor: 'var(--box-subtle)', borderRadius: '8px', marginTop: '6px' }}>
+                <strong style={{ fontSize: '0.9rem', color: 'var(--primary-text)' }}>
+                  {user.education?.degree || 'Degree not specified'}
+                </strong>
+                <p style={{ fontSize: '0.825rem', color: 'var(--secondary-text)', marginTop: '2px' }}>
+                  {user.education?.institution || 'Institution not specified'} {user.education?.fieldOfStudy ? `• ${user.education.fieldOfStudy}` : ''}
+                </p>
+                {user.education?.endYear && (
+                  <p style={{ fontSize: '0.8rem', color: 'var(--secondary-text)', marginTop: '2px' }}>
+                    Graduation Year: {user.education.endYear}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div style={{ marginBottom: '16px' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--secondary-text)', textTransform: 'uppercase' }}>Experience & Projects</span>
+              <div style={{ padding: '12px', backgroundColor: 'var(--box-subtle)', borderRadius: '8px', marginTop: '6px' }}>
+                <strong style={{ fontSize: '0.9rem', color: 'var(--primary-text)' }}>
+                  {user.experience?.role || 'No specific role listed'}
+                </strong>
+                <p style={{ fontSize: '0.825rem', color: 'var(--secondary-text)', marginTop: '2px' }}>
+                  {user.experience?.organization || 'Independent Projects'} {user.experience?.duration ? `(${user.experience.duration})` : ''}
+                </p>
+                {user.experience?.description && (
+                  <p style={{ fontSize: '0.8rem', color: 'var(--primary-text)', marginTop: '4px' }}>
+                    {user.experience.description}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {candidate.notes && (
+              <div style={{ marginBottom: '16px' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--secondary-text)', textTransform: 'uppercase' }}>Cover Note From Applicant</span>
+                <p style={{ fontSize: '0.85rem', color: 'var(--primary-text)', marginTop: '4px', fontStyle: 'italic', padding: '10px', backgroundColor: 'var(--box-subtle)', borderRadius: '6px' }}>
+                  &ldquo;{candidate.notes}&rdquo;
+                </p>
+              </div>
+            )}
+
+            <div style={{ marginBottom: '20px' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--secondary-text)', textTransform: 'uppercase' }}>Candidate Skills</span>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '6px' }}>
+                {(user.skills || []).map((s, idx) => (
+                  <span key={idx} className="skill-chip skill-chip-matched">
+                    {s.name || s}
+                  </span>
+                ))}
+                {(!user.skills || user.skills.length === 0) && (
+                  <span style={{ fontSize: '0.8rem', color: 'var(--secondary-text)' }}>No skills listed</span>
+                )}
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+              <button
+                type="button"
+                onClick={() => setShowResumeModal(false)}
+                className="btn-primary"
+              >
+                Close Resume
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -30,8 +30,29 @@ export default function ProfilePage() {
   const [endYear, setEndYear] = useState(user?.education?.endYear || '');
   const [city, setCity] = useState(user?.location?.city || '');
   const [remotePref, setRemotePref] = useState(user?.location?.remotePreference || 'Remote');
+  const [expRole, setExpRole] = useState(user?.experience?.role || '');
+  const [expOrg, setExpOrg] = useState(user?.experience?.organization || '');
+  const [expDuration, setExpDuration] = useState(user?.experience?.duration || '');
+  const [expDesc, setExpDesc] = useState(user?.experience?.description || '');
 
-  const percentage = profileCompletion?.percentage || 80;
+  React.useEffect(() => {
+    if (user) {
+      setName(user.name || '');
+      setBio(user.bio || '');
+      setDegree(user.education?.degree || '');
+      setInstitution(user.education?.institution || '');
+      setFieldOfStudy(user.education?.fieldOfStudy || '');
+      setEndYear(user.education?.endYear || '');
+      setCity(user.location?.city || '');
+      setRemotePref(user.location?.remotePreference || 'Remote');
+      setExpRole(user.experience?.role || '');
+      setExpOrg(user.experience?.organization || '');
+      setExpDuration(user.experience?.duration || '');
+      setExpDesc(user.experience?.description || '');
+    }
+  }, [user]);
+
+  const percentage = profileCompletion?.percentage ?? 0;
 
   const handleSaveProfile = async (e) => {
     e.preventDefault();
@@ -44,10 +65,16 @@ export default function ProfilePage() {
         fieldOfStudy,
         endYear,
       },
+      experience: {
+        role: expRole,
+        organization: expOrg,
+        duration: expDuration,
+        description: expDesc,
+      },
       location: {
         city,
-        state: 'Karnataka',
-        country: 'India',
+        state: user?.location?.state || '',
+        country: user?.location?.country || 'India',
         remotePreference: remotePref,
       },
     });
@@ -59,30 +86,29 @@ export default function ProfilePage() {
   };
 
   const handleDownloadDigitalResume = () => {
-    // Generate clean text-based / printable resume summary
     const resumeText = `=====================================================
 OPENPATH VERIFIED DIGITAL RESUME
 =====================================================
-Name: ${user?.name}
-Email: ${user?.email}
-Location: ${user?.location?.city || 'Bengaluru'}, ${user?.location?.country || 'India'}
-Preferred Mode: ${user?.location?.remotePreference || 'Remote'}
+Name: ${user?.name || 'Candidate'}
+Email: ${user?.email || 'N/A'}
+Location: ${user?.location?.city || 'Not specified'}, ${user?.location?.country || 'India'}
+Preferred Mode: ${user?.location?.remotePreference || 'Not specified'}
 
 EDUCATION:
-Degree: ${user?.education?.degree || 'Bachelor of Technology'}
-Institution: ${user?.education?.institution || 'IIIT'} (${user?.education?.fieldOfStudy})
-Graduation Year: ${user?.education?.endYear || '2026'} | Grade: ${user?.education?.grade || '8.8 CGPA'}
+Degree: ${user?.education?.degree || 'Not specified'}
+Institution: ${user?.education?.institution || 'Not specified'} ${user?.education?.fieldOfStudy ? `(${user.education.fieldOfStudy})` : ''}
+Graduation Year: ${user?.education?.endYear || 'N/A'}
 
 TECHNICAL SKILLS:
-${(user?.skills || []).map((s) => s.name || s).join(', ')}
+${(user?.skills && user.skills.length > 0) ? user.skills.map((s) => s.name || s).join(', ') : 'None listed'}
 
 EXPERIENCE & PROJECTS:
-Role: ${user?.experience?.role || 'Frontend Contributor'}
-Org: ${user?.experience?.organization || 'Campus Open Source Guild'}
-Details: ${user?.experience?.description || 'Built interactive web applications'}
+Role: ${user?.experience?.role || 'None listed'}
+Org: ${user?.experience?.organization || 'N/A'} ${user?.experience?.duration ? `(${user.experience.duration})` : ''}
+Details: ${user?.experience?.description || 'N/A'}
 
 BIO SUMMARY:
-${user?.bio || 'Passionate software developer.'}
+${user?.bio || 'No bio provided yet.'}
 =====================================================`;
 
     const blob = new Blob([resumeText], { type: 'text/plain' });
@@ -136,10 +162,10 @@ ${user?.bio || 'Passionate software developer.'}
               </span>
             </div>
             <p style={{ fontSize: '0.9rem', color: 'var(--secondary-text)', marginTop: '2px' }}>
-              {user?.email} • {user?.location?.city || 'Bengaluru'} ({user?.location?.remotePreference || 'Remote'})
+              {user?.email} • {user?.location?.city || 'Location not specified'} ({user?.location?.remotePreference || 'Remote'})
             </p>
             <p style={{ fontSize: '0.85rem', color: 'var(--primary-text)', marginTop: '8px', maxWidth: '540px' }}>
-              {user?.bio || 'Final-year Computer Science student passionate about building accessible web apps.'}
+              {user?.bio || 'No bio provided yet. Click "Edit Profile" to introduce yourself.'}
             </p>
           </div>
         </div>
@@ -193,28 +219,47 @@ ${user?.bio || 'Passionate software developer.'}
               <input
                 type="text"
                 className="form-input"
+                placeholder="e.g. Bengaluru, Mumbai"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
               />
             </div>
           </div>
 
-          <div className="form-group">
-            <label className="form-label">Bio Summary</label>
-            <textarea
-              rows={2}
-              className="form-textarea"
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-            />
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div className="form-group">
+              <label className="form-label">Work Mode Preference</label>
+              <select
+                className="form-select"
+                value={remotePref}
+                onChange={(e) => setRemotePref(e.target.value)}
+              >
+                <option value="Remote">Remote Only</option>
+                <option value="Hybrid">Hybrid</option>
+                <option value="On-site">On-site</option>
+                <option value="Any">Flexible (Any)</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Bio Summary</label>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="Brief professional headline or bio"
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+              />
+            </div>
           </div>
 
+          <h4 style={{ fontSize: '1rem', color: '#38BDF8', marginTop: '16px', marginBottom: '12px' }}>Education</h4>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <div className="form-group">
               <label className="form-label">Degree</label>
               <input
                 type="text"
                 className="form-input"
+                placeholder="e.g. B.Tech, BCA, B.Sc"
                 value={degree}
                 onChange={(e) => setDegree(e.target.value)}
               />
@@ -224,13 +269,84 @@ ${user?.bio || 'Passionate software developer.'}
               <input
                 type="text"
                 className="form-input"
+                placeholder="College or University Name"
                 value={institution}
                 onChange={(e) => setInstitution(e.target.value)}
               />
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px' }}>
+            <div className="form-group">
+              <label className="form-label">Field of Study / Major</label>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="e.g. Computer Science"
+                value={fieldOfStudy}
+                onChange={(e) => setFieldOfStudy(e.target.value)}
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Graduation Year</label>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="e.g. 2026"
+                value={endYear}
+                onChange={(e) => setEndYear(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <h4 style={{ fontSize: '1rem', color: '#F472B6', marginTop: '16px', marginBottom: '12px' }}>Experience & Projects</h4>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div className="form-group">
+              <label className="form-label">Role / Title</label>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="e.g. Frontend Developer, Intern"
+                value={expRole}
+                onChange={(e) => setExpRole(e.target.value)}
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Organization / Project</label>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="e.g. Open Source Project, Company"
+                value={expOrg}
+                onChange={(e) => setExpOrg(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '16px' }}>
+            <div className="form-group">
+              <label className="form-label">Duration</label>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="e.g. 6 Months, Jan - Jun 2024"
+                value={expDuration}
+                onChange={(e) => setExpDuration(e.target.value)}
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Description of Contributions</label>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="Key accomplishments or technologies used"
+                value={expDesc}
+                onChange={(e) => setExpDesc(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '16px' }}>
             <button type="button" onClick={() => setIsEditing(false)} className="btn-secondary">
               Cancel
             </button>
@@ -250,19 +366,27 @@ ${user?.bio || 'Passionate software developer.'}
             <h3 style={{ fontSize: '1.15rem', color: 'var(--primary-text)' }}>Education</h3>
           </div>
 
-          <div style={{ padding: '16px', backgroundColor: 'var(--box-subtle)', borderRadius: '10px', border: '1px solid var(--box-subtle-border)' }}>
-            <strong style={{ fontSize: '1rem', color: 'var(--primary-text)' }}>
-              {user?.education?.degree || 'Bachelor of Technology'}
-            </strong>
-            <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', marginTop: '2px' }}>
-              {user?.education?.institution || 'Indian Institute of Information Technology'}
-            </p>
-            <div style={{ display: 'flex', gap: '10px', marginTop: '8px', fontSize: '0.8rem', color: 'var(--secondary-text)' }}>
-              <span>Major: {user?.education?.fieldOfStudy || 'Computer Science'}</span>
-              <span>•</span>
-              <span>Class of {user?.education?.endYear || '2026'}</span>
+          {user?.education?.degree || user?.education?.institution ? (
+            <div style={{ padding: '16px', backgroundColor: 'var(--box-subtle)', borderRadius: '10px', border: '1px solid var(--box-subtle-border)' }}>
+              <strong style={{ fontSize: '1rem', color: 'var(--primary-text)' }}>
+                {user?.education?.degree || 'Degree not specified'}
+              </strong>
+              {user?.education?.institution && (
+                <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', marginTop: '2px' }}>
+                  {user.education.institution}
+                </p>
+              )}
+              <div style={{ display: 'flex', gap: '10px', marginTop: '8px', fontSize: '0.8rem', color: 'var(--secondary-text)' }}>
+                {user?.education?.fieldOfStudy && <span>Major: {user.education.fieldOfStudy}</span>}
+                {user?.education?.fieldOfStudy && user?.education?.endYear && <span>•</span>}
+                {user?.education?.endYear && <span>Class of {user.education.endYear}</span>}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div style={{ padding: '20px', backgroundColor: 'var(--box-subtle)', borderRadius: '10px', border: '1px dashed var(--box-subtle-border)', textAlign: 'center', color: 'var(--secondary-text)', fontSize: '0.85rem' }}>
+              No education details added yet. Click &quot;Edit Profile&quot; to add your academic background.
+            </div>
+          )}
         </div>
 
         {/* Experience & Projects */}
@@ -272,17 +396,25 @@ ${user?.bio || 'Passionate software developer.'}
             <h3 style={{ fontSize: '1.15rem', color: 'var(--primary-text)' }}>Experience & Projects</h3>
           </div>
 
-          <div style={{ padding: '16px', backgroundColor: 'var(--box-subtle)', borderRadius: '10px', border: '1px solid var(--box-subtle-border)' }}>
-            <strong style={{ fontSize: '1rem', color: 'var(--primary-text)' }}>
-              {user?.experience?.role || 'Frontend Contributor'}
-            </strong>
-            <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', marginTop: '2px' }}>
-              {user?.experience?.organization || 'Campus Open Source Guild'} ({user?.experience?.duration || '6 Months'})
-            </p>
-            <p style={{ fontSize: '0.8rem', color: 'var(--primary-text)', marginTop: '8px' }}>
-              {user?.experience?.description || 'Built interactive component modules and consumed REST endpoints.'}
-            </p>
-          </div>
+          {user?.experience?.role || user?.experience?.organization ? (
+            <div style={{ padding: '16px', backgroundColor: 'var(--box-subtle)', borderRadius: '10px', border: '1px solid var(--box-subtle-border)' }}>
+              <strong style={{ fontSize: '1rem', color: 'var(--primary-text)' }}>
+                {user?.experience?.role || 'Role not specified'}
+              </strong>
+              <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', marginTop: '2px' }}>
+                {user?.experience?.organization || 'Project / Org'} {user?.experience?.duration ? `(${user.experience.duration})` : ''}
+              </p>
+              {user?.experience?.description && (
+                <p style={{ fontSize: '0.8rem', color: 'var(--primary-text)', marginTop: '8px' }}>
+                  {user.experience.description}
+                </p>
+              )}
+            </div>
+          ) : (
+            <div style={{ padding: '20px', backgroundColor: 'var(--box-subtle)', borderRadius: '10px', border: '1px dashed var(--box-subtle-border)', textAlign: 'center', color: 'var(--secondary-text)', fontSize: '0.85rem' }}>
+              No experience or projects added yet. Click &quot;Edit Profile&quot; to record your contributions.
+            </div>
+          )}
         </div>
 
         {/* Verified Skills */}
@@ -298,11 +430,17 @@ ${user?.bio || 'Passionate software developer.'}
           </div>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-            {(user?.skills || []).map((skill, idx) => (
-              <span key={idx} className="skill-chip skill-chip-matched">
-                {skill.name || skill}
+            {(user?.skills && user.skills.length > 0) ? (
+              user.skills.map((skill, idx) => (
+                <span key={skill._id || idx} className="skill-chip skill-chip-matched">
+                  {skill.name || skill}
+                </span>
+              ))
+            ) : (
+              <span style={{ fontSize: '0.85rem', color: 'var(--secondary-text)' }}>
+                No verified skills added yet. Click &quot;Manage Skills&quot; to add your technical abilities.
               </span>
-            ))}
+            )}
           </div>
         </div>
       </div>

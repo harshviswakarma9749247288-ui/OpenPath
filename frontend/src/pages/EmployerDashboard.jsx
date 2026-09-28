@@ -107,7 +107,7 @@ export default function EmployerDashboard() {
             ACTIVE LISTINGS
           </span>
           <h3 style={{ fontSize: '2rem', color: '#C084FC', marginTop: '2px' }}>
-            {stats?.activeListings || 6}
+            {stats?.activeListings ?? 0}
           </h3>
           <span style={{ fontSize: '0.75rem', color: '#94A3B8' }}>Verified roles published</span>
         </div>
@@ -117,7 +117,7 @@ export default function EmployerDashboard() {
             TOTAL CANDIDATES
           </span>
           <h3 style={{ fontSize: '2rem', color: '#38BDF8', marginTop: '2px' }}>
-            {stats?.totalApplications || 2}
+            {stats?.totalApplications ?? 0}
           </h3>
           <span style={{ fontSize: '0.75rem', color: '#94A3B8' }}>Applications submitted</span>
         </div>
@@ -127,7 +127,7 @@ export default function EmployerDashboard() {
             SHORTLISTED
           </span>
           <h3 style={{ fontSize: '2rem', color: '#F472B6', marginTop: '2px' }}>
-            {stats?.shortlistedCount || 1}
+            {stats?.shortlistedCount ?? 0}
           </h3>
           <span style={{ fontSize: '0.75rem', color: '#94A3B8' }}>High compatibility fit</span>
         </div>
@@ -137,7 +137,7 @@ export default function EmployerDashboard() {
             INTERVIEWS
           </span>
           <h3 style={{ fontSize: '2rem', color: '#FBBF24', marginTop: '2px' }}>
-            {stats?.interviewCount || 0}
+            {stats?.interviewCount ?? 0}
           </h3>
           <span style={{ fontSize: '0.75rem', color: '#94A3B8' }}>Scheduled technical rounds</span>
         </div>
@@ -194,12 +194,12 @@ export default function EmployerDashboard() {
                           fontSize: '0.75rem',
                         }}
                       >
-                        {app.user?.name?.substring(0, 2).toUpperCase() || 'AL'}
+                        {app.user?.name?.substring(0, 2).toUpperCase() || 'CA'}
                       </div>
                       <div>
-                        <span>{app.user?.name}</span>
+                        <span>{app.user?.name || 'Applicant'}</span>
                         <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)', display: 'block' }}>
-                          {app.user?.education?.degree || 'B.Tech CS'}
+                          {app.user?.education?.degree || app.user?.email || 'Candidate'}
                         </span>
                       </div>
                     </div>

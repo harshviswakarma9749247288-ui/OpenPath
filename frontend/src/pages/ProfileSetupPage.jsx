@@ -19,34 +19,58 @@ export default function ProfileSetupPage() {
   const { navigate, showToast } = useUIStore();
 
   const [availableSkills, setAvailableSkills] = useState([]);
-  const [degree, setDegree] = useState(user?.education?.degree || 'Bachelor of Technology (B.Tech)');
-  const [institution, setInstitution] = useState(user?.education?.institution || 'Indian Institute of Technology');
-  const [fieldOfStudy, setFieldOfStudy] = useState(user?.education?.fieldOfStudy || 'Computer Science & Engineering');
-  const [endYear, setEndYear] = useState(user?.education?.endYear || '2026');
+  const [degree, setDegree] = useState(user?.education?.degree || '');
+  const [institution, setInstitution] = useState(user?.education?.institution || '');
+  const [fieldOfStudy, setFieldOfStudy] = useState(user?.education?.fieldOfStudy || '');
+  const [endYear, setEndYear] = useState(user?.education?.endYear || '');
 
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [skillInput, setSkillInput] = useState('');
 
-  const [interests, setInterests] = useState(user?.interests || ['Web Development', 'Frontend', 'UI/UX Design']);
+  const [interests, setInterests] = useState(user?.interests || []);
   const [interestInput, setInterestInput] = useState('');
 
-  const [city, setCity] = useState(user?.location?.city || 'Bengaluru');
-  const [remotePref, setRemotePref] = useState(user?.location?.remotePreference || 'Remote');
-  const [bio, setBio] = useState(user?.bio || 'Aspiring software engineer eager to build accessible web apps.');
+  const [city, setCity] = useState(user?.location?.city || '');
+  const [remotePref, setRemotePref] = useState(user?.location?.remotePreference || 'Hybrid');
+  const [bio, setBio] = useState(user?.bio || '');
+
+  useEffect(() => {
+    if (user) {
+      if (user.education) {
+        setDegree(user.education.degree || '');
+        setInstitution(user.education.institution || '');
+        setFieldOfStudy(user.education.fieldOfStudy || '');
+        setEndYear(user.education.endYear || '');
+      }
+      if (user.interests && user.interests.length > 0) {
+        setInterests(user.interests);
+      }
+      if (user.location) {
+        setCity(user.location.city || '');
+        setRemotePref(user.location.remotePreference || 'Hybrid');
+      }
+      if (user.bio) {
+        setBio(user.bio);
+      }
+    }
+  }, [user]);
 
   useEffect(() => {
     api
       .get('/skills')
       .then((res) => {
-        setAvailableSkills(res.data.skills || []);
-        // Default preselect 3-4 skills if none
-        if (res.data.skills?.length > 0 && selectedSkills.length === 0) {
-          const preselected = res.data.skills.slice(0, 4);
-          setSelectedSkills(preselected);
+        const list = res.data.skills || [];
+        setAvailableSkills(list);
+        if (user?.skills?.length > 0) {
+          const userSkillIds = user.skills.map((s) => (typeof s === 'object' ? s._id : s));
+          const matched = list.filter((s) => userSkillIds.includes(s._id));
+          if (matched.length > 0) {
+            setSelectedSkills(matched);
+          }
         }
       })
       .catch(() => {});
-  }, []);
+  }, [user]);
 
   const handleAddSkill = (skillObj) => {
     if (!selectedSkills.some((s) => (s._id || s) === (skillObj._id || skillObj))) {
@@ -94,8 +118,8 @@ export default function ProfileSetupPage() {
       interests,
       location: {
         city,
-        state: 'Karnataka',
-        country: 'India',
+        state: user?.location?.state || '',
+        country: user?.location?.country || 'India',
         remotePreference: remotePref,
       },
     };

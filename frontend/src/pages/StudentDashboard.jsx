@@ -42,7 +42,9 @@ export default function StudentDashboard() {
       });
   }, []);
 
-  const percentage = profileCompletion?.percentage || 70;
+  const percentage = profileCompletion?.percentage ?? (user?.skills?.length ? 80 : 40);
+  const missing = profileCompletion?.missingFields || [];
+
   if (isLoading && (!recommendations?.bestMatches || recommendations.bestMatches.length === 0)) {
     return <CyberLoader message="Evaluating Algorithmic Student Recommendations..." />;
   }
@@ -221,7 +223,9 @@ export default function StudentDashboard() {
               <h2 style={{ fontSize: '1.4rem', color: 'var(--primary-text)' }}>Based on Your Verified Skills</h2>
             </div>
             <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)' }}>
-              Roles matching your specific technical stack (React, Node.js, REST APIs).
+              {user?.skills?.length
+                ? `Roles matching your technical competencies: ${user.skills.map((s) => s.name || s).slice(0, 4).join(', ')}.`
+                : 'Roles matching verified competencies. Add more skills to profile to expand recommendations.'}
             </p>
           </div>
           <button
@@ -237,6 +241,11 @@ export default function StudentDashboard() {
           {recommendations.basedOnSkills.map((opp) => (
             <OpportunityCard key={opp._id} opportunity={opp} />
           ))}
+          {recommendations.basedOnSkills.length === 0 && (
+            <div className="card" style={{ padding: '24px', gridColumn: '1 / -1', color: 'var(--secondary-text)', textAlign: 'center' }}>
+              <p>Add technical skills in your Profile to unlock skill-based recommendations.</p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -249,7 +258,9 @@ export default function StudentDashboard() {
               <h2 style={{ fontSize: '1.4rem', color: 'var(--primary-text)' }}>Based on Your Career Interests</h2>
             </div>
             <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)' }}>
-              Selected based on your chosen topics and industry domains.
+              {user?.interests?.length
+                ? `Selected for your interest domains: ${user.interests.slice(0, 3).join(', ')}.`
+                : 'Selected based on your chosen career domains and industry tags.'}
             </p>
           </div>
           <button
@@ -265,6 +276,11 @@ export default function StudentDashboard() {
           {recommendations.basedOnInterests.map((opp) => (
             <OpportunityCard key={opp._id} opportunity={opp} />
           ))}
+          {recommendations.basedOnInterests.length === 0 && (
+            <div className="card" style={{ padding: '24px', gridColumn: '1 / -1', color: 'var(--secondary-text)', textAlign: 'center' }}>
+              <p>Explore opportunities matching diverse career interests and industry pathways.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -334,7 +334,7 @@ export default function Navbar() {
               style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }}
             />
             <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--primary-text)' }}>
-              {user.name.split(' ')[0]}
+              {(user.name || 'User').split(' ')[0]}
             </span>
             <span
               style={{
