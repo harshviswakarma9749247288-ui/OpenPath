@@ -14,6 +14,7 @@ import { useOpportunityStore } from '../store/useOpportunityStore';
 import { useApplicationStore } from '../store/useApplicationStore';
 import { useUIStore } from '../store/useUIStore';
 import OpportunityCard from '../components/OpportunityCard';
+import BackButton from '../components/BackButton';
 
 export default function OpportunitiesPage() {
   const {
@@ -75,6 +76,8 @@ export default function OpportunitiesPage() {
 
   return (
     <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
+      <BackButton label="Back to Dashboard" fallbackPage="dashboard" style={{ marginBottom: '20px' }} />
+
       {/* Search & Top Action Bar */}
       <div style={{ marginBottom: '24px' }}>
         <form onSubmit={handleSearchSubmit} style={{ display: 'flex', gap: '12px' }}>

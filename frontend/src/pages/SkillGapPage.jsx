@@ -13,6 +13,7 @@ import { useOpportunityStore } from '../store/useOpportunityStore';
 import api from '../utils/api';
 import CyberLoader from '../components/CyberLoader';
 import Tilt3DCard from '../components/Tilt3DCard';
+import BackButton from '../components/BackButton';
 
 export default function SkillGapPage({ opportunityId }) {
   const { navigate } = useUIStore();
@@ -82,13 +83,11 @@ export default function SkillGapPage({ opportunityId }) {
 
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
-      <button
-        onClick={() => navigate('details', { id: targetId })}
-        className="btn-ghost"
-        style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginBottom: '16px' }}
-      >
-        <ArrowLeft size={16} /> Back to Opportunity
-      </button>
+      <BackButton
+        label="Back to Opportunity"
+        fallbackPage="details"
+        fallbackParams={{ id: targetId }}
+      />
 
       {/* Header Banner */}
       <div

@@ -6,6 +6,7 @@ import api from '../utils/api';
 import ThemeToggle from '../components/ThemeToggle';
 import AnimatedLogo from '../components/AnimatedLogo';
 import Tilt3DCard from '../components/Tilt3DCard';
+import BackButton from '../components/BackButton';
 
 export default function RegisterPage() {
   const { register, isLoading, error } = useAuthStore();
@@ -193,6 +194,13 @@ export default function RegisterPage() {
           width: '100%',
         }}
       >
+        <BackButton
+          label={step === 'form' ? 'Back to Home' : 'Back to Registration Form'}
+          onClick={step === 'otp' ? () => setStep('form') : undefined}
+          fallbackPage="landing"
+          style={{ alignSelf: 'flex-start', marginBottom: '20px' }}
+        />
+
         {step === 'form' ? (
           <div>
             <div style={{ marginBottom: '24px' }}>

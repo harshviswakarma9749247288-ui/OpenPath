@@ -16,6 +16,7 @@ import { useApplicationStore } from '../store/useApplicationStore';
 import { useUIStore } from '../store/useUIStore';
 import ApplicationStatusBadge from '../components/ApplicationStatusBadge';
 import ApplicationTimeline from '../components/ApplicationTimeline';
+import BackButton from '../components/BackButton';
 
 export default function ApplicationsPage() {
   const { applications, fetchMyApplications, isLoading } = useApplicationStore();
@@ -43,6 +44,8 @@ export default function ApplicationsPage() {
 
   return (
     <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
+      <BackButton label="Back to Dashboard" fallbackPage="dashboard" style={{ marginBottom: '20px' }} />
+
       {/* 1. Header & Summary Metric Dashboard */}
       <div style={{ marginBottom: '28px' }}>
         <h1 style={{ fontSize: '2rem', color: 'var(--primary-text)', marginBottom: '6px' }}>

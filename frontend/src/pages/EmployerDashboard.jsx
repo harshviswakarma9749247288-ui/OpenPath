@@ -14,6 +14,7 @@ import { useUIStore } from '../store/useUIStore';
 import api from '../utils/api';
 import MatchScoreBadge from '../components/MatchScoreBadge';
 import ApplicationStatusBadge from '../components/ApplicationStatusBadge';
+import BackButton from '../components/BackButton';
 
 export default function EmployerDashboard() {
   const { navigate } = useUIStore();
@@ -38,6 +39,8 @@ export default function EmployerDashboard() {
 
   return (
     <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
+      <BackButton label="Back to Home" fallbackPage="landing" style={{ marginBottom: '20px' }} />
+
       {/* 1. Header Banner & Post CTA */}
       <div
         className="card card-featured"

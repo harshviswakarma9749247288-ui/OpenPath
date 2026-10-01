@@ -17,6 +17,7 @@ import api from '../utils/api';
 import ThemeToggle from '../components/ThemeToggle';
 import AnimatedLogo from '../components/AnimatedLogo';
 import Tilt3DCard from '../components/Tilt3DCard';
+import BackButton from '../components/BackButton';
 
 export default function LoginPage() {
   const { login, loginWithOtp, demoLogin, isLoading, error } = useAuthStore();
@@ -324,6 +325,8 @@ export default function LoginPage() {
           width: '100%',
         }}
       >
+        <BackButton label="Back to Home" fallbackPage="landing" style={{ alignSelf: 'flex-start', marginBottom: '20px' }} />
+
         <div style={{ marginBottom: '24px' }}>
           <h2 style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--primary-text)' }}>
             Welcome Back

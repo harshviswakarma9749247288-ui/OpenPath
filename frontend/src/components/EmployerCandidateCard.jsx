@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Mail, GraduationCap, Briefcase, MapPin, FileText, X } from 'lucide-react';
+import { Mail, GraduationCap, Briefcase, MapPin, FileText, X, Download } from 'lucide-react';
 import MatchScoreBadge from './MatchScoreBadge';
 import ApplicationStatusBadge from './ApplicationStatusBadge';
+import { generatePdfResume } from '../utils/pdfResumeGenerator';
 
 export default function EmployerCandidateCard({ candidate, onStatusChange }) {
   const [isUpdating, setIsUpdating] = useState(false);
@@ -313,8 +314,17 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
               <button
                 type="button"
+                onClick={() => generatePdfResume(user, { percentage: candidate.matchScore })}
+                className="btn-secondary"
+                style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.825rem' }}
+              >
+                <Download size={14} /> Download Candidate PDF
+              </button>
+              <button
+                type="button"
                 onClick={() => setShowResumeModal(false)}
                 className="btn-primary"
+                style={{ fontSize: '0.825rem' }}
               >
                 Close Resume
               </button>

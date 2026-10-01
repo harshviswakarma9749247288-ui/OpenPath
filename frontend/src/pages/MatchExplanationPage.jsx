@@ -18,6 +18,7 @@ import MatchScoreBadge from '../components/MatchScoreBadge';
 import HoloRadar3D from '../components/HoloRadar3D';
 import Tilt3DCard from '../components/Tilt3DCard';
 import CyberLoader from '../components/CyberLoader';
+import BackButton from '../components/BackButton';
 
 export default function MatchExplanationPage({ opportunityId }) {
   const { navigate } = useUIStore();
@@ -131,13 +132,11 @@ export default function MatchExplanationPage({ opportunityId }) {
 
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
-      <button
-        onClick={() => navigate('details', { id: targetId })}
-        className="btn-ghost"
-        style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginBottom: '16px' }}
-      >
-        <ArrowLeft size={16} /> Back to Opportunity Details
-      </button>
+      <BackButton
+        label="Back to Opportunity Details"
+        fallbackPage="details"
+        fallbackParams={{ id: targetId }}
+      />
 
       {/* Main Score Header */}
       <div

@@ -17,6 +17,7 @@ import OpportunityCard from '../components/OpportunityCard';
 import MatchScoreBadge from '../components/MatchScoreBadge';
 import Tilt3DCard from '../components/Tilt3DCard';
 import CyberLoader from '../components/CyberLoader';
+import BackButton from '../components/BackButton';
 
 export default function StudentDashboard() {
   const { user, profileCompletion } = useAuthStore();
@@ -51,6 +52,8 @@ export default function StudentDashboard() {
 
   return (
     <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
+      <BackButton label="Back to Home" fallbackPage="landing" style={{ marginBottom: '20px' }} />
+
       {/* 1. Profile Completion Banner */}
       <div
         className="card card-featured"
@@ -130,7 +133,9 @@ export default function StudentDashboard() {
             <strong style={{ fontSize: '0.95rem', color: 'var(--primary-text)', display: 'block' }}>
               Explore Roles
             </strong>
-            <span style={{ fontSize: '0.775rem', color: 'var(--secondary-text)' }}>Browse 1,000+ listings</span>
+            <span style={{ fontSize: '0.775rem', color: 'var(--secondary-text)' }}>
+              Browse algorithmic matches
+            </span>
           </div>
         </Tilt3DCard>
 

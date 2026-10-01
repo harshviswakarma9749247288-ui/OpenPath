@@ -228,7 +228,7 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
               className="btn-primary"
               style={{ padding: '6px 16px', fontSize: '0.8rem' }}
             >
-              Apply
+              Apply <ChevronRight size={14} />
             </button>
           )}
         </div>

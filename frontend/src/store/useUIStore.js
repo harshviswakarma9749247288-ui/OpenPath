@@ -34,12 +34,43 @@ export const useUIStore = create((set) => ({
 
   setMobileDrawerOpen: (isOpen) => set({ isMobileDrawerOpen: isOpen }),
 
+  history: [],
+
   navigate: (page, params = {}) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    set({
-      activePage: page,
-      pageParams: params,
-      isMobileDrawerOpen: false,
+    set((state) => {
+      // Don't add duplicate of current page to history
+      const newHistory =
+        state.activePage === page
+          ? state.history
+          : [...state.history, { page: state.activePage, params: state.pageParams }];
+      return {
+        history: newHistory,
+        activePage: page,
+        pageParams: params,
+        isMobileDrawerOpen: false,
+      };
+    });
+  },
+
+  goBack: (fallbackPage = 'dashboard', fallbackParams = {}) => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    set((state) => {
+      if (state.history && state.history.length > 0) {
+        const prev = state.history[state.history.length - 1];
+        const newHistory = state.history.slice(0, -1);
+        return {
+          history: newHistory,
+          activePage: prev.page,
+          pageParams: prev.params || {},
+          isMobileDrawerOpen: false,
+        };
+      }
+      return {
+        activePage: fallbackPage,
+        pageParams: fallbackParams,
+        isMobileDrawerOpen: false,
+      };
     });
   },
 

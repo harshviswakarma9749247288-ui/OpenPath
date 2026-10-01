@@ -15,6 +15,7 @@ import {
 import { useUIStore } from '../store/useUIStore';
 import { useAuthStore } from '../store/useAuthStore';
 import api from '../utils/api';
+import BackButton from '../components/BackButton';
 
 export default function CreateOpportunityPage() {
   const { navigate, showToast } = useUIStore();
@@ -111,13 +112,11 @@ export default function CreateOpportunityPage() {
 
   return (
     <div style={{ maxWidth: '840px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
-      <button
-        onClick={() => navigate('employer-dashboard')}
-        className="btn-ghost"
-        style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginBottom: '16px' }}
-      >
-        <ArrowLeft size={16} /> Back to Dashboard
-      </button>
+      <BackButton
+        label={step > 1 ? `Back to Step ${step - 1}` : 'Back to Dashboard'}
+        onClick={step > 1 ? () => setStep(step - 1) : undefined}
+        fallbackPage="employer-dashboard"
+      />
 
       {/* Progress Steps Header */}
       <div style={{ marginBottom: '32px' }}>

@@ -170,40 +170,41 @@ export default function LandingPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <ThemeToggle showLabel={true} size="default" />
 
-            {isAuthenticated ? (
-              <button
-                onClick={() => navigate(user?.role === 'employer' ? 'employer-dashboard' : 'dashboard')}
-                className="btn-primary"
-                style={{ padding: '8px 18px', fontSize: '0.875rem' }}
-              >
-                Dashboard <ArrowRight size={15} />
-              </button>
-            ) : (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              {isAuthenticated ? (
+                <button
+                  onClick={() => navigate(user?.role === 'employer' ? 'employer-dashboard' : 'dashboard')}
+                  className="btn-liquid-glass"
+                  style={{ padding: '8px 18px', fontSize: '0.875rem' }}
+                >
+                  Dashboard <ArrowRight size={14} />
+                </button>
+              ) : (
                 <button
                   onClick={() => navigate('login')}
-                  className="btn-secondary"
+                  className="btn-liquid-glass"
                   style={{ padding: '8px 18px', fontSize: '0.875rem' }}
                 >
                   Sign In
                 </button>
-                <button
-                  onClick={() => navigate('register')}
-                  className="btn-primary"
-                  style={{ padding: '8px 18px', fontSize: '0.875rem' }}
-                >
-                  Get Started
-                </button>
-              </div>
-            )}
+              )}
+
+              <button
+                onClick={() => navigate('register')}
+                className="btn-glow-ring"
+                style={{ padding: '8px 22px', fontSize: '0.875rem', fontWeight: 700 }}
+              >
+                Get Started Free <ArrowRight size={15} />
+              </button>
+            </div>
           </div>
         </div>
       </header>
 
-      {/* 1. HERO SECTION */}
+      {/* 1. HERO SECTION (3D Animated & Cinematic Scrolltide Experience) */}
       <section
         style={{
-          padding: '60px 24px 70px 24px',
+          padding: '60px 24px 80px 24px',
           maxWidth: '1240px',
           margin: '0 auto',
           position: 'relative',
@@ -219,30 +220,23 @@ export default function LandingPage() {
             alignItems: 'center',
           }}
         >
-          {/* Left Column: Headline & CTAs */}
+          {/* Left Column: Headline & Scrolltide CTAs */}
           <div>
+            {/* Scrolltide-Style Animated Announcement Pill */}
             <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '6px 16px',
-                borderRadius: '9999px',
-                backgroundColor: 'rgba(124, 58, 237, 0.15)',
-                color: '#C084FC',
-                fontSize: '0.85rem',
-                fontWeight: 700,
-                marginBottom: '20px',
-                border: '1px solid rgba(168, 85, 247, 0.4)',
-                boxShadow: '0 0 15px rgba(124, 58, 237, 0.2)',
-              }}
+              onClick={() => navigate('register')}
+              className="announcement-pill"
+              style={{ marginBottom: '22px' }}
             >
-              <Sparkles size={16} /> Intelligent Opportunity & Skill Platform
+              <span className="pill-pulse-dot" />
+              <Sparkles size={15} />
+              <span>Next-Gen Career Intelligence • Get Started Free</span>
+              <ArrowRight size={14} />
             </div>
 
             <h1
               style={{
-                fontSize: 'clamp(2.6rem, 5vw, 4rem)',
+                fontSize: 'clamp(2.6rem, 5vw, 4.1rem)',
                 fontWeight: 800,
                 color: 'var(--primary-text)',
                 letterSpacing: '-1.5px',
@@ -260,8 +254,8 @@ export default function LandingPage() {
               style={{
                 fontSize: '1.15rem',
                 color: 'var(--secondary-text)',
-                marginBottom: '32px',
-                lineHeight: '1.6',
+                marginBottom: '34px',
+                lineHeight: '1.65',
                 maxWidth: '540px',
               }}
             >
@@ -269,20 +263,21 @@ export default function LandingPage() {
               apprenticeships, and entry-level roles with explainable matching and guided skill roadmaps.
             </p>
 
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px', marginBottom: '32px' }}>
+            {/* Scrolltide Animated CTAs */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginBottom: '34px' }}>
               <button
-                onClick={() => navigate(isAuthenticated ? 'dashboard' : 'register')}
-                className="btn-primary"
-                style={{ padding: '14px 32px', fontSize: '1rem' }}
+                onClick={() => navigate('register')}
+                className="btn-glow-ring"
+                style={{ padding: '15px 36px', fontSize: '1.05rem', fontWeight: 700 }}
               >
-                Get Started <ArrowRight size={18} />
+                Get Started Free <ArrowRight size={18} />
               </button>
               <button
                 onClick={() => navigate('opportunities')}
-                className="btn-secondary"
-                style={{ padding: '14px 32px', fontSize: '1rem' }}
+                className="btn-liquid-glass"
+                style={{ padding: '14px 34px', fontSize: '1.025rem' }}
               >
-                Explore Opportunities
+                Explore Opportunities <ArrowRight size={18} />
               </button>
             </div>
 
@@ -310,9 +305,9 @@ export default function LandingPage() {
                   navigate('dashboard');
                 }}
                 className="btn-outline"
-                style={{ padding: '6px 14px', fontSize: '0.775rem' }}
+                style={{ padding: '7px 16px', fontSize: '0.785rem' }}
               >
-                Student Demo
+                Student Demo <ArrowRight size={13} />
               </button>
               <button
                 onClick={async () => {
@@ -321,34 +316,91 @@ export default function LandingPage() {
                 }}
                 className="btn-outline"
                 style={{
-                  padding: '6px 14px',
-                  fontSize: '0.775rem',
+                  padding: '7px 16px',
+                  fontSize: '0.785rem',
                   borderColor: 'rgba(236, 72, 153, 0.5)',
                   color: '#F472B6',
                   backgroundColor: 'rgba(236, 72, 153, 0.08)',
                 }}
               >
-                Employer Demo
+                Employer Demo <ArrowRight size={13} />
               </button>
             </div>
           </div>
 
-          {/* Right Column: 3D Interactive WebGL Scene & 3D Tilt Preview Cards */}
-          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '440px' }}>
-            {/* Interactive 3D Three.js WebGL Floating Crystalline Core */}
+          {/* Right Column: 3D Interactive WebGL Cyber Core + Floating Holographic Orbit Badges */}
+          <div
+            style={{
+              position: 'relative',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: '560px',
+            }}
+          >
+            {/* Interactive 3D Three.js WebGL Cinematic Core with Gyro & Scroll Momentum */}
             <div
               style={{
                 position: 'absolute',
                 inset: '-40px',
                 zIndex: 1,
                 pointerEvents: 'auto',
-                opacity: 0.9,
+                opacity: 0.98,
               }}
             >
               <ThreeHeroScene />
             </div>
 
-            {/* Featured Match Card Preview with 3D Tilt */}
+            {/* Interactive 3D Drag Tip Badge */}
+            <div
+              className="holo-orbit-badge"
+              style={{
+                position: 'absolute',
+                top: '-20px',
+                zIndex: 12,
+                fontSize: '0.75rem',
+                padding: '5px 14px',
+                background: 'rgba(124, 58, 237, 0.25)',
+                border: '1px solid rgba(168, 85, 247, 0.5)',
+                boxShadow: '0 0 20px rgba(124, 58, 237, 0.35)',
+              }}
+            >
+              <Sparkles size={13} color="#38BDF8" />
+              <span>✦ Drag 3D Core to Rotate in 360°</span>
+            </div>
+
+            {/* Floating Holographic 3D Orbit Badges (Scrolltide 3D Theme) */}
+            <div
+              className="holo-orbit-badge anim-float-orbit-1"
+              style={{ position: 'absolute', top: '35px', left: '-30px', zIndex: 11 }}
+            >
+              <span className="pill-pulse-dot" />
+              <span>🎯 94% Skill Match</span>
+            </div>
+
+            <div
+              className="holo-orbit-badge anim-float-orbit-2"
+              style={{ position: 'absolute', top: '45px', right: '-30px', zIndex: 11 }}
+            >
+              <span>⚡ 5-Factor Explainable AI</span>
+            </div>
+
+            <div
+              className="holo-orbit-badge anim-float-orbit-3"
+              style={{ position: 'absolute', bottom: '110px', left: '-40px', zIndex: 11 }}
+            >
+              <span>💼 ₹35,000 / mo Stipend</span>
+            </div>
+
+            <div
+              className="holo-orbit-badge anim-float-orbit-4"
+              style={{ position: 'absolute', bottom: '20px', right: '-25px', zIndex: 11 }}
+            >
+              <span>🚀 Zero Experience Barrier</span>
+            </div>
+
+            {/* Featured Match Card Preview with Frosted Liquid Glass & 3D Tilt */}
             {(() => {
               const heroOpp = featuredOpps[0] || {
                 title: 'Frontend Engineering Intern',
@@ -364,37 +416,43 @@ export default function LandingPage() {
                 <Tilt3DCard
                   className="card card-featured animate-fade-in anim-float-3d"
                   style={{
-                    padding: '28px',
+                    padding: '24px 26px',
                     position: 'relative',
                     zIndex: 2,
-                    maxWidth: '430px',
+                    maxWidth: '400px',
                     width: '100%',
-                    backdropFilter: 'blur(16px)',
+                    marginTop: '130px',
+                    backgroundColor: 'rgba(15, 23, 42, 0.48)',
+                    backdropFilter: 'blur(32px) saturate(200%)',
+                    WebkitBackdropFilter: 'blur(32px) saturate(200%)',
+                    border: '1px solid rgba(255, 255, 255, 0.22)',
+                    boxShadow: '0 24px 50px rgba(0, 0, 0, 0.5), inset 0 1.5px 1px rgba(255, 255, 255, 0.35)',
                   }}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                     <span className="badge badge-internship">Featured Match</span>
-                    <MatchScoreBadge score={heroOpp.matchScore || 92} size={48} showLabel={true} />
+                    <MatchScoreBadge score={heroOpp.matchScore || 94} size={46} showLabel={true} />
                   </div>
 
-                  <h3 style={{ fontSize: '1.25rem', marginBottom: '4px', color: 'var(--primary-text)' }}>
+                  <h3 style={{ fontSize: '1.2rem', marginBottom: '4px', color: 'var(--primary-text)' }}>
                     {heroOpp.title}
                   </h3>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', marginBottom: '16px' }}>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', marginBottom: '14px' }}>
                     {heroOpp.organization} • {heroOpp.location?.type} {heroOpp.location?.city ? `(${heroOpp.location.city})` : ''}
                   </p>
 
                   {/* Match Factors Snapshot */}
                   <div
                     style={{
-                      marginBottom: '16px',
-                      padding: '12px',
-                      backgroundColor: 'var(--box-subtle)',
-                      borderRadius: '10px',
-                      border: '1px solid var(--box-subtle-border)',
+                      marginBottom: '14px',
+                      padding: '10px 12px',
+                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                      backdropFilter: 'blur(10px)',
+                      borderRadius: '8px',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
                       display: 'flex',
                       flexDirection: 'column',
-                      gap: '6px',
+                      gap: '5px',
                     }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.775rem' }}>
@@ -407,7 +465,7 @@ export default function LandingPage() {
                   </div>
 
                   {/* Matched Skills Chips */}
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '20px' }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '18px' }}>
                     {heroSkills.map((s, idx) => (
                       <span key={idx} className="skill-chip skill-chip-matched">
                         {s.name || s}
@@ -415,16 +473,16 @@ export default function LandingPage() {
                     ))}
                   </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '16px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255, 255, 255, 0.12)', paddingTop: '14px' }}>
                     <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--primary-text)' }}>
                       {heroOpp.salary?.amount ? `${heroOpp.salary.amount} / ${heroOpp.salary.period}` : 'Competitive'}
                     </span>
                     <button
                       onClick={() => heroOpp._id ? navigate('details', { id: heroOpp._id }) : navigate('opportunities')}
-                      className="btn-primary"
-                      style={{ padding: '7px 18px', fontSize: '0.8rem' }}
+                      className="btn-glow-ring"
+                      style={{ padding: '8px 18px', fontSize: '0.825rem' }}
                     >
-                      View Live Match
+                      View Live Match <ArrowRight size={14} />
                     </button>
                   </div>
                 </Tilt3DCard>
@@ -748,20 +806,28 @@ export default function LandingPage() {
               Connect with top companies hiring students, explore explainable match criteria, and upgrade your skills today.
             </p>
           </div>
-          <div style={{ display: 'flex', gap: '14px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
             <button
               onClick={() => navigate('register')}
+              className="btn-glow-ring"
               style={{
-                backgroundColor: '#FFFFFF',
-                color: '#7C3AED',
-                padding: '14px 32px',
-                borderRadius: '9999px',
-                fontWeight: 700,
-                fontSize: '1rem',
-                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
+                padding: '14px 34px',
+                fontSize: '1.025rem',
+                boxShadow: '0 8px 25px rgba(0, 0, 0, 0.4)',
               }}
             >
-              Get Started Free
+              Get Started Free <ArrowRight size={18} />
+            </button>
+            <button
+              onClick={() => navigate('opportunities')}
+              className="btn-liquid-glass"
+              style={{
+                padding: '14px 34px',
+                fontSize: '1.025rem',
+                backgroundColor: 'rgba(255, 255, 255, 0.12)',
+              }}
+            >
+              Browse Roles <ArrowRight size={18} />
             </button>
           </div>
         </div>

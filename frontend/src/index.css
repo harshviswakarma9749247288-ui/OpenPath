@@ -245,105 +245,327 @@ button {
   flex-direction: column;
   min-width: 0;
 }
+/* =========================================================
+   Scrolltide-Inspired Cinematic Animated Buttons & Micro-Interactions
+   (Ref: scrolltide.co - Glow Ring, Liquid Glass, Kinetic Arrow, Specular Sweep)
+   ========================================================= */
 
-/* Cyber Aurora Buttons */
+/* Conic Border Beam Keyframes */
+@keyframes borderBeamRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes buttonPulseAura {
+  0%, 100% {
+    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4), 0 0 15px rgba(192, 38, 211, 0.2);
+  }
+  50% {
+    box-shadow: 0 6px 30px rgba(124, 58, 237, 0.65), 0 0 25px rgba(236, 72, 153, 0.45);
+  }
+}
+
+/* 1. Scrolltide Signature Glow Ring / Border Beam Button */
+.btn-glow-ring {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 28px;
+  border-radius: var(--radius-full);
+  background: #0B0F19;
+  color: #FFFFFF;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  z-index: 1;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+.btn-glow-ring::before {
+  content: '';
+  position: absolute;
+  inset: -60%;
+  background: conic-gradient(from 0deg, transparent 0deg 280deg, #A855F7 320deg, #EC4899 345deg, #06B6D4 360deg);
+  animation: borderBeamRotate 4s linear infinite;
+  z-index: -2;
+}
+.btn-glow-ring::after {
+  content: '';
+  position: absolute;
+  inset: 1.5px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(20, 15, 38, 0.96) 0%, rgba(11, 15, 25, 0.98) 100%);
+  z-index: -1;
+  transition: background 0.3s ease;
+}
+.btn-glow-ring:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(168, 85, 247, 0.55), 0 0 25px rgba(236, 72, 153, 0.4);
+}
+.btn-glow-ring:hover::after {
+  background: linear-gradient(135deg, rgba(30, 22, 58, 0.95) 0%, rgba(16, 21, 38, 0.98) 100%);
+}
+
+/* 2. Scrolltide Signature Liquid Glass Button */
+.btn-liquid-glass {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.03) 100%);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  color: #F8FAFC;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 12px 28px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.45), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.25), 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 20px rgba(168, 85, 247, 0.15);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.btn-liquid-glass::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 52%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 100%);
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+  pointer-events: none;
+}
+.btn-liquid-glass:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(168, 85, 247, 0.15) 100%);
+  border-color: rgba(192, 132, 252, 0.65);
+  box-shadow: inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.6), 0 10px 32px rgba(124, 58, 237, 0.35), 0 0 28px rgba(168, 85, 247, 0.45);
+  transform: translateY(-2px);
+  color: #FFFFFF;
+}
+
+/* 3. Primary Button (Cyber Aurora with Specular Light Sweep) */
 .btn-primary {
   background: var(--primary-gradient);
   color: #FFFFFF;
-  padding: 10px 22px;
+  padding: 11px 26px;
   border-radius: var(--radius-full);
   font-weight: 600;
   font-size: 0.938rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  box-shadow: 0 4px 18px rgba(124, 58, 237, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  gap: 9px;
+  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.28);
   position: relative;
   overflow: hidden;
+  cursor: pointer;
+  animation: buttonPulseAura 5s ease-in-out infinite;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, filter 0.2s ease;
+}
+/* Shimmer Sweep Reflection */
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 70%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.32), transparent);
+  transform: skewX(-25deg);
+  transition: none;
+}
+.btn-primary:hover::before {
+  animation: shimmerSweep 0.9s ease-in-out forwards;
 }
 .btn-primary:hover {
-  box-shadow: 0 6px 25px rgba(236, 72, 153, 0.55);
+  box-shadow: 0 8px 30px rgba(236, 72, 153, 0.65), 0 0 20px rgba(124, 58, 237, 0.5);
   transform: translateY(-2px);
-  filter: brightness(1.1);
+  filter: brightness(1.08);
 }
 
+/* 4. Secondary Button */
 .btn-secondary {
   background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   color: #F8FAFC;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  padding: 10px 22px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 11px 26px;
   border-radius: var(--radius-full);
   font-weight: 600;
   font-size: 0.938rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 9px;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .btn-secondary:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(168, 85, 247, 0.5);
-  box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
-  transform: translateY(-1px);
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.25);
+  transform: translateY(-2px);
+  color: #FFFFFF;
 }
 
+/* 5. Outline & Ghost Buttons */
 .btn-outline {
   border: 1.5px solid rgba(139, 92, 246, 0.5);
   color: #C084FC;
   background: rgba(124, 58, 237, 0.08);
-  padding: 8px 16px;
+  padding: 8px 18px;
   border-radius: var(--radius-md);
   font-weight: 600;
+  font-size: 0.85rem;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 .btn-outline:hover {
   background: var(--aurora-violet);
   color: #FFFFFF;
   border-color: var(--aurora-violet);
-  box-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
+  box-shadow: 0 0 22px rgba(124, 58, 237, 0.55);
+  transform: translateY(-1px);
 }
 
 .btn-ghost {
   color: var(--secondary-text);
-  padding: 8px 14px;
+  padding: 8px 16px;
   border-radius: var(--radius-md);
   font-weight: 500;
+  font-size: 0.875rem;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
 .btn-ghost:hover {
   background: rgba(255, 255, 255, 0.06);
   color: #FFFFFF;
+  transform: translateX(2px);
 }
 
-/* Frosted Glass Cards */
+/* Kinetic Arrow Glide on All Buttons (Scrolltide Signature) */
+.btn-primary svg,
+.btn-secondary svg,
+.btn-glow-ring svg,
+.btn-liquid-glass svg,
+.btn-outline svg,
+.announcement-pill svg,
+.btn-arrow-slide svg {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-primary:hover svg,
+.btn-secondary:hover svg,
+.btn-glow-ring:hover svg,
+.btn-liquid-glass:hover svg,
+.btn-outline:hover svg,
+.announcement-pill:hover svg,
+.btn-arrow-slide:hover svg {
+  transform: translateX(5px);
+}
+
+/* Micro-Tactile Click Response */
+.btn-primary:active,
+.btn-secondary:active,
+.btn-glow-ring:active,
+.btn-liquid-glass:active,
+.btn-outline:active,
+.announcement-pill:active,
+.back-btn:active {
+  transform: scale(0.97) !important;
+}
+
+/* Kinetic Back Button Arrow Gliding (Slides Left on Hover) */
+.back-btn svg,
+.btn-back svg {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.back-btn:hover svg,
+.btn-back:hover svg {
+  transform: translateX(-5px) !important;
+}
+
+/* 6. Scrolltide Announcement Pill Banner */
+.announcement-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 18px 7px 12px;
+  border-radius: var(--radius-full);
+  background: rgba(124, 58, 237, 0.12);
+  border: 1px solid rgba(168, 85, 247, 0.38);
+  box-shadow: 0 0 18px rgba(124, 58, 237, 0.22);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: #C084FC;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+}
+.announcement-pill:hover {
+  border-color: rgba(236, 72, 153, 0.65);
+  background: rgba(124, 58, 237, 0.22);
+  box-shadow: 0 0 28px rgba(236, 72, 153, 0.4);
+  transform: translateY(-2px);
+  color: #F472B6;
+}
+
+.pill-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 10px #10B981;
+  animation: pulseGreenDot 2s infinite ease-in-out;
+}
+
+@keyframes pulseGreenDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.6; }
+}
+
+/* Frosted Glass Cards (visionOS / Liquid Glass Effect) */
 .card {
   background: var(--card-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-subtle), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow: var(--shadow-subtle), inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.15), inset 0 -1px 0 rgba(0, 0, 0, 0.2);
   transition: var(--transition-normal);
 }
 .card:hover {
   border-color: var(--card-border-hover);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-md), inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.25), 0 0 24px rgba(168, 85, 247, 0.2);
   transform: translateY(-2px);
 }
 
 .card-featured {
   background: var(--card-featured-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(168, 85, 247, 0.35);
-  box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border: 1px solid rgba(168, 85, 247, 0.45);
+  box-shadow: var(--shadow-md), inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.28), 0 0 28px rgba(124, 58, 237, 0.25);
 }
 
 /* Neon Pill Badges */
@@ -853,4 +1075,112 @@ button {
 .tilt-3d-card:hover {
   z-index: 5;
 }
+
+/* =========================================================
+   Scrolltide-Inspired 3D Holographic Orbit Badges & Website Animations
+   ========================================================= */
+
+@keyframes floatBobbingSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(0.8deg);
+  }
+}
+
+@keyframes floatBobbingReverse {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(8px) rotate(-0.8deg);
+  }
+}
+
+.anim-float-orbit-1 {
+  animation: floatBobbingSlow 4.5s ease-in-out infinite;
+}
+
+.anim-float-orbit-2 {
+  animation: floatBobbingReverse 5.2s ease-in-out infinite 0.5s;
+}
+
+.anim-float-orbit-3 {
+  animation: floatBobbingSlow 4.8s ease-in-out infinite 1s;
+}
+
+.anim-float-orbit-4 {
+  animation: floatBobbingReverse 5.5s ease-in-out infinite 1.5s;
+}
+
+/* Holographic 3D Floating Badge Container (Frosted Orbit Glass) */
+.holo-orbit-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 18px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, rgba(30, 27, 75, 0.78) 0%, rgba(15, 23, 42, 0.88) 100%);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.4), 0 14px 30px -5px rgba(0, 0, 0, 0.6), 0 0 22px rgba(124, 58, 237, 0.35);
+  color: var(--primary-text);
+  font-size: 0.825rem;
+  font-weight: 700;
+  pointer-events: auto;
+  cursor: default;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+  z-index: 10;
+}
+.holo-orbit-badge:hover {
+  transform: scale(1.08) translateY(-3px);
+  border-color: rgba(236, 72, 153, 0.75);
+  box-shadow: inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.6), 0 18px 40px rgba(0, 0, 0, 0.7), 0 0 32px rgba(236, 72, 153, 0.55);
+}
+
+/* Light Theme Adaptations for Scrolltide Buttons */
+[data-theme='light'] .btn-glow-ring {
+  background: #FFFFFF;
+  color: #0F172A;
+  border-color: rgba(124, 58, 237, 0.25);
+  box-shadow: 0 4px 18px rgba(124, 58, 237, 0.2);
+}
+[data-theme='light'] .btn-glow-ring::after {
+  background: #FFFFFF;
+}
+[data-theme='light'] .btn-glow-ring:hover::after {
+  background: #F8FAFC;
+}
+[data-theme='light'] .btn-glow-ring:hover {
+  box-shadow: 0 8px 25px rgba(124, 58, 237, 0.35);
+}
+
+[data-theme='light'] .btn-liquid-glass {
+  background: rgba(255, 255, 255, 0.85);
+  color: #0F172A;
+  border-color: rgba(226, 232, 240, 0.9);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+[data-theme='light'] .btn-liquid-glass:hover {
+  background: #FFFFFF;
+  border-color: rgba(124, 58, 237, 0.4);
+  box-shadow: 0 4px 18px rgba(124, 58, 237, 0.15);
+  color: #0F172A;
+}
+
+[data-theme='light'] .holo-orbit-badge {
+  background: rgba(255, 255, 255, 0.92);
+  color: #0F172A;
+  border-color: rgba(226, 232, 240, 0.9);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08), 0 0 15px rgba(124, 58, 237, 0.12);
+}
+
+[data-theme='light'] .announcement-pill {
+  background: rgba(124, 58, 237, 0.08);
+  border-color: rgba(124, 58, 237, 0.25);
+  color: #7C3AED;
+}
+
 

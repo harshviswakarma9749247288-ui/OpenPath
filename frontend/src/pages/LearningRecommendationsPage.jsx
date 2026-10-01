@@ -15,6 +15,7 @@ import api from '../utils/api';
 import LearningCard from '../components/LearningCard';
 import CyberLoader from '../components/CyberLoader';
 import Tilt3DCard from '../components/Tilt3DCard';
+import BackButton from '../components/BackButton';
 
 export default function LearningRecommendationsPage({ skillId, skillName }) {
   const { navigate } = useUIStore();
@@ -29,7 +30,9 @@ export default function LearningRecommendationsPage({ skillId, skillName }) {
 
   useEffect(() => {
     setIsLoading(true);
-    const query = skillId ? `?skillId=${skillId}` : '';
+    const query = skillName
+      ? `?skillName=${encodeURIComponent(skillName)}`
+      : (skillId ? `?skillId=${skillId}` : '');
     api
       .get(`/learning/recommendations${query}`)
       .then((res) => {
@@ -40,7 +43,7 @@ export default function LearningRecommendationsPage({ skillId, skillName }) {
       .catch(() => {
         setIsLoading(false);
       });
-  }, [skillId]);
+  }, [skillId, skillName]);
 
   const handleToggleComplete = (id, isDone) => {
     let updated;
@@ -80,6 +83,8 @@ export default function LearningRecommendationsPage({ skillId, skillName }) {
 
   return (
     <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
+      <BackButton label="Back to Dashboard" fallbackPage="dashboard" />
+
       {/* Header Banner */}
       <div
         className="card card-featured"

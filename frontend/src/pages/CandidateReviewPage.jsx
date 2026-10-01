@@ -11,6 +11,7 @@ import {
 import { useUIStore } from '../store/useUIStore';
 import api from '../utils/api';
 import EmployerCandidateCard from '../components/EmployerCandidateCard';
+import BackButton from '../components/BackButton';
 
 export default function CandidateReviewPage({ opportunityId }) {
   const { navigate, showToast } = useUIStore();
@@ -74,13 +75,7 @@ export default function CandidateReviewPage({ opportunityId }) {
 
   return (
     <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
-      <button
-        onClick={() => navigate('employer-dashboard')}
-        className="btn-ghost"
-        style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginBottom: '16px' }}
-      >
-        <ArrowLeft size={16} /> Back to Dashboard
-      </button>
+      <BackButton label="Back to Employer Hub" fallbackPage="employer-dashboard" />
 
       {/* Top Header & Opportunity Selector */}
       <div

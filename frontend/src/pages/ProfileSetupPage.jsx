@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
+import BackButton from '../components/BackButton';
 import api from '../utils/api';
 
 export default function ProfileSetupPage() {
@@ -133,6 +134,8 @@ export default function ProfileSetupPage() {
 
   return (
     <div style={{ maxWidth: '800px', margin: '40px auto', padding: '0 20px 80px 20px' }}>
+      <BackButton label="Back to Dashboard" fallbackPage="dashboard" style={{ marginBottom: '24px' }} />
+
       {/* Onboarding Header */}
       <div style={{ textAlign: 'center', marginBottom: '32px' }}>
         <span

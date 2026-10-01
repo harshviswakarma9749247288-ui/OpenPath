@@ -16,6 +16,8 @@ import {
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
 import MatchScoreBadge from '../components/MatchScoreBadge';
+import BackButton from '../components/BackButton';
+import { generatePdfResume } from '../utils/pdfResumeGenerator';
 
 export default function ProfilePage() {
   const { user, profileCompletion, updateProfile } = useAuthStore();
@@ -86,42 +88,19 @@ export default function ProfilePage() {
   };
 
   const handleDownloadDigitalResume = () => {
-    const resumeText = `=====================================================
-OPENPATH VERIFIED DIGITAL RESUME
-=====================================================
-Name: ${user?.name || 'Candidate'}
-Email: ${user?.email || 'N/A'}
-Location: ${user?.location?.city || 'Not specified'}, ${user?.location?.country || 'India'}
-Preferred Mode: ${user?.location?.remotePreference || 'Not specified'}
-
-EDUCATION:
-Degree: ${user?.education?.degree || 'Not specified'}
-Institution: ${user?.education?.institution || 'Not specified'} ${user?.education?.fieldOfStudy ? `(${user.education.fieldOfStudy})` : ''}
-Graduation Year: ${user?.education?.endYear || 'N/A'}
-
-TECHNICAL SKILLS:
-${(user?.skills && user.skills.length > 0) ? user.skills.map((s) => s.name || s).join(', ') : 'None listed'}
-
-EXPERIENCE & PROJECTS:
-Role: ${user?.experience?.role || 'None listed'}
-Org: ${user?.experience?.organization || 'N/A'} ${user?.experience?.duration ? `(${user.experience.duration})` : ''}
-Details: ${user?.experience?.description || 'N/A'}
-
-BIO SUMMARY:
-${user?.bio || 'No bio provided yet.'}
-=====================================================`;
-
-    const blob = new Blob([resumeText], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${(user?.name || 'OpenPath_Candidate').replace(/\s+/g, '_')}_Resume.txt`;
-    a.click();
-    showToast('Digital Resume downloaded!', 'success');
+    try {
+      generatePdfResume(user, profileCompletion);
+      showToast('Verified Digital Resume (PDF) downloaded successfully!', 'success');
+    } catch (err) {
+      console.error('Failed to generate PDF resume:', err);
+      showToast('Error generating PDF resume', 'error');
+    }
   };
 
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
+      <BackButton label="Back to Dashboard" fallbackPage="dashboard" style={{ marginBottom: '20px' }} />
+
       {/* 1. Profile Top Card */}
       <div
         className="card card-featured"
@@ -193,7 +172,7 @@ ${user?.bio || 'No bio provided yet.'}
               className="btn-primary"
               style={{ padding: '8px 16px', fontSize: '0.825rem' }}
             >
-              <Download size={14} /> Download Digital Resume
+              <Download size={14} /> Download Resume (PDF)
             </button>
           </div>
         </div>

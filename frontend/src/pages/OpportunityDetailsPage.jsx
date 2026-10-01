@@ -21,6 +21,7 @@ import { useApplicationStore } from '../store/useApplicationStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
 import MatchScoreBadge from '../components/MatchScoreBadge';
+import BackButton from '../components/BackButton';
 
 export default function OpportunityDetailsPage({ opportunityId }) {
   const { fetchOpportunityById, toggleSaveOpportunity, savedIds } = useOpportunityStore();
@@ -87,13 +88,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
   return (
     <div style={{ maxWidth: '1080px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
       {/* Top back button */}
-      <button
-        onClick={() => navigate('opportunities')}
-        className="btn-ghost"
-        style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginBottom: '16px' }}
-      >
-        <ArrowLeft size={16} /> Back to Browse
-      </button>
+      <BackButton label="Back to Opportunities" fallbackPage="opportunities" />
 
       {/* 1. MATCH-FIRST HEADER CARD (Strictly follows UI/UX Brief) */}
       <div

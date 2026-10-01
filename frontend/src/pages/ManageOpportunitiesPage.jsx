@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useUIStore } from '../store/useUIStore';
 import api from '../utils/api';
+import BackButton from '../components/BackButton';
 
 export default function ManageOpportunitiesPage() {
   const { navigate, showToast } = useUIStore();
@@ -61,6 +62,8 @@ export default function ManageOpportunitiesPage() {
 
   return (
     <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
+      <BackButton label="Back to Employer Hub" fallbackPage="employer-dashboard" />
+
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px', flexWrap: 'wrap', gap: '16px' }}>
         <div>
           <h1 style={{ fontSize: '2rem', color: 'var(--primary-text)', marginBottom: '4px' }}>
