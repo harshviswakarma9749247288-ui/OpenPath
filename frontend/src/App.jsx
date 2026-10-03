@@ -7,6 +7,7 @@ import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import ThemeToggle from './components/ThemeToggle';
 import FloatingParticles3D from './components/FloatingParticles3D';
+import AiAssistantDrawer from './components/AiAssistantDrawer';
 
 // Pages (All 16 Approved Screens)
 import LandingPage from './pages/LandingPage';
@@ -91,7 +92,7 @@ export default function App() {
   };
 
   return (
-    <div className="app-container">
+    <div className="app-container" style={{ position: 'relative', minHeight: '100vh' }}>
       {/* Toast Notification Container */}
       {toast && (
         <div
@@ -138,7 +139,10 @@ export default function App() {
             <Info size={18} />
           )}
           <span>{toast.message}</span>
-          <button onClick={clearToast} style={{ color: 'inherit', marginLeft: '6px' }}>
+          <button
+            onClick={clearToast}
+            style={{ color: 'inherit', marginLeft: '6px', background: 'none', border: 'none', cursor: 'pointer' }}
+          >
             <X size={14} />
           </button>
         </div>
@@ -173,7 +177,10 @@ export default function App() {
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                 <strong style={{ fontSize: '1.2rem', color: 'var(--primary-text)' }}>OpenPath</strong>
-                <button onClick={() => setMobileDrawerOpen(false)} style={{ color: 'var(--secondary-text)' }}>
+                <button
+                  onClick={() => setMobileDrawerOpen(false)}
+                  style={{ color: 'var(--secondary-text)', background: 'none', border: 'none', cursor: 'pointer' }}
+                >
                   <X size={20} />
                 </button>
               </div>
@@ -210,7 +217,15 @@ export default function App() {
               </div>
             </div>
 
-            <div style={{ paddingTop: '16px', borderTop: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div
+              style={{
+                paddingTop: '16px',
+                borderTop: '1px solid var(--border-color)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
               <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--secondary-text)' }}>Appearance</span>
               <ThemeToggle showLabel={true} size="sm" />
             </div>
@@ -237,6 +252,9 @@ export default function App() {
           </div>
         </>
       )}
+
+      {/* Privacy-Preserving Local AI Agent Drawer */}
+      <AiAssistantDrawer />
     </div>
   );
 }
