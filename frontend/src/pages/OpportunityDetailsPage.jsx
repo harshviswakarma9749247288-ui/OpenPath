@@ -42,6 +42,15 @@ export default function OpportunityDetailsPage({ opportunityId }) {
         if (res) setOpp(res);
       });
       fetchMyApplications();
+    } else {
+      api.get('/opportunities?limit=1').then((res) => {
+        const first = res.data?.opportunities?.[0];
+        if (first?._id) {
+          fetchOpportunityById(first._id).then((o) => {
+            if (o) setOpp(o);
+          });
+        }
+      }).catch(() => {});
     }
   }, [opportunityId]);
 
