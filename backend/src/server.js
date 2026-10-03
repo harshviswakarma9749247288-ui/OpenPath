@@ -15,6 +15,7 @@ import applicationRoutes from './routes/applicationRoutes.js';
 import employerRoutes from './routes/employerRoutes.js';
 import skillRoutes from './routes/skillRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
+import aiRoutes from './routes/aiRoutes.js';
 import { seedInitialData } from './config/seed.js';
 
 const app = express();
@@ -23,6 +24,10 @@ const app = express();
 app.use(
   cors({
     origin: [
+      'http://localhost:3000',
+      'http://127.0.0.1:3000',
+      'http://localhost:5173',
+      'http://127.0.0.1:5173',
       'http://localhost:4173',
       'http://127.0.0.1:4173',
     ],
@@ -80,7 +85,7 @@ app.get('/api/stats/overview', async (req, res, next) => {
   }
 });
 
-// Mount Routes (strict adherence to TRD & Backend Blueprint)
+// Mount Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/opportunities', opportunityRoutes);
@@ -92,6 +97,7 @@ app.use('/api/applications', applicationRoutes);
 app.use('/api/employer', employerRoutes);
 app.use('/api/skills', skillRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/ai', aiRoutes);
 
 // Centralized error handler
 app.use(errorHandler);
@@ -99,7 +105,6 @@ app.use(errorHandler);
 // Start server
 const startServer = async () => {
   await connectDB();
-  // Auto-seed sample catalog if collection is empty
   await seedInitialData();
 
   app.listen(ENV.PORT, () => {

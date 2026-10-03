@@ -24,4 +24,9 @@ export const ENV = {
   SMTP_USER: process.env.SMTP_USER || '',
   SMTP_PASS: process.env.SMTP_PASS || '',
   EMAIL_FROM: process.env.EMAIL_FROM || 'OpenPath <noreply@openpath.dev>',
+
+  // Local AI Agent Configuration
+  LOCAL_AI_BASE_URL: process.env.LOCAL_AI_BASE_URL || 'http://localhost:11434',
+  LOCAL_AI_MODEL: process.env.LOCAL_AI_MODEL || 'llama3.2',
+  LOCAL_AI_TIMEOUT: process.env.LOCAL_AI_TIMEOUT ? parseInt(process.env.LOCAL_AI_TIMEOUT, 10) : 30000,
 };
