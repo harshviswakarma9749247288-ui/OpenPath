@@ -1,16 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Bot, X, Send, Sparkles, User, RefreshCw } from 'lucide-react';
+import { Bot, X, Send, Sparkles, User, RefreshCw, Briefcase } from 'lucide-react';
+import { useAuthStore } from '../store/useAuthStore';
 
-export default function AiAssistantDrawer() {
+export default function AiAssistantDrawer({ activeOpportunity = null }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Read current student profile from global auth state
+  const { user } = useAuthStore();
+
   const [messages, setMessages] = useState([
     {
       id: 1,
       sender: 'ai',
-      text: "👋 Hi! I am your OpenPath AI Career Mentor running locally via Ollama. Ask me about skill gap recommendations, resume improvements, or interview preparation!",
+      text: `👋 Hi ${user?.name ? user.name.split(' ')[0] : 'there'}! I am your OpenPath AI Career Mentor. I'm calibrated to your profile and current skills. Ask me about skill gaps, project roadmaps, or interview prep!`,
     },
   ]);
 
@@ -26,11 +30,18 @@ export default function AiAssistantDrawer() {
     }
   }, [messages, isOpen]);
 
-  const quickPrompts = [
-    "How can I improve my skill match score?",
-    "What projects should I build for React?",
-    "How do I prepare for a Full-Stack interview?",
-  ];
+  // Adjust quick prompts if an active opportunity is being viewed
+  const quickPrompts = activeOpportunity
+    ? [
+        `Analyze my gap for ${activeOpportunity.title}`,
+        `What projects should I build to qualify?`,
+        'Generate a 2-week learning roadmap',
+      ]
+    : [
+        'How can I improve my skill match score?',
+        'What projects should I build for React?',
+        'How do I prepare for a Full-Stack interview?',
+      ];
 
   const handleSend = async (textToSend) => {
     const message = textToSend || inputMessage;
@@ -42,10 +53,30 @@ export default function AiAssistantDrawer() {
     setLoading(true);
 
     try {
+      // Build structured context payload matching your backend service
+      const context = {
+        student: {
+          name: user?.name || 'Candidate',
+          targetRole: user?.targetRole || 'Full-Stack Developer',
+          skills: user?.skills || ['React', 'JavaScript', 'HTML/CSS', 'Node.js'],
+          experienceLevel: user?.experienceLevel || 'Entry-Level',
+        },
+        opportunity: activeOpportunity
+          ? {
+              title: activeOpportunity.title,
+              requiredSkills: activeOpportunity.requiredSkills,
+              matchScore: activeOpportunity.matchScore,
+            }
+          : null,
+      };
+
       const response = await fetch('http://localhost:5000/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: message }),
+        body: JSON.stringify({
+          prompt: message,
+          context,
+        }),
       });
 
       const data = await response.json();
@@ -77,16 +108,10 @@ export default function AiAssistantDrawer() {
 
   return (
     <>
-      {/* Animated Floating Trigger Button: Circle by default, Expands on Hover */}
+      {/* Floating Trigger Button */}
       {!isOpen && (
         <button
-          onClick={() => {
-            setIsHovered(false);
-            setIsOpen(true);
-          }}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          aria-label="AI Career Mentor"
+          onClick={() => setIsOpen(true)}
           style={{
             position: 'fixed',
             bottom: '28px',
@@ -94,61 +119,32 @@ export default function AiAssistantDrawer() {
             zIndex: 9990,
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            gap: isHovered ? '10px' : '0px',
+            gap: '10px',
             backgroundColor: '#2563eb',
             color: '#ffffff',
-            height: '52px',
-            minWidth: '52px',
-            maxWidth: isHovered ? '240px' : '52px',
-            padding: isHovered ? '0 20px' : '0',
+            padding: '12px 20px',
             borderRadius: '9999px',
-            boxShadow: isHovered
-              ? '0 14px 28px -5px rgba(37, 99, 235, 0.5), 0 8px 12px -6px rgba(37, 99, 235, 0.3)'
-              : '0 10px 25px -5px rgba(37, 99, 235, 0.4), 0 8px 10px -6px rgba(37, 99, 235, 0.2)',
+            boxShadow: '0 10px 25px -5px rgba(37, 99, 235, 0.4), 0 8px 10px -6px rgba(37, 99, 235, 0.2)',
             border: 'none',
             cursor: 'pointer',
             fontWeight: 600,
             fontSize: '0.95rem',
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            transform: isHovered ? 'translateY(-2px) scale(1.03)' : 'translateY(0) scale(1)',
-            transition:
-              'max-width 0.35s cubic-bezier(0.22, 1, 0.36, 1), padding 0.35s cubic-bezier(0.22, 1, 0.36, 1), gap 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease',
+            transition: 'all 0.2s ease',
           }}
+          onMouseEnter={(e) => (e.currentTarget.style.transform = 'translateY(-2px) scale(1.03)')}
+          onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0) scale(1)')}
         >
-          <Bot
-            size={22}
-            style={{
-              flexShrink: 0,
-              transition: 'transform 0.3s ease',
-              transform: isHovered ? 'rotate(-6deg) scale(1.05)' : 'rotate(0deg) scale(1)',
-            }}
-          />
+          <Bot size={22} />
+          <span>AI Career Mentor</span>
           <span
             style={{
-              maxWidth: isHovered ? '160px' : '0px',
-              opacity: isHovered ? 1 : 0,
-              overflow: 'hidden',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '10px',
-              transition:
-                'max-width 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease',
+              width: '8px',
+              height: '8px',
+              borderRadius: '50%',
+              backgroundColor: '#4ade80',
+              display: 'inline-block',
             }}
-          >
-            <span>AI Career Mentor</span>
-            <span
-              style={{
-                width: '8px',
-                height: '8px',
-                borderRadius: '50%',
-                backgroundColor: '#4ade80',
-                display: 'inline-block',
-                flexShrink: 0,
-              }}
-            />
-          </span>
+          />
         </button>
       )}
 
@@ -203,7 +199,9 @@ export default function AiAssistantDrawer() {
                 </div>
                 <div>
                   <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 600 }}>AI Career Mentor</h3>
-                  <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Local Llama 3.2 • Privacy First</span>
+                  <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
+                    {user?.name ? `${user.name} • ` : ''}Context Aware
+                  </span>
                 </div>
               </div>
               <button
@@ -218,6 +216,25 @@ export default function AiAssistantDrawer() {
               >
                 <X size={20} />
               </button>
+            </div>
+
+            {/* Live Context Badge */}
+            <div
+              style={{
+                padding: '8px 16px',
+                backgroundColor: 'rgba(37, 99, 235, 0.12)',
+                borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+                fontSize: '0.75rem',
+                color: '#93c5fd',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+            >
+              <Briefcase size={14} />
+              <span>
+                Target: <strong>{user?.targetRole || 'Full-Stack Dev'}</strong> | Skills: <strong>{user?.skills?.length || 4} tracked</strong>
+              </span>
             </div>
 
             {/* Quick Prompts */}
@@ -287,7 +304,7 @@ export default function AiAssistantDrawer() {
                     <RefreshCw size={16} color="#fff" className="animate-spin" />
                   </div>
                   <div style={{ padding: '10px 14px', borderRadius: '12px', fontSize: '0.875rem', backgroundColor: 'rgba(255, 255, 255, 0.08)', color: '#94a3b8' }}>
-                    Thinking with local Llama...
+                    Analyzing with your profile context...
                   </div>
                 </div>
               )}
@@ -311,7 +328,7 @@ export default function AiAssistantDrawer() {
                 type="text"
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
-                placeholder="Ask your mentor anything..."
+                placeholder="Ask for custom roadmaps, review, or prep..."
                 disabled={loading}
                 style={{
                   flex: 1,

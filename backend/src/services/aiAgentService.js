@@ -8,8 +8,27 @@ export async function queryLocalAgent({ prompt, systemPrompt, context = {} }) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
-  const fullSystemPrompt = systemPrompt || 
-    `You are the OpenPath Career AI Mentor. OpenPath uses a 5-factor transparent matching algorithm (Skills 40%, Academic 20%, Location 20%, Industry 10%, Experience 10%). Provide encouraging, direct, and actionable advice to bridge skill gaps.`;
+  // 1. Format context into readable instructions for small local LLMs
+  let contextBlock = '';
+  if (context.student) {
+    contextBlock += `\n\nStudent Profile:
+- Name: ${context.student.name || 'Candidate'}
+- Target Role: ${context.student.targetRole || 'Software Engineer'}
+- Current Skills: ${Array.isArray(context.student.skills) ? context.student.skills.join(', ') : 'None listed'}
+- Experience Level: ${context.student.experienceLevel || 'Entry-Level'}`;
+  }
+
+  if (context.opportunity) {
+    contextBlock += `\n\nTarget Opportunity:
+- Role Title: ${context.opportunity.title || 'Role'}
+- Required Skills: ${Array.isArray(context.opportunity.requiredSkills) ? context.opportunity.requiredSkills.join(', ') : 'None listed'}
+- Current Match Score: ${context.opportunity.matchScore || 'N/A'}%`;
+  }
+
+  const basePersona = systemPrompt || 
+    `You are the OpenPath Career AI Mentor. OpenPath uses a 5-factor transparent matching algorithm (Skills 40%, Academic 20%, Location 20%, Industry 10%, Experience 10%). Provide encouraging, direct, and actionable advice to bridge skill gaps. Reference the student's actual skills and target opportunity when answering.`;
+
+  const finalSystemPrompt = `\({basePersona}\){contextBlock}`;
 
   try {
     const response = await fetch(`${baseUrl}/api/chat`, {
@@ -19,7 +38,7 @@ export async function queryLocalAgent({ prompt, systemPrompt, context = {} }) {
       body: JSON.stringify({
         model,
         messages: [
-          { role: 'system', content: `${fullSystemPrompt}\nContext: ${JSON.stringify(context)}` },
+          { role: 'system', content: finalSystemPrompt },
           { role: 'user', content: prompt }
         ],
         stream: false
