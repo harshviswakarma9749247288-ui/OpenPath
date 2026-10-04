@@ -10,7 +10,7 @@ import PlatformContent from '../models/PlatformContent.js';
 export const DEFAULT_PLATFORM_CONTENT = {
   key: 'openpath_main',
   heroAnnouncement: {
-    text: 'Next-Gen 3D Career Intelligence • Live Database Connected',
+    text: 'Next-Gen 3D Career Intelligence',
     badge: 'SCROLLTIDE 3D ENGINE',
   },
   heroScenes: [

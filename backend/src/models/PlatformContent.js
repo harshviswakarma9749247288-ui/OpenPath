@@ -9,7 +9,7 @@ const platformContentSchema = new mongoose.Schema(
       default: 'openpath_main',
     },
     heroAnnouncement: {
-      text: { type: String, default: 'Next-Gen 3D Career Intelligence • Live Database Connected' },
+      text: { type: String, default: 'Next-Gen 3D Career Intelligence' },
       badge: { type: String, default: 'SCROLLTIDE 3D ENGINE' },
     },
     heroScenes: [
