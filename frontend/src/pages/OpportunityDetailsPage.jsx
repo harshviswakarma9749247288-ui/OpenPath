@@ -14,6 +14,7 @@ import {
   Share2,
   Check,
   Send,
+  Bot,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useOpportunityStore } from '../store/useOpportunityStore';
@@ -23,11 +24,38 @@ import { useUIStore } from '../store/useUIStore';
 import MatchScoreBadge from '../components/MatchScoreBadge';
 import BackButton from '../components/BackButton';
 
+// Safe formatters to prevent React Error #31
+const formatLocation = (loc) => {
+  if (!loc) return 'Remote';
+  if (typeof loc === 'string') return loc;
+  if (typeof loc === 'object') {
+    const parts = [loc.city, loc.state].filter(Boolean);
+    if (parts.length > 0) return parts.join(', ');
+    return loc.type || loc.country || 'Remote';
+  }
+  return 'Remote';
+};
+
+const formatOrganization = (org, company) => {
+  const target = org || company;
+  if (!target) return 'Partner Employer';
+  if (typeof target === 'string') return target;
+  if (typeof target === 'object') return target.name || 'Partner Employer';
+  return 'Partner Employer';
+};
+
+const formatSkill = (skill) => {
+  if (!skill) return '';
+  if (typeof skill === 'string') return skill;
+  if (typeof skill === 'object') return skill.name || skill.title || '';
+  return String(skill);
+};
+
 export default function OpportunityDetailsPage({ opportunityId }) {
   const { fetchOpportunityById, toggleSaveOpportunity, savedIds } = useOpportunityStore();
   const { apply, applications, fetchMyApplications } = useApplicationStore();
   const { user, isAuthenticated } = useAuthStore();
-  const { navigate, showToast } = useUIStore();
+  const { navigate, showToast, openMentorForOpportunity } = useUIStore();
 
   const [opp, setOpp] = useState(null);
   const [isApplying, setIsApplying] = useState(false);
@@ -42,35 +70,39 @@ export default function OpportunityDetailsPage({ opportunityId }) {
         if (res) setOpp(res);
       });
       fetchMyApplications();
-    } else {
-      api.get('/opportunities?limit=1').then((res) => {
-        const first = res.data?.opportunities?.[0];
-        if (first?._id) {
-          fetchOpportunityById(first._id).then((o) => {
-            if (o) setOpp(o);
-          });
-        }
-      }).catch(() => {});
     }
   }, [opportunityId]);
 
   if (!opp) {
     return (
-      <div style={{ padding: '40px', textAlign: 'center' }}>
+      <div style={{ padding: '60px 20px', textAlign: 'center', color: 'var(--secondary-text)' }}>
         <p>Loading opportunity details...</p>
       </div>
     );
   }
 
-  const isSaved = savedIds.includes(opp._id);
-  const isApplied = applications.some(
+  const isSaved = Array.isArray(savedIds) && savedIds.includes(opp._id);
+  const isApplied = Array.isArray(applications) && applications.some(
     (a) => (a.opportunity?._id || a.opportunity) === opp._id
   );
 
+  const orgName = formatOrganization(opp.organization, opp.company);
+  const locString = formatLocation(opp.location);
   const matchDetails = opp.matchDetails;
-  const matchScore = matchDetails?.overallScore;
-  const matchedSkills = matchDetails?.matchedSkills || [];
-  const missingSkills = matchDetails?.missingSkills || [];
+  const matchScore = matchDetails?.overallScore ?? opp.matchScore;
+  const matchedSkills = Array.isArray(matchDetails?.matchedSkills) ? matchDetails.matchedSkills : [];
+  const missingSkills = Array.isArray(matchDetails?.missingSkills) ? matchDetails.missingSkills : [];
+  const allRequiredSkills = opp.requiredSkills || opp.skills || [];
+
+  const handleOpenMentor = () => {
+    openMentorForOpportunity({
+      id: opp._id,
+      title: opp.title,
+      company: orgName,
+      requiredSkills: Array.isArray(allRequiredSkills) ? allRequiredSkills.map(formatSkill) : [],
+      matchScore: matchScore ?? 75,
+    });
+  };
 
   const handleConfirmApply = async () => {
     setIsApplying(true);
@@ -82,7 +114,6 @@ export default function OpportunityDetailsPage({ opportunityId }) {
       if (res.application?._id) {
         setSubmittedAppId(res.application._id);
       }
-      // Trigger festive celebration confetti per UI/UX Brief!
       confetti({
         particleCount: 80,
         spread: 70,
@@ -99,7 +130,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
       {/* Top back button */}
       <BackButton label="Back to Opportunities" fallbackPage="opportunities" />
 
-      {/* 1. MATCH-FIRST HEADER CARD (Strictly follows UI/UX Brief) */}
+      {/* 1. MATCH-FIRST HEADER CARD */}
       <div
         className="card card-featured"
         style={{
@@ -129,24 +160,24 @@ export default function OpportunityDetailsPage({ opportunityId }) {
               boxShadow: '0 0 15px rgba(124, 58, 237, 0.2)',
             }}
           >
-            {opp.organization.substring(0, 2).toUpperCase()}
+            {orgName.substring(0, 2).toUpperCase()}
           </div>
 
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-              <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--primary-text)' }}>
+              <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--primary-text)', margin: 0 }}>
                 {opp.title}
               </h1>
-              <span className="badge badge-internship">{opp.type}</span>
+              <span className="badge badge-internship">{opp.type || 'Full-time'}</span>
             </div>
-            <p style={{ fontSize: '1rem', color: 'var(--secondary-text)', marginTop: '4px' }}>
-              {opp.organization} • {opp.location?.type} {opp.location?.city ? `(${opp.location.city})` : ''}
+            <p style={{ fontSize: '1rem', color: 'var(--secondary-text)', marginTop: '6px', margin: '6px 0 0 0' }}>
+              {orgName} • {locString}
             </p>
           </div>
         </div>
 
         {/* Right Match Indicator & Actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
           {matchScore !== null && matchScore !== undefined && (
             <div
               onClick={() => navigate('match', { id: opp._id })}
@@ -176,6 +207,28 @@ export default function OpportunityDetailsPage({ opportunityId }) {
             </div>
           )}
 
+          {/* AI Career Mentor Trigger */}
+          <button
+            type="button"
+            onClick={handleOpenMentor}
+            style={{
+              padding: '10px 16px',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid rgba(59, 130, 246, 0.4)',
+              backgroundColor: 'rgba(59, 130, 246, 0.12)',
+              color: '#60A5FA',
+              fontWeight: 600,
+              fontSize: '0.85rem',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            <Bot size={18} /> Ask AI Mentor
+          </button>
+
           <button
             onClick={() => toggleSaveOpportunity(opp._id)}
             style={{
@@ -185,6 +238,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
               color: isSaved ? '#EC4899' : 'var(--secondary-text)',
               backgroundColor: 'var(--chip-bg)',
               backdropFilter: 'blur(8px)',
+              cursor: 'pointer',
             }}
           >
             <Bookmark size={20} fill={isSaved ? 'currentColor' : 'none'} />
@@ -220,7 +274,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
         </div>
       </div>
 
-      {/* 2. Key Highlights Strip (Salary, Deadline, Experience, Qualification) */}
+      {/* 2. Key Highlights Strip */}
       <div
         style={{
           display: 'grid',
@@ -234,7 +288,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
           <div>
             <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>STIPEND / SALARY</span>
             <strong style={{ fontSize: '0.95rem', display: 'block', color: 'var(--primary-text)' }}>
-              {opp.salary?.amount} / {opp.salary?.period}
+              {opp.salary?.amount ? `${opp.salary.amount} / ${opp.salary.period || 'month'}` : 'Competitive'}
             </strong>
           </div>
         </div>
@@ -244,7 +298,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
           <div>
             <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>APPLICATION DEADLINE</span>
             <strong style={{ fontSize: '0.95rem', display: 'block', color: 'var(--primary-text)' }}>
-              {new Date(opp.deadline).toLocaleDateString()}
+              {opp.deadline ? new Date(opp.deadline).toLocaleDateString() : 'Rolling Application'}
             </strong>
           </div>
         </div>
@@ -254,7 +308,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
           <div>
             <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>ELIGIBILITY</span>
             <strong style={{ fontSize: '0.95rem', display: 'block', color: 'var(--primary-text)' }}>
-              {opp.qualification?.degree || 'Open to All'}
+              {opp.qualification?.degree || 'Open to All Degrees'}
             </strong>
           </div>
         </div>
@@ -270,7 +324,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
         </div>
       </div>
 
-      {/* 3. Skill Alignment Banner (Matched vs Missing) */}
+      {/* 3. Skill Alignment Banner */}
       <div
         className="card"
         style={{
@@ -282,9 +336,24 @@ export default function OpportunityDetailsPage({ opportunityId }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '10px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Sparkles size={18} color="#7C3AED" />
-            <h3 style={{ fontSize: '1.1rem', color: 'var(--primary-text)' }}>Candidate Skill Alignment</h3>
+            <h3 style={{ fontSize: '1.1rem', color: 'var(--primary-text)', margin: 0 }}>Candidate Skill Alignment</h3>
           </div>
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <button
+              onClick={handleOpenMentor}
+              className="btn-secondary"
+              style={{
+                padding: '6px 14px',
+                fontSize: '0.775rem',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                color: '#60A5FA',
+                borderColor: 'rgba(59, 130, 246, 0.4)',
+              }}
+            >
+              <Sparkles size={13} /> AI Gap Analysis
+            </button>
             <button
               onClick={() => navigate('match', { id: opp._id })}
               className="btn-secondary"
@@ -302,7 +371,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
           <div>
             <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#34D399', display: 'block', marginBottom: '8px' }}>
               Matched Skills ({matchedSkills.length})
@@ -310,7 +379,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
               {matchedSkills.map((s, idx) => (
                 <span key={idx} className="skill-chip skill-chip-matched">
-                  {s.name || s}
+                  {formatSkill(s)}
                 </span>
               ))}
               {matchedSkills.length === 0 && (
@@ -326,7 +395,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
               {missingSkills.map((s, idx) => (
                 <span key={idx} className="skill-chip skill-chip-missing">
-                  {s.name || s}
+                  {formatSkill(s)}
                 </span>
               ))}
               {missingSkills.length === 0 && (
@@ -391,7 +460,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
           <div className="card card-featured animate-fade-in" style={{ maxWidth: '540px', width: '100%', padding: '28px', backgroundColor: 'var(--card-bg)' }}>
             <h3 style={{ fontSize: '1.3rem', marginBottom: '8px', color: 'var(--primary-text)' }}>Submit Your Application</h3>
             <p style={{ fontSize: '0.875rem', color: 'var(--secondary-text)', marginBottom: '18px' }}>
-              Your profile details and verified skills will be automatically shared with {opp.organization}.
+              Your profile details and verified skills will be automatically shared with {orgName}.
             </p>
 
             <div style={{ padding: '14px', backgroundColor: 'var(--box-subtle)', border: '1px solid var(--box-subtle-border)', borderRadius: '10px', marginBottom: '16px', fontSize: '0.85rem', color: 'var(--primary-text)' }}>
@@ -427,7 +496,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
         </div>
       )}
 
-      {/* APPLICATION SUCCESS MODAL (Mandatory per UI/UX Brief) */}
+      {/* APPLICATION SUCCESS MODAL */}
       {showSuccessModal && (
         <div
           style={{

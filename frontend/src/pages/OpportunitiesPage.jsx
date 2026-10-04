@@ -12,12 +12,42 @@ import {
   X,
   Sparkles,
   ArrowRight,
+  Building2,
+  Bookmark,
+  CheckCircle2,
+  ChevronRight,
 } from 'lucide-react';
 import { useOpportunityStore } from '../store/useOpportunityStore';
 import { useApplicationStore } from '../store/useApplicationStore';
 import { useUIStore } from '../store/useUIStore';
-import OpportunityCard from '../components/OpportunityCard';
 import BackButton from '../components/BackButton';
+
+// Safe sanitizers to eliminate React Child Object errors (#31)
+const formatLocation = (loc) => {
+  if (!loc) return 'Remote';
+  if (typeof loc === 'string') return loc;
+  if (typeof loc === 'object') {
+    const parts = [loc.city, loc.state].filter(Boolean);
+    if (parts.length > 0) return parts.join(', ');
+    return loc.type || loc.country || 'Remote';
+  }
+  return 'Remote';
+};
+
+const formatOrganization = (org, company) => {
+  const target = org || company;
+  if (!target) return 'Direct Employer';
+  if (typeof target === 'string') return target;
+  if (typeof target === 'object') return target.name || 'Direct Employer';
+  return 'Direct Employer';
+};
+
+const formatSkill = (skill) => {
+  if (!skill) return '';
+  if (typeof skill === 'string') return skill;
+  if (typeof skill === 'object') return skill.name || skill.title || '';
+  return String(skill);
+};
 
 export default function OpportunitiesPage() {
   const {
@@ -33,17 +63,18 @@ export default function OpportunitiesPage() {
     selectedSort,
     setSelectedSort,
     isLoading,
+    toggleSaveOpportunity,
+    savedIds,
   } = useOpportunityStore();
 
   const { applications, fetchMyApplications, apply } = useApplicationStore();
-  const { navigate, showToast } = useUIStore();
+  const { navigate, showToast, openMentorForOpportunity } = useUIStore();
 
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+  const [viewMode, setViewMode] = useState('grid');
   const [minMatch, setMinMatch] = useState(0);
   const [showLiveDropdown, setShowLiveDropdown] = useState(false);
   const searchBoxRef = useRef(null);
 
-  // Fetch user applications and full opportunity pool once on mount
   useEffect(() => {
     fetchMyApplications();
     if (!allOpportunities || allOpportunities.length === 0) {
@@ -51,7 +82,6 @@ export default function OpportunitiesPage() {
     }
   }, []);
 
-  // Close live search dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (searchBoxRef.current && !searchBoxRef.current.contains(e.target)) {
@@ -62,13 +92,11 @@ export default function OpportunitiesPage() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Live search & filter effect: automatically queries the database as user types or changes filters
   useEffect(() => {
     const delay = searchQuery ? 120 : 0;
     const timer = setTimeout(() => {
       fetchOpportunities();
     }, delay);
-
     return () => clearTimeout(timer);
   }, [searchQuery, selectedType, selectedLocation, selectedSort]);
 
@@ -93,7 +121,6 @@ export default function OpportunitiesPage() {
 
   const appliedOppIds = applications.map((a) => a.opportunity?._id || a.opportunity);
 
-  // Merge live-fetched opportunities with cached allOpportunities for instant 0ms live search
   const sourceOpportunities = useMemo(() => {
     const map = new Map();
     (allOpportunities || []).forEach((o) => {
@@ -152,27 +179,11 @@ export default function OpportunitiesPage() {
     return true;
   });
 
-  // Extract live matching skill suggestions based on current search query
-  const matchingSkills = useMemo(() => {
-    const skillSet = new Set();
-    sourceOpportunities.forEach((opp) => {
-      (opp.requiredSkills || []).forEach((s) => {
-        const name = typeof s === 'object' ? s.name : String(s);
-        if (name) {
-          if (!normalizedQuery || name.toLowerCase().includes(normalizedQuery)) {
-            skillSet.add(name);
-          }
-        }
-      });
-    });
-    return Array.from(skillSet).slice(0, 6);
-  }, [sourceOpportunities, normalizedQuery]);
-
   return (
     <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
       <BackButton label="Back to Dashboard" fallbackPage="dashboard" style={{ marginBottom: '20px' }} />
 
-      {/* Live Search & Top Action Bar */}
+      {/* Live Search & Filter Bar */}
       <div style={{ marginBottom: '24px' }}>
         <div ref={searchBoxRef} style={{ position: 'relative' }}>
           <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
@@ -183,18 +194,13 @@ export default function OpportunitiesPage() {
             />
             <input
               type="text"
-              placeholder="Live search by role title, skills (React, Node.js, Python, Docker), city, or company..."
+              placeholder="Live search by role title, skills (React, Node.js, Python), city, or company..."
               className="form-input"
               style={{
                 paddingLeft: '44px',
                 paddingRight: searchQuery ? '140px' : '115px',
                 height: '50px',
                 fontSize: '0.95rem',
-                borderColor: showLiveDropdown && searchQuery ? '#A855F7' : undefined,
-                boxShadow:
-                  showLiveDropdown && searchQuery
-                    ? '0 0 0 3px rgba(168, 85, 247, 0.2)'
-                    : undefined,
               }}
               value={searchQuery}
               onFocus={() => setShowLiveDropdown(true)}
@@ -202,282 +208,27 @@ export default function OpportunitiesPage() {
                 setSearchQuery(e.target.value);
                 setShowLiveDropdown(true);
               }}
-              onKeyDown={(e) => {
-                if (e.key === 'Escape' || e.key === 'Enter') {
-                  setShowLiveDropdown(false);
-                }
-              }}
             />
-            <div
-              style={{
-                position: 'absolute',
-                right: '12px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                zIndex: 2,
-              }}
-            >
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSearchQuery('');
-                    setShowLiveDropdown(false);
-                  }}
-                  title="Clear live search"
-                  style={{
-                    color: 'var(--secondary-text)',
-                    padding: '4px',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <X size={16} />
-                </button>
-              )}
-              <span
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
                 style={{
-                  fontSize: '0.72rem',
-                  fontWeight: 700,
-                  padding: '4px 10px',
-                  borderRadius: '9999px',
-                  backgroundColor: isLoading
-                    ? 'rgba(168, 85, 247, 0.2)'
-                    : 'rgba(16, 185, 129, 0.14)',
-                  color: isLoading ? '#C084FC' : '#10B981',
-                  border: isLoading
-                    ? '1px solid rgba(168, 85, 247, 0.4)'
-                    : '1px solid rgba(16, 185, 129, 0.35)',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px',
+                  position: 'absolute',
+                  right: '16px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--secondary-text)',
+                  cursor: 'pointer',
+                  zIndex: 2,
                 }}
               >
-                <Sparkles size={11} />
-                {isLoading ? 'Syncing...' : 'Live Search'}
-              </span>
-            </div>
+                <X size={16} />
+              </button>
+            )}
           </div>
-
-          {/* Instant Live Search Results Dropdown */}
-          {showLiveDropdown && normalizedQuery && (
-            <div
-              className="card animate-fade-in"
-              style={{
-                position: 'absolute',
-                top: '56px',
-                left: 0,
-                right: 0,
-                backgroundColor: 'var(--card-bg)',
-                backdropFilter: 'blur(22px)',
-                WebkitBackdropFilter: 'blur(22px)',
-                border: '1px solid var(--border-color)',
-                borderRadius: 'var(--radius-lg)',
-                boxShadow: 'var(--shadow-lg), 0 12px 32px rgba(124, 58, 237, 0.22)',
-                zIndex: 100,
-                overflow: 'hidden',
-              }}
-            >
-              {/* Dropdown Header */}
-              <div
-                style={{
-                  padding: '10px 16px',
-                  borderBottom: '1px solid var(--border-color)',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  backgroundColor: 'var(--box-subtle)',
-                }}
-              >
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--secondary-text)' }}>
-                  LIVE DATABASE RESULTS ({filteredOpportunities.length} {filteredOpportunities.length === 1 ? 'MATCH' : 'MATCHES'})
-                </span>
-                {isLoading && (
-                  <span style={{ fontSize: '0.72rem', color: '#C084FC', fontWeight: 600 }}>
-                    Syncing with MongoDB...
-                  </span>
-                )}
-              </div>
-
-              {/* Matching Skills Quick Pills */}
-              {matchingSkills.length > 0 && (
-                <div
-                  style={{
-                    padding: '10px 16px',
-                    borderBottom: '1px solid var(--border-color)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    flexWrap: 'wrap',
-                    gap: '6px',
-                  }}
-                >
-                  <span style={{ fontSize: '0.72rem', color: 'var(--secondary-text)', marginRight: '4px' }}>
-                    Matching Skills:
-                  </span>
-                  {matchingSkills.map((skill) => (
-                    <button
-                      key={skill}
-                      type="button"
-                      onClick={() => {
-                        setSearchQuery(skill);
-                        setShowLiveDropdown(false);
-                      }}
-                      style={{
-                        fontSize: '0.72rem',
-                        fontWeight: 600,
-                        padding: '3px 10px',
-                        borderRadius: '9999px',
-                        backgroundColor: 'rgba(168, 85, 247, 0.14)',
-                        color: '#C084FC',
-                        border: '1px solid rgba(168, 85, 247, 0.35)',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      {skill}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {/* Live Opportunity Matches List */}
-              <div style={{ maxHeight: '320px', overflowY: 'auto' }}>
-                {filteredOpportunities.length === 0 ? (
-                  <div
-                    style={{
-                      padding: '22px 16px',
-                      textAlign: 'center',
-                      color: 'var(--secondary-text)',
-                      fontSize: '0.875rem',
-                    }}
-                  >
-                    No opportunities found matching "<strong style={{ color: 'var(--primary-text)' }}>{searchQuery}</strong>"
-                  </div>
-                ) : (
-                  filteredOpportunities.slice(0, 6).map((opp) => (
-                    <div
-                      key={opp._id}
-                      onClick={() => {
-                        setShowLiveDropdown(false);
-                        navigate('details', { id: opp._id });
-                      }}
-                      style={{
-                        padding: '12px 16px',
-                        borderBottom: '1px solid var(--border-color)',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        gap: '12px',
-                        transition: 'background-color 0.15s ease',
-                      }}
-                    >
-                      <div style={{ overflow: 'hidden', flex: 1 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                          <span
-                            style={{
-                              fontSize: '0.9rem',
-                              fontWeight: 700,
-                              color: 'var(--primary-text)',
-                            }}
-                          >
-                            {opp.title}
-                          </span>
-                          <span
-                            style={{
-                              fontSize: '0.7rem',
-                              fontWeight: 700,
-                              padding: '2px 8px',
-                              borderRadius: '9999px',
-                              backgroundColor: 'rgba(168, 85, 247, 0.15)',
-                              color: '#C084FC',
-                            }}
-                          >
-                            {opp.type}
-                          </span>
-                        </div>
-                        <div
-                          style={{
-                            fontSize: '0.775rem',
-                            color: 'var(--secondary-text)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '10px',
-                            marginTop: '4px',
-                            flexWrap: 'wrap',
-                          }}
-                        >
-                          <span style={{ fontWeight: 600 }}>{opp.organization}</span>
-                          <span>•</span>
-                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-                            <MapPin size={12} /> {opp.location?.type || 'Remote'}
-                            {opp.location?.city ? ` (${opp.location.city})` : ''}
-                          </span>
-                          {(opp.requiredSkills || []).length > 0 && (
-                            <>
-                              <span>•</span>
-                              <span style={{ color: '#A78BFA' }}>
-                                {(opp.requiredSkills || [])
-                                  .slice(0, 3)
-                                  .map((s) => (typeof s === 'object' ? s.name : String(s)))
-                                  .join(', ')}
-                              </span>
-                            </>
-                          )}
-                        </div>
-                      </div>
-
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
-                        {opp.matchScore !== null && opp.matchScore !== undefined && (
-                          <span
-                            style={{
-                              fontSize: '0.75rem',
-                              fontWeight: 700,
-                              padding: '3px 8px',
-                              borderRadius: '9999px',
-                              backgroundColor: 'rgba(16, 185, 129, 0.15)',
-                              color: '#10B981',
-                              border: '1px solid rgba(16, 185, 129, 0.35)',
-                            }}
-                          >
-                            {opp.matchScore}% Match
-                          </span>
-                        )}
-                        <ArrowRight size={15} color="#C084FC" />
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-
-              {/* Footer to close dropdown and browse filtered grid */}
-              {filteredOpportunities.length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => setShowLiveDropdown(false)}
-                  style={{
-                    width: '100%',
-                    padding: '10px 16px',
-                    backgroundColor: 'var(--box-subtle)',
-                    color: '#C084FC',
-                    fontSize: '0.8rem',
-                    fontWeight: 700,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '6px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Showing {filteredOpportunities.length} live {filteredOpportunities.length === 1 ? 'result' : 'results'} in grid below
-                </button>
-              )}
-            </div>
-          )}
         </div>
 
         {/* Quick Filter Chips */}
@@ -493,9 +244,8 @@ export default function OpportunitiesPage() {
                 background: selectedType === t ? 'var(--primary-gradient)' : 'var(--chip-bg)',
                 color: selectedType === t ? '#FFFFFF' : 'var(--secondary-text)',
                 border: selectedType === t ? '1px solid transparent' : '1px solid var(--chip-border)',
-                boxShadow: selectedType === t ? '0 0 15px rgba(168, 85, 247, 0.4)' : 'none',
                 fontWeight: 600,
-                backdropFilter: 'blur(8px)',
+                cursor: 'pointer',
               }}
             >
               {t === 'all' ? 'All Roles' : t}
@@ -512,9 +262,8 @@ export default function OpportunitiesPage() {
                 background: selectedLocation === loc ? 'linear-gradient(135deg, #06B6D4, #3B82F6)' : 'var(--chip-bg)',
                 color: selectedLocation === loc ? '#FFFFFF' : 'var(--secondary-text)',
                 border: selectedLocation === loc ? '1px solid transparent' : '1px solid var(--chip-border)',
-                boxShadow: selectedLocation === loc ? '0 0 15px rgba(6, 182, 212, 0.4)' : 'none',
                 fontWeight: 600,
-                backdropFilter: 'blur(8px)',
+                cursor: 'pointer',
               }}
             >
               {loc === 'all' ? 'Any Mode' : loc}
@@ -523,31 +272,22 @@ export default function OpportunitiesPage() {
         </div>
       </div>
 
-      {/* Main Browse Layout: Left Filter Panel + Right Listings */}
+      {/* Main Browse Layout */}
       <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: '24px' }}>
         {/* Left Filter Panel */}
-        <div
-          className="card"
-          style={{
-            padding: '20px',
-            height: 'fit-content',
-            position: 'sticky',
-            top: '88px',
-          }}
-        >
+        <div className="card" style={{ padding: '20px', height: 'fit-content', position: 'sticky', top: '88px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <strong style={{ fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
               <SlidersHorizontal size={16} /> Filters
             </strong>
             <button
               onClick={handleResetFilters}
-              style={{ fontSize: '0.75rem', color: '#A78BFA', display: 'flex', alignItems: 'center', gap: '3px' }}
+              style={{ fontSize: '0.75rem', color: '#A78BFA', display: 'flex', alignItems: 'center', gap: '3px', background: 'none', border: 'none', cursor: 'pointer' }}
             >
               <RotateCcw size={12} /> Reset
             </button>
           </div>
 
-          {/* Sort By Dropdown */}
           <div className="form-group">
             <label className="form-label" style={{ fontSize: '0.8rem' }}>Sort Listings By</label>
             <select
@@ -562,7 +302,6 @@ export default function OpportunitiesPage() {
             </select>
           </div>
 
-          {/* Minimum Match Score Slider */}
           <div className="form-group">
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: '4px' }}>
               <label className="form-label" style={{ margin: 0 }}>Min Match Score</label>
@@ -578,49 +317,17 @@ export default function OpportunitiesPage() {
               style={{ width: '100%', accentColor: 'var(--aurora-violet)' }}
             />
           </div>
-
-          <div style={{ padding: '12px', backgroundColor: 'var(--status-blue-bg)', border: '1px solid var(--border-color)', borderRadius: '10px', fontSize: '0.775rem', color: 'var(--status-blue)', marginTop: '16px' }}>
-            💡 <strong>Pro Tip:</strong> Matches above 80% have strong overlap with your profile skills & coursework.
-          </div>
         </div>
 
         {/* Right Listings Content */}
         <div>
-          {/* Header with Results count & Grid/List view toggle */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
             <span style={{ fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
               Showing <strong style={{ color: 'var(--primary-text)' }}>{filteredOpportunities.length}</strong> available opportunities
             </span>
-
-            <div style={{ display: 'flex', gap: '4px', backgroundColor: 'var(--box-subtle)', border: '1px solid var(--border-color)', padding: '3px', borderRadius: '8px' }}>
-              <button
-                onClick={() => setViewMode('grid')}
-                style={{
-                  padding: '6px',
-                  borderRadius: '6px',
-                  backgroundColor: viewMode === 'grid' ? 'var(--card-bg)' : 'transparent',
-                  color: viewMode === 'grid' ? '#7C3AED' : 'var(--secondary-text)',
-                  boxShadow: viewMode === 'grid' ? 'var(--shadow-subtle)' : 'none',
-                }}
-              >
-                <Grid size={16} />
-              </button>
-              <button
-                onClick={() => setViewMode('list')}
-                style={{
-                  padding: '6px',
-                  borderRadius: '6px',
-                  backgroundColor: viewMode === 'list' ? 'var(--card-bg)' : 'transparent',
-                  color: viewMode === 'list' ? '#7C3AED' : 'var(--secondary-text)',
-                  boxShadow: viewMode === 'list' ? 'var(--shadow-subtle)' : 'none',
-                }}
-              >
-                <List size={16} />
-              </button>
-            </div>
           </div>
 
-          {/* Opportunity Cards List/Grid */}
+          {/* Cards Grid */}
           <div
             style={{
               display: 'grid',
@@ -628,37 +335,238 @@ export default function OpportunitiesPage() {
               gap: '18px',
             }}
           >
-            {filteredOpportunities.map((opp) => (
-              <OpportunityCard
-                key={opp._id}
-                opportunity={opp}
-                onApply={handleApply}
-                isApplied={appliedOppIds.includes(opp._id)}
-              />
-            ))}
-          </div>
+            {filteredOpportunities.map((opp) => {
+              const displayCompany = formatOrganization(opp.organization, opp.company);
+              const displayLocation = formatLocation(opp.location);
+              const safeSkills = Array.isArray(opp.requiredSkills || opp.skills) ? (opp.requiredSkills || opp.skills) : [];
+              const matchScore = opp.matchScore ?? opp.matchDetails?.overallScore;
+              const isSaved = Array.isArray(savedIds) && savedIds.includes(opp._id);
+              const isApplied = appliedOppIds.includes(opp._id);
 
-          {filteredOpportunities.length === 0 && !isLoading && (
-            <div
-              className="card"
-              style={{
-                padding: '48px',
-                textAlign: 'center',
-                color: 'var(--secondary-text)',
-                marginTop: '20px',
-              }}
-            >
-              <h3 style={{ fontSize: '1.2rem', marginBottom: '8px', color: 'var(--primary-text)' }}>
-                No matching opportunities found
-              </h3>
-              <p style={{ fontSize: '0.9rem', maxWidth: '400px', margin: '0 auto 16px auto' }}>
-                Try adjusting your search criteria or resetting filters to view all verified listings.
-              </p>
-              <button onClick={handleResetFilters} className="btn-secondary">
-                Reset All Filters
-              </button>
-            </div>
-          )}
+              return (
+                <div
+                  key={opp._id}
+                  className="card card-hover"
+                  onClick={() => navigate('details', { id: opp._id })}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    padding: '20px',
+                    cursor: 'pointer',
+                    borderRadius: '16px',
+                    backgroundColor: 'var(--card-bg)',
+                    border: '1px solid var(--border-color)',
+                  }}
+                >
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '14px' }}>
+                      <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                        <div
+                          style={{
+                            width: '42px',
+                            height: '42px',
+                            borderRadius: '10px',
+                            backgroundColor: 'rgba(168, 85, 247, 0.15)',
+                            border: '1px solid rgba(168, 85, 247, 0.3)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: '#C084FC',
+                            fontWeight: 700,
+                            fontSize: '1rem',
+                          }}
+                        >
+                          {displayCompany.substring(0, 2).toUpperCase()}
+                        </div>
+                        <div>
+                          <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--primary-text)', margin: '0 0 2px 0' }}>
+                            {opp.title}
+                          </h3>
+                          <span style={{ fontSize: '0.82rem', color: 'var(--secondary-text)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <Building2 size={13} /> {displayCompany}
+                          </span>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (toggleSaveOpportunity) toggleSaveOpportunity(opp._id);
+                        }}
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          cursor: 'pointer',
+                          color: isSaved ? '#EC4899' : 'var(--secondary-text)',
+                          padding: '4px',
+                        }}
+                      >
+                        <Bookmark size={18} fill={isSaved ? 'currentColor' : 'none'} />
+                      </button>
+                    </div>
+
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' }}>
+                      <span
+                        style={{
+                          fontSize: '0.72rem',
+                          fontWeight: 700,
+                          padding: '3px 9px',
+                          borderRadius: '9999px',
+                          backgroundColor: 'rgba(16, 185, 129, 0.14)',
+                          color: '#34D399',
+                          border: '1px solid rgba(16, 185, 129, 0.3)',
+                        }}
+                      >
+                        {opp.type || 'Internship'}
+                      </span>
+
+                      <span
+                        style={{
+                          fontSize: '0.72rem',
+                          fontWeight: 600,
+                          padding: '3px 9px',
+                          borderRadius: '9999px',
+                          backgroundColor: 'rgba(6, 182, 212, 0.12)',
+                          color: '#38BDF8',
+                          border: '1px solid rgba(6, 182, 212, 0.25)',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                        }}
+                      >
+                        <MapPin size={11} /> {displayLocation}
+                      </span>
+
+                      {opp.salary?.amount && (
+                        <span
+                          style={{
+                            fontSize: '0.72rem',
+                            fontWeight: 600,
+                            padding: '3px 9px',
+                            borderRadius: '9999px',
+                            backgroundColor: 'var(--box-subtle)',
+                            color: 'var(--primary-text)',
+                            border: '1px solid var(--border-color)',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '3px',
+                          }}
+                        >
+                          <IndianRupee size={11} /> {opp.salary.amount} / {opp.salary.period || 'mo'}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Required Skills Chips */}
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '16px' }}>
+                      {safeSkills.slice(0, 4).map((skillItem, idx) => (
+                        <span
+                          key={idx}
+                          style={{
+                            fontSize: '0.74rem',
+                            padding: '3px 8px',
+                            borderRadius: '6px',
+                            backgroundColor: 'var(--box-subtle)',
+                            color: 'var(--secondary-text)',
+                            border: '1px solid var(--border-color)',
+                          }}
+                        >
+                          {formatSkill(skillItem)}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Card Footer: AI Gap Analysis + Details + Apply */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      paddingTop: '14px',
+                      borderTop: '1px solid var(--border-color)',
+                      gap: '8px',
+                      flexWrap: 'wrap',
+                    }}
+                  >
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openMentorForOpportunity({
+                          id: opp._id,
+                          title: opp.title,
+                          company: displayCompany,
+                          requiredSkills: safeSkills.map(formatSkill),
+                          matchScore: matchScore ?? 75,
+                        });
+                      }}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        fontSize: '0.78rem',
+                        padding: '7px 11px',
+                        borderRadius: '8px',
+                        backgroundColor: 'rgba(37, 99, 235, 0.12)',
+                        border: '1px solid rgba(37, 99, 235, 0.35)',
+                        color: '#60a5fa',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <Sparkles size={13} color="#60a5fa" />
+                      <span>AI Gap Analysis</span>
+                    </button>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate('details', { id: opp._id });
+                        }}
+                        className="btn-secondary"
+                        style={{ fontSize: '0.78rem', padding: '6px 12px', display: 'inline-flex', alignItems: 'center', gap: '2px' }}
+                      >
+                        Details <ChevronRight size={13} />
+                      </button>
+
+                      {isApplied ? (
+                        <span
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            fontSize: '0.78rem',
+                            color: '#10b981',
+                            fontWeight: 600,
+                            padding: '6px 10px',
+                          }}
+                        >
+                          <CheckCircle2 size={14} /> Applied
+                        </span>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleApply(opp);
+                          }}
+                          className="btn-primary"
+                          style={{ fontSize: '0.78rem', padding: '6px 14px' }}
+                        >
+                          Apply
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
