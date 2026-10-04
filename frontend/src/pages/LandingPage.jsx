@@ -24,60 +24,61 @@ import AnimatedLogo from '../components/AnimatedLogo';
 
 export default function LandingPage() {
   const { navigate } = useUIStore();
-  const { isAuthenticated, user, demoLogin } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
   const [featuredOpps, setFeaturedOpps] = useState([]);
   const [stats, setStats] = useState(null);
+  const [platformContent, setPlatformContent] = useState(null);
 
   useEffect(() => {
     api
       .get('/opportunities?limit=4')
       .then((res) => {
-        setFeaturedOpps(res.data.opportunities || []);
+        setFeaturedOpps(res?.data?.opportunities || []);
       })
       .catch(() => {});
 
     api
       .get('/stats/overview')
       .then((res) => {
-        if (res.data) setStats(res.data);
+        if (res?.data) {
+          setStats(res.data);
+          if (res.data.platformContent) {
+            setPlatformContent(res.data.platformContent);
+          }
+        }
       })
       .catch(() => {});
   }, []);
 
-  const howItWorksSteps = [
-    { step: '01', title: 'Register Account', desc: 'Sign up as a Student or Employer with role-tailored onboarding.' },
-    { step: '02', title: 'Build Profile', desc: 'List your skills, coursework, degree, and career interests with instant completeness scoring.' },
-    { step: '03', title: 'Discover & Match', desc: 'See weighted 5-factor match scores explaining exactly why an internship fits your profile.' },
-    { step: '04', title: 'Bridge Skill Gaps', desc: 'Identify missing competencies and explore direct learning roadmaps before applying.' },
-    { step: '05', title: 'Apply & Track', desc: 'Submit one-click profile applications and track interview progression in real time.' },
-  ];
+  const iconMap = {
+    Sparkles,
+    Target,
+    TrendingUp,
+    Compass,
+    Layers,
+    BookOpen,
+    Briefcase,
+  };
 
-  const features = [
-    {
-      icon: Target,
-      title: '5-Factor Explainable Matching',
-      desc: 'No black-box rejection. Transparently computes matches across Skills (40%), Qualifications (20%), Location (20%), Interests (10%), and Experience (10%).',
-      color: '#A855F7',
-    },
-    {
-      icon: TrendingUp,
-      title: 'Actionable Skill-Gap Insights',
-      desc: 'Instantly view matched vs missing skills for any role, paired directly with curated roadmaps so you learn what matters.',
-      color: '#EC4899',
-    },
-    {
-      icon: Compass,
-      title: 'Fresher-First Discovery',
-      desc: 'Browse internships, apprenticeships, and entry-level positions verified for zero-to-low experience candidates.',
-      color: '#06B6D4',
-    },
-    {
-      icon: Layers,
-      title: 'Unified Application Pipeline',
-      desc: 'Track every stage from Reviewing and Shortlisting to Interview schedules with calendar links.',
-      color: '#10B981',
-    },
-  ];
+  const howItWorksSteps = platformContent?.howItWorksSteps || [];
+  const features = (platformContent?.features || []).map((f) => ({
+    ...f,
+    icon: iconMap[f.iconName] || Sparkles,
+  }));
+  const orbitBadges = platformContent?.heroOrbitBadges || [];
+  const studentHighlight = platformContent?.roleHighlights?.student;
+  const employerHighlight = platformContent?.roleHighlights?.employer;
+  const skillGapPreview = platformContent?.skillGapPreview;
+
+  const handleEmployerPortalClick = () => {
+    if (isAuthenticated && user?.role === 'employer') {
+      navigate('employer-dashboard');
+    } else if (isAuthenticated) {
+      navigate('dashboard');
+    } else {
+      navigate('register');
+    }
+  };
 
   return (
     <div style={{ position: 'relative', overflow: 'hidden' }}>
@@ -230,7 +231,10 @@ export default function LandingPage() {
             >
               <span className="pill-pulse-dot" />
               <Sparkles size={15} />
-              <span>Next-Gen Career Intelligence • Get Started Free</span>
+              <span>
+                {platformContent?.heroAnnouncement?.text ||
+                  'Next-Gen Career Intelligence • Get Started Free'}
+              </span>
               <ArrowRight size={14} />
             </div>
 
@@ -264,7 +268,7 @@ export default function LandingPage() {
             </p>
 
             {/* Scrolltide Animated CTAs */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginBottom: '34px' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
               <button
                 onClick={() => navigate('register')}
                 className="btn-glow-ring"
@@ -278,52 +282,6 @@ export default function LandingPage() {
                 style={{ padding: '14px 34px', fontSize: '1.025rem' }}
               >
                 Explore Opportunities <ArrowRight size={18} />
-              </button>
-            </div>
-
-            {/* Quick Demo Login Bar for Evaluators */}
-            <div
-              style={{
-                padding: '14px 20px',
-                backgroundColor: 'var(--card-bg)',
-                backdropFilter: 'blur(16px)',
-                borderRadius: 'var(--radius-lg)',
-                border: '1px solid var(--border-color)',
-                boxShadow: 'var(--shadow-md)',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '12px',
-                flexWrap: 'wrap',
-              }}
-            >
-              <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#7C3AED' }}>
-                ⚡ Instant Demo:
-              </span>
-              <button
-                onClick={async () => {
-                  await demoLogin('student');
-                  navigate('dashboard');
-                }}
-                className="btn-outline"
-                style={{ padding: '7px 16px', fontSize: '0.785rem' }}
-              >
-                Student Demo <ArrowRight size={13} />
-              </button>
-              <button
-                onClick={async () => {
-                  await demoLogin('employer');
-                  navigate('employer-dashboard');
-                }}
-                className="btn-outline"
-                style={{
-                  padding: '7px 16px',
-                  fontSize: '0.785rem',
-                  borderColor: 'rgba(236, 72, 153, 0.5)',
-                  color: '#F472B6',
-                  backgroundColor: 'rgba(236, 72, 153, 0.08)',
-                }}
-              >
-                Employer Demo <ArrowRight size={13} />
               </button>
             </div>
           </div>
@@ -370,46 +328,47 @@ export default function LandingPage() {
               <span>✦ Drag 3D Core to Rotate in 360°</span>
             </div>
 
-            {/* Floating Holographic 3D Orbit Badges (Scrolltide 3D Theme) */}
-            <div
-              className="holo-orbit-badge anim-float-orbit-1"
-              style={{ position: 'absolute', top: '35px', left: '-30px', zIndex: 11 }}
-            >
-              <span className="pill-pulse-dot" />
-              <span>🎯 94% Skill Match</span>
-            </div>
+            {/* Floating Holographic 3D Orbit Badges (Synced from Database) */}
+            {orbitBadges[0] && (
+              <div
+                className="holo-orbit-badge anim-float-orbit-1"
+                style={{ position: 'absolute', top: '35px', left: '-30px', zIndex: 11 }}
+              >
+                {orbitBadges[0].pulse && <span className="pill-pulse-dot" />}
+                <span>🎯 {orbitBadges[0].label}</span>
+              </div>
+            )}
 
-            <div
-              className="holo-orbit-badge anim-float-orbit-2"
-              style={{ position: 'absolute', top: '45px', right: '-30px', zIndex: 11 }}
-            >
-              <span>⚡ 5-Factor Explainable AI</span>
-            </div>
+            {orbitBadges[1] && (
+              <div
+                className="holo-orbit-badge anim-float-orbit-2"
+                style={{ position: 'absolute', top: '45px', right: '-30px', zIndex: 11 }}
+              >
+                <span>⚡ {orbitBadges[1].label}</span>
+              </div>
+            )}
 
-            <div
-              className="holo-orbit-badge anim-float-orbit-3"
-              style={{ position: 'absolute', bottom: '110px', left: '-40px', zIndex: 11 }}
-            >
-              <span>💼 ₹35,000 / mo Stipend</span>
-            </div>
+            {orbitBadges[2] && (
+              <div
+                className="holo-orbit-badge anim-float-orbit-3"
+                style={{ position: 'absolute', bottom: '110px', left: '-40px', zIndex: 11 }}
+              >
+                <span>💼 {orbitBadges[2].label}</span>
+              </div>
+            )}
 
-            <div
-              className="holo-orbit-badge anim-float-orbit-4"
-              style={{ position: 'absolute', bottom: '20px', right: '-25px', zIndex: 11 }}
-            >
-              <span>🚀 Zero Experience Barrier</span>
-            </div>
+            {orbitBadges[3] && (
+              <div
+                className="holo-orbit-badge anim-float-orbit-4"
+                style={{ position: 'absolute', bottom: '20px', right: '-25px', zIndex: 11 }}
+              >
+                <span>🚀 {orbitBadges[3].label}</span>
+              </div>
+            )}
 
-            {/* Featured Match Card Preview with Frosted Liquid Glass & 3D Tilt */}
-            {(() => {
-              const heroOpp = featuredOpps[0] || {
-                title: 'Frontend Engineering Intern',
-                organization: 'TechCorp Labs',
-                location: { type: 'Remote', city: 'Bengaluru' },
-                matchScore: 94,
-                requiredSkills: [{ name: 'React' }, { name: 'JavaScript' }, { name: 'REST APIs' }, { name: 'Git' }],
-                salary: { amount: '₹35,000', period: 'month' },
-              };
+            {/* Featured Match Card Preview from Database */}
+            {featuredOpps[0] && (() => {
+              const heroOpp = featuredOpps[0];
               const heroSkills = (heroOpp.requiredSkills || []).slice(0, 4);
 
               return (
@@ -456,7 +415,7 @@ export default function LandingPage() {
                     }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.775rem' }}>
-                      <span style={{ color: 'var(--primary-text)' }}>Skill Match (40%)</span>
+                      <span style={{ color: 'var(--primary-text)' }}>Skill Match (50%)</span>
                       <strong style={{ color: '#10B981' }}>High Alignment</strong>
                     </div>
                     <div style={{ height: '6px', backgroundColor: 'var(--border-color)', borderRadius: '3px', overflow: 'hidden' }}>
@@ -489,38 +448,44 @@ export default function LandingPage() {
               );
             })()}
 
-            {/* Overlapping Skill Gap Preview Card with 3D Tilt */}
-            <Tilt3DCard
-              className="card"
-              style={{
-                position: 'absolute',
-                bottom: '-20px',
-                right: '-10px',
-                padding: '18px',
-                width: '270px',
-                zIndex: 3,
-                boxShadow: 'var(--shadow-lg), 0 0 20px rgba(236, 72, 153, 0.25)',
-                border: '1px solid rgba(236, 72, 153, 0.45)',
-                backgroundColor: 'var(--card-bg)',
-                backdropFilter: 'blur(16px)',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#EC4899', marginBottom: '8px' }}>
-                <TrendingUp size={16} />
-                <strong style={{ fontSize: '0.8rem' }}>Skill Gap Guidance</strong>
-              </div>
-              <p style={{ fontSize: '0.75rem', color: 'var(--secondary-text)', marginBottom: '8px' }}>
-                Missing Docker for Full-Stack role?
-              </p>
-              <span className="skill-chip skill-chip-missing" style={{ fontSize: '0.7rem' }}>
-                Docker Hands-on (3.5h)
-              </span>
-            </Tilt3DCard>
+            {/* Overlapping Skill Gap Preview Card from Database */}
+            {skillGapPreview && (
+              <Tilt3DCard
+                className="card"
+                onClick={() =>
+                  navigate('learning', { skillName: skillGapPreview.targetSkill || 'Docker' })
+                }
+                style={{
+                  position: 'absolute',
+                  bottom: '-20px',
+                  right: '-10px',
+                  padding: '18px',
+                  width: '270px',
+                  zIndex: 3,
+                  boxShadow: 'var(--shadow-lg), 0 0 20px rgba(236, 72, 153, 0.25)',
+                  border: '1px solid rgba(236, 72, 153, 0.45)',
+                  backgroundColor: 'var(--card-bg)',
+                  backdropFilter: 'blur(16px)',
+                  cursor: 'pointer',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#EC4899', marginBottom: '8px' }}>
+                  <TrendingUp size={16} />
+                  <strong style={{ fontSize: '0.8rem' }}>{skillGapPreview.title}</strong>
+                </div>
+                <p style={{ fontSize: '0.75rem', color: 'var(--secondary-text)', marginBottom: '8px' }}>
+                  {skillGapPreview.question}
+                </p>
+                <span className="skill-chip skill-chip-missing" style={{ fontSize: '0.7rem' }}>
+                  {skillGapPreview.chipLabel}
+                </span>
+              </Tilt3DCard>
+            )}
           </div>
         </div>
       </section>
 
-      {/* 2. HOW IT WORKS SECTION (5-Step Visual Journey) */}
+      {/* 2. HOW IT WORKS SECTION */}
       <section
         id="how-it-works"
         style={{
@@ -534,7 +499,7 @@ export default function LandingPage() {
             <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#C084FC', textTransform: 'uppercase', letterSpacing: '1px' }}>
               HOW IT WORKS
             </span>
-            <h2 style={{ fontSize: '2.4rem', marginTop: '8px', color: 'var(--primary-text)' }}>A Five-Step Visual Journey to Your Career</h2>
+            <h2 style={{ fontSize: '2.4rem', marginTop: '8px', color: 'var(--primary-text)' }}>A Visual Journey to Your Career</h2>
             <p style={{ fontSize: '1rem', color: 'var(--secondary-text)', marginTop: '8px' }}>
               From initial registration to landing interviews with guided skill enhancement.
             </p>
@@ -647,25 +612,21 @@ export default function LandingPage() {
               }}
             >
               <span className="badge badge-internship" style={{ marginBottom: '14px' }}>
-                FOR STUDENTS & FRESHERS
+                {studentHighlight?.badge || 'FOR STUDENTS & FRESHERS'}
               </span>
-              <h3 style={{ fontSize: '1.6rem', marginBottom: '12px', color: 'var(--primary-text)' }}>Discover Roles That Fit Your True Potential</h3>
+              <h3 style={{ fontSize: '1.6rem', marginBottom: '12px', color: 'var(--primary-text)' }}>
+                {studentHighlight?.title || 'Discover Roles That Fit Your True Potential'}
+              </h3>
               <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
-                <li style={{ display: 'flex', gap: '10px', fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
-                  <CheckCircle size={18} color="#7C3AED" style={{ flexShrink: 0 }} />
-                  Understand why an opportunity matches you with 5 distinct factor scores.
-                </li>
-                <li style={{ display: 'flex', gap: '10px', fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
-                  <CheckCircle size={18} color="#7C3AED" style={{ flexShrink: 0 }} />
-                  Access 5-stage learning roadmaps to conquer missing skills.
-                </li>
-                <li style={{ display: 'flex', gap: '10px', fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
-                  <CheckCircle size={18} color="#7C3AED" style={{ flexShrink: 0 }} />
-                  Track applications in a real-time status progression pipeline.
-                </li>
+                {(studentHighlight?.bullets || []).map((bullet, idx) => (
+                  <li key={idx} style={{ display: 'flex', gap: '10px', fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
+                    <CheckCircle size={18} color="#7C3AED" style={{ flexShrink: 0 }} />
+                    {bullet}
+                  </li>
+                ))}
               </ul>
               <button onClick={() => navigate('register')} className="btn-primary" style={{ width: '100%' }}>
-                Create Student Profile <ArrowRight size={16} />
+                {studentHighlight?.ctaText || 'Create Student Profile'} <ArrowRight size={16} />
               </button>
             </Tilt3DCard>
 
@@ -679,32 +640,25 @@ export default function LandingPage() {
               }}
             >
               <span className="badge badge-entry" style={{ marginBottom: '14px' }}>
-                FOR EMPLOYERS & STARTUPS
+                {employerHighlight?.badge || 'FOR EMPLOYERS & STARTUPS'}
               </span>
-              <h3 style={{ fontSize: '1.6rem', marginBottom: '12px', color: 'var(--primary-text)' }}>Find Early-Career Talent With Proven Skills</h3>
+              <h3 style={{ fontSize: '1.6rem', marginBottom: '12px', color: 'var(--primary-text)' }}>
+                {employerHighlight?.title || 'Find Early-Career Talent With Proven Skills'}
+              </h3>
               <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
-                <li style={{ display: 'flex', gap: '10px', fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
-                  <CheckCircle size={18} color="#EC4899" style={{ flexShrink: 0 }} />
-                  Post internships & entry jobs using our 5-step structured wizard.
-                </li>
-                <li style={{ display: 'flex', gap: '10px', fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
-                  <CheckCircle size={18} color="#EC4899" style={{ flexShrink: 0 }} />
-                  Review candidates ranked by algorithmic skill compatibility scores.
-                </li>
-                <li style={{ display: 'flex', gap: '10px', fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
-                  <CheckCircle size={18} color="#EC4899" style={{ flexShrink: 0 }} />
-                  Manage applications from review to shortlist and interview scheduling.
-                </li>
+                {(employerHighlight?.bullets || []).map((bullet, idx) => (
+                  <li key={idx} style={{ display: 'flex', gap: '10px', fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
+                    <CheckCircle size={18} color="#EC4899" style={{ flexShrink: 0 }} />
+                    {bullet}
+                  </li>
+                ))}
               </ul>
               <button
-                onClick={() => {
-                  demoLogin('employer');
-                  navigate('employer-dashboard');
-                }}
+                onClick={handleEmployerPortalClick}
                 className="btn-secondary"
                 style={{ width: '100%', borderColor: 'rgba(236, 72, 153, 0.4)', color: '#EC4899' }}
               >
-                Employer Portal <ArrowRight size={16} />
+                {employerHighlight?.ctaText || 'Register as Employer'} <ArrowRight size={16} />
               </button>
             </Tilt3DCard>
           </div>
@@ -749,25 +703,25 @@ export default function LandingPage() {
           >
             <div>
               <h2 style={{ fontSize: '2.8rem', fontWeight: 800, color: '#C084FC' }}>
-                {stats?.totalOpportunities ? `${stats.totalOpportunities}` : '50+'}
+                {stats ? `${stats.totalOpportunities}` : '—'}
               </h2>
               <p style={{ fontSize: '0.95rem', color: 'var(--secondary-text)', fontWeight: 500 }}>Active Opportunities Listed</p>
             </div>
             <div>
               <h2 style={{ fontSize: '2.8rem', fontWeight: 800, color: '#F472B6' }}>
-                {stats?.totalEmployers ? `${stats.totalEmployers}` : '15+'}
+                {stats ? `${stats.totalEmployers}` : '—'}
               </h2>
               <p style={{ fontSize: '0.95rem', color: 'var(--secondary-text)', fontWeight: 500 }}>Verified Employers</p>
             </div>
             <div>
               <h2 style={{ fontSize: '2.8rem', fontWeight: 800, color: '#38BDF8' }}>
-                {stats?.totalStudents ? `${stats.totalStudents}` : '100+'}
+                {stats ? `${stats.totalStudents}` : '—'}
               </h2>
               <p style={{ fontSize: '0.95rem', color: 'var(--secondary-text)', fontWeight: 500 }}>Registered Candidates</p>
             </div>
             <div>
               <h2 style={{ fontSize: '2.8rem', fontWeight: 800, color: '#34D399' }}>
-                {stats?.totalSkills ? `${stats.totalSkills}` : '30+'}
+                {stats ? `${stats.totalSkills}` : '—'}
               </h2>
               <p style={{ fontSize: '0.95rem', color: 'var(--secondary-text)', fontWeight: 500 }}>Verified Technical Skills</p>
             </div>
@@ -895,19 +849,13 @@ export default function LandingPage() {
             <h4 style={{ color: 'var(--primary-text)', fontSize: '0.95rem', marginBottom: '14px' }}>For Employers</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.85rem' }}>
               <a
-                onClick={() => {
-                  demoLogin('employer');
-                  navigate('employer-dashboard');
-                }}
+                onClick={handleEmployerPortalClick}
                 style={{ cursor: 'pointer', color: 'var(--secondary-text)' }}
               >
                 Post an Opportunity
               </a>
               <a
-                onClick={() => {
-                  demoLogin('employer');
-                  navigate('candidate-review');
-                }}
+                onClick={handleEmployerPortalClick}
                 style={{ cursor: 'pointer', color: 'var(--secondary-text)' }}
               >
                 Candidate Match Review

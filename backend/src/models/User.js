@@ -98,6 +98,18 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    savedOpportunities: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Opportunity',
+      },
+    ],
+    completedLearningResources: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'LearningResource',
+      },
+    ],
   },
   { timestamps: true }
 );

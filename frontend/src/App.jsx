@@ -46,6 +46,7 @@ export default function App() {
   }, []);
 
   const isPublicPage = ['landing', 'login', 'register'].includes(activePage);
+  const isEmployer = user?.role === 'employer';
 
   const renderActiveScreen = () => {
     switch (activePage) {
@@ -58,7 +59,7 @@ export default function App() {
       case 'profile-setup':
         return <ProfileSetupPage />;
       case 'dashboard':
-        return <StudentDashboard />;
+        return isEmployer ? <EmployerDashboard /> : <StudentDashboard />;
       case 'opportunities':
         return <OpportunitiesPage />;
       case 'details':
@@ -79,13 +80,17 @@ export default function App() {
       case 'profile':
         return <ProfilePage />;
       case 'employer-dashboard':
-        return <EmployerDashboard />;
+        return isEmployer ? <EmployerDashboard /> : <StudentDashboard />;
       case 'create-opportunity':
-        return <CreateOpportunityPage />;
+        return isEmployer ? <CreateOpportunityPage /> : <StudentDashboard />;
       case 'manage-opportunities':
-        return <ManageOpportunitiesPage />;
+        return isEmployer ? <ManageOpportunitiesPage /> : <StudentDashboard />;
       case 'candidate-review':
-        return <CandidateReviewPage opportunityId={pageParams.opportunityId} />;
+        return isEmployer ? (
+          <CandidateReviewPage opportunityId={pageParams.opportunityId} />
+        ) : (
+          <StudentDashboard />
+        );
       default:
         return <LandingPage />;
     }
@@ -186,34 +191,103 @@ export default function App() {
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <button onClick={() => navigate('dashboard')} className="btn-ghost" style={{ justifyContent: 'flex-start' }}>
-                  Student Hub
-                </button>
-                <button onClick={() => navigate('opportunities')} className="btn-ghost" style={{ justifyContent: 'flex-start' }}>
-                  Browse Opportunities
-                </button>
-                <button onClick={() => navigate('applications')} className="btn-ghost" style={{ justifyContent: 'flex-start' }}>
-                  My Applications
-                </button>
-                <button onClick={() => navigate('learning')} className="btn-ghost" style={{ justifyContent: 'flex-start' }}>
-                  Skills & Learning
-                </button>
-                <button onClick={() => navigate('profile')} className="btn-ghost" style={{ justifyContent: 'flex-start' }}>
-                  Digital Resume
-                </button>
-                <hr style={{ margin: '12px 0', border: 'none', borderTop: '1px solid var(--border-color)' }} />
-                <button onClick={() => navigate('employer-dashboard')} className="btn-ghost" style={{ justifyContent: 'flex-start' }}>
-                  Employer Hub
-                </button>
-                <button onClick={() => navigate('create-opportunity')} className="btn-ghost" style={{ justifyContent: 'flex-start' }}>
-                  Post Opportunity
-                </button>
-                <button onClick={() => navigate('manage-opportunities')} className="btn-ghost" style={{ justifyContent: 'flex-start' }}>
-                  Manage Listings
-                </button>
-                <button onClick={() => navigate('candidate-review')} className="btn-ghost" style={{ justifyContent: 'flex-start' }}>
-                  Candidate Review
-                </button>
+                {isEmployer ? (
+                  <>
+                    <button
+                      onClick={() => {
+                        navigate('employer-dashboard');
+                        setMobileDrawerOpen(false);
+                      }}
+                      className="btn-ghost"
+                      style={{ justifyContent: 'flex-start' }}
+                    >
+                      Employer Hub
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate('create-opportunity');
+                        setMobileDrawerOpen(false);
+                      }}
+                      className="btn-ghost"
+                      style={{ justifyContent: 'flex-start' }}
+                    >
+                      Post Opportunity
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate('manage-opportunities');
+                        setMobileDrawerOpen(false);
+                      }}
+                      className="btn-ghost"
+                      style={{ justifyContent: 'flex-start' }}
+                    >
+                      Manage Listings
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate('candidate-review');
+                        setMobileDrawerOpen(false);
+                      }}
+                      className="btn-ghost"
+                      style={{ justifyContent: 'flex-start' }}
+                    >
+                      Candidate Review
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => {
+                        navigate('dashboard');
+                        setMobileDrawerOpen(false);
+                      }}
+                      className="btn-ghost"
+                      style={{ justifyContent: 'flex-start' }}
+                    >
+                      Student Hub
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate('opportunities');
+                        setMobileDrawerOpen(false);
+                      }}
+                      className="btn-ghost"
+                      style={{ justifyContent: 'flex-start' }}
+                    >
+                      Browse Opportunities
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate('applications');
+                        setMobileDrawerOpen(false);
+                      }}
+                      className="btn-ghost"
+                      style={{ justifyContent: 'flex-start' }}
+                    >
+                      My Applications
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate('learning');
+                        setMobileDrawerOpen(false);
+                      }}
+                      className="btn-ghost"
+                      style={{ justifyContent: 'flex-start' }}
+                    >
+                      Skills & Learning
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate('profile');
+                        setMobileDrawerOpen(false);
+                      }}
+                      className="btn-ghost"
+                      style={{ justifyContent: 'flex-start' }}
+                    >
+                      Digital Resume
+                    </button>
+                  </>
+                )}
               </div>
             </div>
 

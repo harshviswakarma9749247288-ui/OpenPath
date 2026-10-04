@@ -2,28 +2,20 @@ import React, { useState, useEffect } from 'react';
 import {
   Menu,
   Bell,
-  Search,
   CheckCheck,
-  ExternalLink,
-  ChevronDown,
-  Sparkles,
-  ArrowRight,
 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
-import { useOpportunityStore } from '../store/useOpportunityStore';
 import api from '../utils/api';
 import ThemeToggle from './ThemeToggle';
 
 export default function Navbar() {
   const { user, isAuthenticated } = useAuthStore();
   const { activePage, navigate, setMobileDrawerOpen } = useUIStore();
-  const { setSearchQuery } = useOpportunityStore();
 
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [showNotifMenu, setShowNotifMenu] = useState(false);
-  const [navSearch, setNavSearch] = useState('');
 
   // Fetch notifications
   useEffect(() => {
@@ -44,14 +36,6 @@ export default function Navbar() {
       setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
       setUnreadCount(0);
     } catch (e) {}
-  };
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    if (navSearch.trim()) {
-      setSearchQuery(navSearch.trim());
-      navigate('opportunities');
-    }
   };
 
   const getPageTitle = () => {
@@ -127,35 +111,6 @@ export default function Navbar() {
             </p>
           )}
         </div>
-      </div>
-
-      {/* Middle: Cyber Aurora Search Bar */}
-      <div style={{ flex: '1', maxWidth: '440px', margin: '0 20px' }}>
-        <form onSubmit={handleSearchSubmit} style={{ position: 'relative' }}>
-          <Search
-            size={18}
-            color="#94A3B8"
-            style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }}
-          />
-          <input
-            type="text"
-            placeholder="Search roles, skills (e.g. React, Python), companies..."
-            value={navSearch}
-            onChange={(e) => setNavSearch(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '9px 14px 9px 40px',
-              backgroundColor: 'var(--card-bg)',
-              border: '1px solid var(--border-color)',
-              borderRadius: '9999px',
-              fontSize: '0.875rem',
-              color: 'var(--primary-text)',
-              outline: 'none',
-              backdropFilter: 'blur(10px)',
-              transition: 'var(--transition-normal)',
-            }}
-          />
-        </form>
       </div>
 
       {/* Right: Theme Toggle, Notifications Bell & User Pill */}

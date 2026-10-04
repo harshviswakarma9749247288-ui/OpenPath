@@ -1,9 +1,14 @@
+import mongoose from 'mongoose';
 import Opportunity from '../models/Opportunity.js';
 import User from '../models/User.js';
+import Skill from '../models/Skill.js';
+import { resolveSkillsToIds } from './userController.js';
 import { calculateOpportunityMatch } from '../services/matchingService.js';
 import { successResponse, errorResponse } from '../utils/response.js';
 
-// @desc    Get all opportunities with filters, search, sorting and personalized match scores
+const escapeRegex = (str = '') => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+// @desc    Get all opportunities with filters, live search, sorting and personalized match scores
 // @route   GET /api/opportunities
 export const getOpportunities = async (req, res, next) => {
   try {
@@ -15,6 +20,7 @@ export const getOpportunities = async (req, res, next) => {
       skill,
       status = 'Active',
       sortBy = 'latest',
+      limit,
     } = req.query;
 
     const query = {};
@@ -32,15 +38,46 @@ export const getOpportunities = async (req, res, next) => {
     }
 
     if (city) {
-      query['location.city'] = new RegExp(city, 'i');
+      query['location.city'] = new RegExp(escapeRegex(city), 'i');
     }
 
-    if (search) {
-      query.$or = [
-        { title: new RegExp(search, 'i') },
-        { organization: new RegExp(search, 'i') },
-        { description: new RegExp(search, 'i') },
+    if (skill) {
+      if (mongoose.Types.ObjectId.isValid(skill) && skill.length === 24) {
+        query.requiredSkills = skill;
+      } else {
+        const matchedSkills = await Skill.find({
+          name: new RegExp(escapeRegex(skill), 'i'),
+        }).select('_id');
+        query.requiredSkills = { $in: matchedSkills.map((s) => s._id) };
+      }
+    }
+
+    if (search && search.trim()) {
+      const cleanSearch = search.trim();
+      const searchRegex = new RegExp(escapeRegex(cleanSearch), 'i');
+
+      // Find any skills matching the search term so live search matches skill names too
+      const matchingSkills = await Skill.find({
+        $or: [{ name: searchRegex }, { category: searchRegex }],
+      }).select('_id');
+      const matchingSkillIds = matchingSkills.map((s) => s._id);
+
+      const orConditions = [
+        { title: searchRegex },
+        { organization: searchRegex },
+        { description: searchRegex },
+        { type: searchRegex },
+        { 'location.city': searchRegex },
+        { 'location.state': searchRegex },
+        { 'location.type': searchRegex },
+        { interests: searchRegex },
       ];
+
+      if (matchingSkillIds.length > 0) {
+        orConditions.push({ requiredSkills: { $in: matchingSkillIds } });
+      }
+
+      query.$or = orConditions;
     }
 
     let sortOptions = { createdAt: -1 };
@@ -77,8 +114,13 @@ export const getOpportunities = async (req, res, next) => {
       mappedResults.sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0));
     }
 
+    const totalCount = mappedResults.length;
+    if (limit && Number(limit) > 0) {
+      mappedResults = mappedResults.slice(0, Number(limit));
+    }
+
     return successResponse(res, {
-      count: mappedResults.length,
+      count: totalCount,
       opportunities: mappedResults,
     });
   } catch (error) {
@@ -137,12 +179,14 @@ export const createOpportunity = async (req, res, next) => {
       return errorResponse(res, 'Title, description, organization, and deadline are required.', 400);
     }
 
+    const resolvedSkills = await resolveSkillsToIds(requiredSkills || []);
+
     const opportunity = await Opportunity.create({
       title,
       description,
       organization,
       type: type || 'Internship',
-      requiredSkills: requiredSkills || [],
+      requiredSkills: resolvedSkills,
       qualification: qualification || {},
       experienceRequired: experienceRequired || {},
       location: location || { type: 'Remote' },
@@ -177,7 +221,12 @@ export const updateOpportunity = async (req, res, next) => {
       return errorResponse(res, 'Unauthorized to edit this opportunity.', 403);
     }
 
-    Object.assign(opportunity, req.body);
+    const updates = { ...req.body };
+    if (updates.requiredSkills !== undefined) {
+      updates.requiredSkills = await resolveSkillsToIds(updates.requiredSkills);
+    }
+
+    Object.assign(opportunity, updates);
     await opportunity.save();
 
     const populated = await Opportunity.findById(opportunity._id).populate('requiredSkills');

@@ -83,10 +83,25 @@ export default function ProfileSetupPage() {
     setSelectedSkills(selectedSkills.filter((s) => (s._id || s) !== skillId));
   };
 
-  const handleAddCustomSkill = (e) => {
+  const handleAddCustomSkill = async (e) => {
     e.preventDefault();
-    if (skillInput.trim()) {
-      setSelectedSkills([...selectedSkills, { name: skillInput.trim(), _id: `temp_${Date.now()}` }]);
+    const rawName = skillInput.trim();
+    if (!rawName) return;
+
+    try {
+      const res = await api.post('/skills', { name: rawName, category: 'General' });
+      const dbSkill = res?.data?.skill;
+      if (dbSkill) {
+        if (!availableSkills.some((s) => s._id === dbSkill._id)) {
+          setAvailableSkills((prev) => [...prev, dbSkill]);
+        }
+        if (!selectedSkills.some((s) => (s._id || s) === dbSkill._id)) {
+          setSelectedSkills((prev) => [...prev, dbSkill]);
+        }
+      }
+      setSkillInput('');
+    } catch (err) {
+      setSelectedSkills((prev) => [...prev, { name: rawName, _id: rawName }]);
       setSkillInput('');
     }
   };
@@ -105,7 +120,9 @@ export default function ProfileSetupPage() {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    const skillIds = selectedSkills.map((s) => s._id).filter((id) => !id.startsWith('temp_'));
+    const skillRefs = selectedSkills.map((s) =>
+      typeof s === 'object' ? (s._id && !String(s._id).startsWith('temp_') ? s._id : s.name) : s
+    );
 
     const payload = {
       bio,
@@ -115,7 +132,7 @@ export default function ProfileSetupPage() {
         fieldOfStudy,
         endYear,
       },
-      skills: skillIds,
+      skills: skillRefs,
       interests,
       location: {
         city,

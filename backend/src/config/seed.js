@@ -5,12 +5,127 @@ import Opportunity from '../models/Opportunity.js';
 import LearningResource from '../models/LearningResource.js';
 import Application from '../models/Application.js';
 import Notification from '../models/Notification.js';
+import PlatformContent from '../models/PlatformContent.js';
+
+export const DEFAULT_PLATFORM_CONTENT = {
+  key: 'openpath_main',
+  heroAnnouncement: {
+    text: 'Next-Gen 3D Career Intelligence • Live Database Connected',
+    badge: 'SCROLLTIDE 3D ENGINE',
+  },
+  heroScenes: [
+    { id: 'overview', name: 'SCROLLTIDE • OVERVIEW', subtitle: 'Full-spectrum career lattice', tag: 'ORBIT', accent: '#A855F7' },
+    { id: 'match', name: 'CORE • AI MATCHING', subtitle: '5-factor vector alignment', tag: 'SYNC 92%', accent: '#3B82F6' },
+    { id: 'skills', name: 'NODES • SKILL GRAPH', subtitle: 'Real-time gap mapping', tag: '20 SKILLS', accent: '#10B981' },
+    { id: 'employer', name: 'APEX • EMPLOYER HUB', subtitle: 'Ranked candidate telemetry', tag: 'HIRING', accent: '#EC4899' },
+  ],
+  heroOrbitBadges: [
+    { id: 'match', label: '92% AI Match', position: 'top-left', pulse: true },
+    { id: 'verified', label: '5-Factor Verified', position: 'top-right', pulse: false },
+    { id: 'roadmap', label: 'Skill Gap Roadmap', position: 'bottom-left', pulse: false },
+    { id: 'direct', label: 'Direct Employer Hub', position: 'bottom-right', pulse: false },
+  ],
+  trendingSearches: ['React', 'Python', 'Remote', 'UI/UX', 'Node.js', 'Docker'],
+  howItWorksSteps: [
+    {
+      step: '01',
+      title: 'Build Your Skill Profile',
+      desc: 'Add your university degree, projects, and technical skills in under 2 minutes.',
+    },
+    {
+      step: '02',
+      title: 'Get Instant Match Scores',
+      desc: 'Every internship & job shows a transparent 0–100% compatibility breakdown.',
+    },
+    {
+      step: '03',
+      title: 'Bridge Your Skill Gaps',
+      desc: 'See exact missing skills and follow curated learning paths to boost your score.',
+    },
+    {
+      step: '04',
+      title: 'Apply & Track Progress',
+      desc: 'One-click applications with real-time status tracking from Applied to Shortlisted.',
+    },
+  ],
+  features: [
+    {
+      iconName: 'Sparkles',
+      title: '5-Factor Match Engine',
+      desc: 'Weighted scoring across Skills (50%), Qualification (15%), Experience (15%), Location (10%), and Interests (10%).',
+      color: '#A855F7',
+    },
+    {
+      iconName: 'Target',
+      title: 'Transparent Explanations',
+      desc: 'Never guess why a role was recommended. Inspect matched vs missing requirements side by side.',
+      color: '#3B82F6',
+    },
+    {
+      iconName: 'BookOpen',
+      title: 'Actionable Learning Paths',
+      desc: 'Missing Docker or TypeScript? Get direct, free learning roadmaps grouped from Beginner to Job-Ready.',
+      color: '#10B981',
+    },
+    {
+      iconName: 'Briefcase',
+      title: 'Dedicated Employer Hub',
+      desc: 'Recruiters post roles and review applicants automatically ranked by verified skill compatibility.',
+      color: '#F59E0B',
+    },
+  ],
+  roleHighlights: {
+    student: {
+      badge: 'FOR STUDENTS & FRESHERS',
+      title: 'Discover Roles That Fit Your True Potential',
+      bullets: [
+        'Instant 0–100% compatibility score on every listing',
+        'Visual breakdown of matched vs missing technical skills',
+        'Free curated courses to close skill gaps before applying',
+        'Real-time application status tracker',
+      ],
+      ctaText: 'Create Student Profile',
+    },
+    employer: {
+      badge: 'FOR EMPLOYERS & STARTUPS',
+      title: 'Find Early-Career Talent With Proven Skills',
+      bullets: [
+        'Post internships, apprenticeships & fresher jobs in seconds',
+        'Review applicants automatically ranked by match score',
+        'Inspect candidate skill overlap & academic qualifications',
+        'Shortlist or reject candidates with a single click',
+      ],
+      ctaText: 'Register as Employer',
+    },
+  },
+  skillGapPreview: {
+    title: 'Skill Gap Guidance',
+    question: 'Missing Docker for Full-Stack role?',
+    chipLabel: 'Docker Hands-on (3.5h)',
+    targetSkill: 'Docker',
+  },
+};
 
 export const seedInitialData = async () => {
   try {
+    // Always ensure PlatformContent exists and has complete sections in database
+    const existingPlatformContent = await PlatformContent.findOne({ key: 'openpath_main' });
+    if (!existingPlatformContent) {
+      await PlatformContent.create(DEFAULT_PLATFORM_CONTENT);
+      console.log('🌱 Created PlatformContent configuration in database.');
+    } else if (
+      !existingPlatformContent.howItWorksSteps?.length ||
+      !existingPlatformContent.features?.length ||
+      !existingPlatformContent.heroOrbitBadges?.length
+    ) {
+      Object.assign(existingPlatformContent, DEFAULT_PLATFORM_CONTENT);
+      await existingPlatformContent.save();
+      console.log('🌱 Synchronized PlatformContent sections in database.');
+    }
+
     const existingSkills = await Skill.countDocuments();
     if (existingSkills > 0) {
-      console.log('⚡ Database already seeded. Skipping initial seed.');
+      console.log('⚡ Database already seeded. Skipping initial catalog seed.');
       return;
     }
 

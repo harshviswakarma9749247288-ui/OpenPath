@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import {
   Search,
   Filter,
@@ -9,6 +9,9 @@ import {
   Briefcase,
   IndianRupee,
   RotateCcw,
+  X,
+  Sparkles,
+  ArrowRight,
 } from 'lucide-react';
 import { useOpportunityStore } from '../store/useOpportunityStore';
 import { useApplicationStore } from '../store/useApplicationStore';
@@ -19,6 +22,7 @@ import BackButton from '../components/BackButton';
 export default function OpportunitiesPage() {
   const {
     opportunities,
+    allOpportunities,
     fetchOpportunities,
     searchQuery,
     setSearchQuery,
@@ -36,16 +40,37 @@ export default function OpportunitiesPage() {
 
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
   const [minMatch, setMinMatch] = useState(0);
+  const [showLiveDropdown, setShowLiveDropdown] = useState(false);
+  const searchBoxRef = useRef(null);
 
+  // Fetch user applications and full opportunity pool once on mount
   useEffect(() => {
-    fetchOpportunities();
     fetchMyApplications();
-  }, [selectedType, selectedLocation, selectedSort]);
+    if (!allOpportunities || allOpportunities.length === 0) {
+      fetchOpportunities({ search: '', type: 'all', locationType: 'all', sortBy: 'latest' });
+    }
+  }, []);
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    fetchOpportunities();
-  };
+  // Close live search dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (searchBoxRef.current && !searchBoxRef.current.contains(e.target)) {
+        setShowLiveDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Live search & filter effect: automatically queries the database as user types or changes filters
+  useEffect(() => {
+    const delay = searchQuery ? 120 : 0;
+    const timer = setTimeout(() => {
+      fetchOpportunities();
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, selectedType, selectedLocation, selectedSort]);
 
   const handleResetFilters = () => {
     setSearchQuery('');
@@ -53,6 +78,7 @@ export default function OpportunitiesPage() {
     setSelectedLocation('all');
     setSelectedSort('latest');
     setMinMatch(0);
+    setShowLiveDropdown(false);
     fetchOpportunities({ search: '', type: 'all', locationType: 'all', sortBy: 'latest' });
   };
 
@@ -67,39 +93,392 @@ export default function OpportunitiesPage() {
 
   const appliedOppIds = applications.map((a) => a.opportunity?._id || a.opportunity);
 
-  const filteredOpportunities = opportunities.filter((opp) => {
+  // Merge live-fetched opportunities with cached allOpportunities for instant 0ms live search
+  const sourceOpportunities = useMemo(() => {
+    const map = new Map();
+    (allOpportunities || []).forEach((o) => {
+      if (o && o._id) map.set(o._id, o);
+    });
+    (opportunities || []).forEach((o) => {
+      if (o && o._id) map.set(o._id, o);
+    });
+    const merged = Array.from(map.values());
+    if (selectedSort === 'match') {
+      merged.sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0));
+    } else if (selectedSort === 'deadline') {
+      merged.sort((a, b) => new Date(a.deadline || 0) - new Date(b.deadline || 0));
+    } else {
+      merged.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+    }
+    return merged;
+  }, [opportunities, allOpportunities, selectedSort]);
+
+  const normalizedQuery = (searchQuery || '').trim().toLowerCase();
+
+  const filteredOpportunities = sourceOpportunities.filter((opp) => {
     if (minMatch > 0 && opp.matchScore !== null && opp.matchScore < minMatch) {
       return false;
     }
+    if (selectedType && selectedType !== 'all' && opp.type !== selectedType) {
+      return false;
+    }
+    if (selectedLocation && selectedLocation !== 'all' && opp.location?.type !== selectedLocation) {
+      return false;
+    }
+    if (normalizedQuery) {
+      const skillNames = (opp.requiredSkills || [])
+        .map((s) => (typeof s === 'object' ? s.name : String(s)))
+        .join(' ');
+      const interestsText = (opp.interests || []).join(' ');
+      const haystack = [
+        opp.title,
+        opp.organization,
+        opp.description,
+        opp.type,
+        opp.location?.city,
+        opp.location?.state,
+        opp.location?.type,
+        skillNames,
+        interestsText,
+      ]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+
+      if (!haystack.includes(normalizedQuery)) {
+        return false;
+      }
+    }
     return true;
   });
+
+  // Extract live matching skill suggestions based on current search query
+  const matchingSkills = useMemo(() => {
+    const skillSet = new Set();
+    sourceOpportunities.forEach((opp) => {
+      (opp.requiredSkills || []).forEach((s) => {
+        const name = typeof s === 'object' ? s.name : String(s);
+        if (name) {
+          if (!normalizedQuery || name.toLowerCase().includes(normalizedQuery)) {
+            skillSet.add(name);
+          }
+        }
+      });
+    });
+    return Array.from(skillSet).slice(0, 6);
+  }, [sourceOpportunities, normalizedQuery]);
 
   return (
     <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
       <BackButton label="Back to Dashboard" fallbackPage="dashboard" style={{ marginBottom: '20px' }} />
 
-      {/* Search & Top Action Bar */}
+      {/* Live Search & Top Action Bar */}
       <div style={{ marginBottom: '24px' }}>
-        <form onSubmit={handleSearchSubmit} style={{ display: 'flex', gap: '12px' }}>
-          <div style={{ position: 'relative', flex: 1 }}>
+        <div ref={searchBoxRef} style={{ position: 'relative' }}>
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
             <Search
               size={18}
-              color="#94A3B8"
-              style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }}
+              color="#A855F7"
+              style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', zIndex: 2 }}
             />
             <input
               type="text"
-              placeholder="Search by title, skills (React, Node.js, Python), or company..."
+              placeholder="Live search by role title, skills (React, Node.js, Python, Docker), city, or company..."
               className="form-input"
-              style={{ paddingLeft: '40px', height: '46px' }}
+              style={{
+                paddingLeft: '44px',
+                paddingRight: searchQuery ? '140px' : '115px',
+                height: '50px',
+                fontSize: '0.95rem',
+                borderColor: showLiveDropdown && searchQuery ? '#A855F7' : undefined,
+                boxShadow:
+                  showLiveDropdown && searchQuery
+                    ? '0 0 0 3px rgba(168, 85, 247, 0.2)'
+                    : undefined,
+              }}
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setShowLiveDropdown(true)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setShowLiveDropdown(true);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape' || e.key === 'Enter') {
+                  setShowLiveDropdown(false);
+                }
+              }}
             />
+            <div
+              style={{
+                position: 'absolute',
+                right: '12px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                zIndex: 2,
+              }}
+            >
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery('');
+                    setShowLiveDropdown(false);
+                  }}
+                  title="Clear live search"
+                  style={{
+                    color: 'var(--secondary-text)',
+                    padding: '4px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <X size={16} />
+                </button>
+              )}
+              <span
+                style={{
+                  fontSize: '0.72rem',
+                  fontWeight: 700,
+                  padding: '4px 10px',
+                  borderRadius: '9999px',
+                  backgroundColor: isLoading
+                    ? 'rgba(168, 85, 247, 0.2)'
+                    : 'rgba(16, 185, 129, 0.14)',
+                  color: isLoading ? '#C084FC' : '#10B981',
+                  border: isLoading
+                    ? '1px solid rgba(168, 85, 247, 0.4)'
+                    : '1px solid rgba(16, 185, 129, 0.35)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                }}
+              >
+                <Sparkles size={11} />
+                {isLoading ? 'Syncing...' : 'Live Search'}
+              </span>
+            </div>
           </div>
-          <button type="submit" className="btn-primary" style={{ padding: '0 24px' }}>
-            Search
-          </button>
-        </form>
+
+          {/* Instant Live Search Results Dropdown */}
+          {showLiveDropdown && normalizedQuery && (
+            <div
+              className="card animate-fade-in"
+              style={{
+                position: 'absolute',
+                top: '56px',
+                left: 0,
+                right: 0,
+                backgroundColor: 'var(--card-bg)',
+                backdropFilter: 'blur(22px)',
+                WebkitBackdropFilter: 'blur(22px)',
+                border: '1px solid var(--border-color)',
+                borderRadius: 'var(--radius-lg)',
+                boxShadow: 'var(--shadow-lg), 0 12px 32px rgba(124, 58, 237, 0.22)',
+                zIndex: 100,
+                overflow: 'hidden',
+              }}
+            >
+              {/* Dropdown Header */}
+              <div
+                style={{
+                  padding: '10px 16px',
+                  borderBottom: '1px solid var(--border-color)',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  backgroundColor: 'var(--box-subtle)',
+                }}
+              >
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--secondary-text)' }}>
+                  LIVE DATABASE RESULTS ({filteredOpportunities.length} {filteredOpportunities.length === 1 ? 'MATCH' : 'MATCHES'})
+                </span>
+                {isLoading && (
+                  <span style={{ fontSize: '0.72rem', color: '#C084FC', fontWeight: 600 }}>
+                    Syncing with MongoDB...
+                  </span>
+                )}
+              </div>
+
+              {/* Matching Skills Quick Pills */}
+              {matchingSkills.length > 0 && (
+                <div
+                  style={{
+                    padding: '10px 16px',
+                    borderBottom: '1px solid var(--border-color)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: '6px',
+                  }}
+                >
+                  <span style={{ fontSize: '0.72rem', color: 'var(--secondary-text)', marginRight: '4px' }}>
+                    Matching Skills:
+                  </span>
+                  {matchingSkills.map((skill) => (
+                    <button
+                      key={skill}
+                      type="button"
+                      onClick={() => {
+                        setSearchQuery(skill);
+                        setShowLiveDropdown(false);
+                      }}
+                      style={{
+                        fontSize: '0.72rem',
+                        fontWeight: 600,
+                        padding: '3px 10px',
+                        borderRadius: '9999px',
+                        backgroundColor: 'rgba(168, 85, 247, 0.14)',
+                        color: '#C084FC',
+                        border: '1px solid rgba(168, 85, 247, 0.35)',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {skill}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Live Opportunity Matches List */}
+              <div style={{ maxHeight: '320px', overflowY: 'auto' }}>
+                {filteredOpportunities.length === 0 ? (
+                  <div
+                    style={{
+                      padding: '22px 16px',
+                      textAlign: 'center',
+                      color: 'var(--secondary-text)',
+                      fontSize: '0.875rem',
+                    }}
+                  >
+                    No opportunities found matching "<strong style={{ color: 'var(--primary-text)' }}>{searchQuery}</strong>"
+                  </div>
+                ) : (
+                  filteredOpportunities.slice(0, 6).map((opp) => (
+                    <div
+                      key={opp._id}
+                      onClick={() => {
+                        setShowLiveDropdown(false);
+                        navigate('details', { id: opp._id });
+                      }}
+                      style={{
+                        padding: '12px 16px',
+                        borderBottom: '1px solid var(--border-color)',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        gap: '12px',
+                        transition: 'background-color 0.15s ease',
+                      }}
+                    >
+                      <div style={{ overflow: 'hidden', flex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                          <span
+                            style={{
+                              fontSize: '0.9rem',
+                              fontWeight: 700,
+                              color: 'var(--primary-text)',
+                            }}
+                          >
+                            {opp.title}
+                          </span>
+                          <span
+                            style={{
+                              fontSize: '0.7rem',
+                              fontWeight: 700,
+                              padding: '2px 8px',
+                              borderRadius: '9999px',
+                              backgroundColor: 'rgba(168, 85, 247, 0.15)',
+                              color: '#C084FC',
+                            }}
+                          >
+                            {opp.type}
+                          </span>
+                        </div>
+                        <div
+                          style={{
+                            fontSize: '0.775rem',
+                            color: 'var(--secondary-text)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            marginTop: '4px',
+                            flexWrap: 'wrap',
+                          }}
+                        >
+                          <span style={{ fontWeight: 600 }}>{opp.organization}</span>
+                          <span>•</span>
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                            <MapPin size={12} /> {opp.location?.type || 'Remote'}
+                            {opp.location?.city ? ` (${opp.location.city})` : ''}
+                          </span>
+                          {(opp.requiredSkills || []).length > 0 && (
+                            <>
+                              <span>•</span>
+                              <span style={{ color: '#A78BFA' }}>
+                                {(opp.requiredSkills || [])
+                                  .slice(0, 3)
+                                  .map((s) => (typeof s === 'object' ? s.name : String(s)))
+                                  .join(', ')}
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
+                        {opp.matchScore !== null && opp.matchScore !== undefined && (
+                          <span
+                            style={{
+                              fontSize: '0.75rem',
+                              fontWeight: 700,
+                              padding: '3px 8px',
+                              borderRadius: '9999px',
+                              backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                              color: '#10B981',
+                              border: '1px solid rgba(16, 185, 129, 0.35)',
+                            }}
+                          >
+                            {opp.matchScore}% Match
+                          </span>
+                        )}
+                        <ArrowRight size={15} color="#C084FC" />
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Footer to close dropdown and browse filtered grid */}
+              {filteredOpportunities.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setShowLiveDropdown(false)}
+                  style={{
+                    width: '100%',
+                    padding: '10px 16px',
+                    backgroundColor: 'var(--box-subtle)',
+                    color: '#C084FC',
+                    fontSize: '0.8rem',
+                    fontWeight: 700,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Showing {filteredOpportunities.length} live {filteredOpportunities.length === 1 ? 'result' : 'results'} in grid below
+                </button>
+              )}
+            </div>
+          )}
+        </div>
 
         {/* Quick Filter Chips */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '12px' }}>

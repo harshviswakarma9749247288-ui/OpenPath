@@ -94,40 +94,6 @@ export const login = async (req, res, next) => {
   }
 };
 
-// @desc    Instant Demo Login for judges/evaluators
-// @route   POST /api/auth/demo-login
-export const demoLogin = async (req, res, next) => {
-  try {
-    const { role } = req.body;
-    const targetRole = role === 'employer' ? 'employer' : 'student';
-
-    let user = await User.findOne({ role: targetRole }).populate('skills');
-    if (!user) {
-      // Create on the fly if not seeded yet
-      user = await User.create({
-        name: targetRole === 'employer' ? 'TechCorp Talent Team' : 'Alex Rivera',
-        email: targetRole === 'employer' ? 'recruiter@techcorp.io' : 'alex.rivera@university.edu',
-        password: 'password123',
-        role: targetRole,
-        profileCompleted: true,
-        bio:
-          targetRole === 'employer'
-            ? 'Innovative tech hiring team connecting high-potential freshers with early careers.'
-            : 'Final-year Computer Science student passionate about Frontend and Cloud engineering.',
-        location: { city: 'Bengaluru', state: 'Karnataka', country: 'India', remotePreference: 'Remote' },
-      });
-    }
-
-    const token = sendTokenCookie(res, user);
-    const safeUser = user.toObject();
-    delete safeUser.password;
-
-    return successResponse(res, { user: safeUser, token }, `Signed in as Demo ${targetRole}.`);
-  } catch (error) {
-    next(error);
-  }
-};
-
 // @desc    Log user out / clear cookie
 // @route   POST /api/auth/logout
 export const logout = (req, res) => {

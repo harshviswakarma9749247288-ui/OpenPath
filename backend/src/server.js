@@ -56,19 +56,34 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Public Platform Overview Stats
+// Public Platform Overview Stats & Content
 app.get('/api/stats/overview', async (req, res, next) => {
   try {
     const { default: Opportunity } = await import('./models/Opportunity.js');
     const { default: User } = await import('./models/User.js');
     const { default: Skill } = await import('./models/Skill.js');
     const { default: Application } = await import('./models/Application.js');
+    const { default: PlatformContent } = await import('./models/PlatformContent.js');
+    const { DEFAULT_PLATFORM_CONTENT } = await import('./config/seed.js');
 
-    const totalOpportunities = await Opportunity.countDocuments({ status: 'Active' });
-    const totalStudents = await User.countDocuments({ role: 'student' });
-    const totalEmployers = await User.countDocuments({ role: 'employer' });
-    const totalSkills = await Skill.countDocuments();
-    const totalApplications = await Application.countDocuments();
+    const [
+      totalOpportunities,
+      totalStudents,
+      totalEmployers,
+      totalSkills,
+      totalApplications,
+      existingContent,
+    ] = await Promise.all([
+      Opportunity.countDocuments({ status: 'Active' }),
+      User.countDocuments({ role: 'student' }),
+      User.countDocuments({ role: 'employer' }),
+      Skill.countDocuments(),
+      Application.countDocuments(),
+      PlatformContent.findOne({ key: 'openpath_main' }),
+    ]);
+
+    const platformContent =
+      existingContent || (await PlatformContent.create(DEFAULT_PLATFORM_CONTENT));
 
     res.status(200).json({
       success: true,
@@ -78,7 +93,28 @@ app.get('/api/stats/overview', async (req, res, next) => {
         totalEmployers,
         totalSkills,
         totalApplications,
+        platformContent,
       },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Public Platform Content endpoint
+app.get('/api/platform-content', async (req, res, next) => {
+  try {
+    const { default: PlatformContent } = await import('./models/PlatformContent.js');
+    const { DEFAULT_PLATFORM_CONTENT } = await import('./config/seed.js');
+
+    let content = await PlatformContent.findOne({ key: 'openpath_main' });
+    if (!content) {
+      content = await PlatformContent.create(DEFAULT_PLATFORM_CONTENT);
+    }
+
+    res.status(200).json({
+      success: true,
+      data: { content },
     });
   } catch (error) {
     next(error);

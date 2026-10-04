@@ -11,6 +11,7 @@ import {
   Compass,
 } from 'lucide-react';
 import { useUIStore } from '../store/useUIStore';
+import { useAuthStore } from '../store/useAuthStore';
 import api from '../utils/api';
 import LearningCard from '../components/LearningCard';
 import CyberLoader from '../components/CyberLoader';
@@ -19,14 +20,30 @@ import BackButton from '../components/BackButton';
 
 export default function LearningRecommendationsPage({ skillId, skillName }) {
   const { navigate } = useUIStore();
+  const { user, isAuthenticated, toggleCompletedLearning } = useAuthStore();
 
   const [resources, setResources] = useState([]);
   const [roadmap, setRoadmap] = useState([]);
-  const [completedIds, setCompletedIds] = useState(
-    JSON.parse(localStorage.getItem('openpath_completed_learning') || '[]')
-  );
+  const [completedIds, setCompletedIds] = useState(() => {
+    if (Array.isArray(user?.completedLearningResources) && user.completedLearningResources.length > 0) {
+      return user.completedLearningResources.map((item) =>
+        typeof item === 'object' && item?._id ? item._id.toString() : String(item)
+      );
+    }
+    return JSON.parse(localStorage.getItem('openpath_completed_learning') || '[]');
+  });
   const [activeStage, setActiveStage] = useState('all');
   const [isLoading, setIsLoading] = useState(true);
+
+  // Sync completedIds whenever user profile updates from database
+  useEffect(() => {
+    if (Array.isArray(user?.completedLearningResources)) {
+      const dbIds = user.completedLearningResources.map((item) =>
+        typeof item === 'object' && item?._id ? item._id.toString() : String(item)
+      );
+      setCompletedIds(dbIds);
+    }
+  }, [user?.completedLearningResources]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -45,15 +62,22 @@ export default function LearningRecommendationsPage({ skillId, skillName }) {
       });
   }, [skillId, skillName]);
 
-  const handleToggleComplete = (id, isDone) => {
+  const handleToggleComplete = async (id, isDone) => {
     let updated;
     if (isDone) {
-      updated = [...completedIds, id];
+      updated = [...new Set([...completedIds, id])];
     } else {
       updated = completedIds.filter((item) => item !== id);
     }
     setCompletedIds(updated);
     localStorage.setItem('openpath_completed_learning', JSON.stringify(updated));
+
+    if (isAuthenticated && toggleCompletedLearning) {
+      const synced = await toggleCompletedLearning(id);
+      if (Array.isArray(synced)) {
+        setCompletedIds(synced);
+      }
+    }
   };
 
   const totalCount = resources.length;

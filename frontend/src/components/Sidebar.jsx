@@ -13,7 +13,6 @@ import {
   ChevronRight,
   Sparkles,
   Layers,
-  ArrowRightLeft,
 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
@@ -21,7 +20,7 @@ import ThemeToggle from './ThemeToggle';
 import AnimatedLogo from './AnimatedLogo';
 
 export default function Sidebar() {
-  const { user, logout, demoLogin } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const { isSidebarCollapsed, toggleSidebar, activePage, navigate } = useUIStore();
 
   const isEmployer = user?.role === 'employer';
@@ -175,7 +174,7 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      {/* Bottom Section: Theme Toggle, Role Switcher & User Profile / Logout */}
+      {/* Bottom Section: Theme Toggle & User Profile / Logout */}
       <div style={{ padding: '14px 10px', borderTop: '1px solid var(--border-color)' }}>
         {/* Appearance / Theme Toggle */}
         <div
@@ -194,62 +193,6 @@ export default function Sidebar() {
           )}
           <ThemeToggle showLabel={!isSidebarCollapsed} size="sm" />
         </div>
-
-        {/* Quick Demo Switcher */}
-        {!isSidebarCollapsed && (
-          <div
-            style={{
-              padding: '10px',
-              backgroundColor: 'var(--card-bg)',
-              borderRadius: 'var(--radius-md)',
-              border: '1px solid var(--border-color)',
-              marginBottom: '12px',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>
-                CURRENT ROLE
-              </span>
-              <span
-                style={{
-                  fontSize: '0.7rem',
-                  fontWeight: 700,
-                  textTransform: 'uppercase',
-                  color: isEmployer ? '#F472B6' : '#C084FC',
-                  backgroundColor: isEmployer ? 'rgba(236, 72, 153, 0.15)' : 'rgba(124, 58, 237, 0.15)',
-                  padding: '2px 8px',
-                  borderRadius: '9999px',
-                  border: isEmployer ? '1px solid rgba(236, 72, 153, 0.3)' : '1px solid rgba(124, 58, 237, 0.3)',
-                }}
-              >
-                {user?.role || 'Guest'}
-              </span>
-            </div>
-            <button
-              onClick={() => {
-                demoLogin(isEmployer ? 'student' : 'employer');
-                navigate(isEmployer ? 'dashboard' : 'employer-dashboard');
-              }}
-              style={{
-                width: '100%',
-                padding: '6px',
-                fontSize: '0.75rem',
-                fontWeight: 600,
-                color: 'var(--primary-text)',
-                backgroundColor: 'var(--box-subtle)',
-                border: '1px solid var(--border-color)',
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '6px',
-                cursor: 'pointer',
-              }}
-            >
-              <ArrowRightLeft size={12} /> Switch to {isEmployer ? 'Student Hub' : 'Employer Hub'}
-            </button>
-          </div>
-        )}
 
         {/* User Card & Logout */}
         <div

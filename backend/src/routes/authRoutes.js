@@ -2,7 +2,6 @@ import express from 'express';
 import {
   register,
   login,
-  demoLogin,
   logout,
   sendOtp,
   verifyOtp,
@@ -16,7 +15,6 @@ const router = express.Router();
 
 router.post('/register', register);
 router.post('/login', login);
-router.post('/demo-login', demoLogin);
 router.post('/logout', logout);
 router.post('/otp/send', sendOtp);
 router.post('/otp/verify', verifyOtp);

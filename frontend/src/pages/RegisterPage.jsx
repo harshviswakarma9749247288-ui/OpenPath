@@ -44,8 +44,8 @@ export default function RegisterPage() {
     setIsSendingOtp(true);
     try {
       const res = await api.post('/auth/otp/send', { email, purpose: 'Registration' });
-      const preview = res.data?.data?.previewOtp;
-      const delivered = res.data?.data?.delivered;
+      const preview = res?.data?.previewOtp || res?.data?.data?.previewOtp;
+      const delivered = res?.data?.delivered ?? res?.data?.data?.delivered;
       setDeliveredViaSmtp(!!delivered);
       if (preview) {
         setDemoCode(preview);
@@ -57,7 +57,7 @@ export default function RegisterPage() {
       setCooldown(60);
       setStep('otp');
     } catch (err) {
-      showToast(err.response?.data?.message || err.message || 'Failed to send verification code', 'error');
+      showToast(err.message || 'Failed to send verification code', 'error');
     } finally {
       setIsSendingOtp(false);
     }
@@ -68,8 +68,8 @@ export default function RegisterPage() {
     setIsSendingOtp(true);
     try {
       const res = await api.post('/auth/otp/send', { email, purpose: 'Registration' });
-      const preview = res.data?.data?.previewOtp;
-      const delivered = res.data?.data?.delivered;
+      const preview = res?.data?.previewOtp || res?.data?.data?.previewOtp;
+      const delivered = res?.data?.delivered ?? res?.data?.data?.delivered;
       setDeliveredViaSmtp(!!delivered);
       if (preview) {
         setDemoCode(preview);
@@ -80,7 +80,7 @@ export default function RegisterPage() {
       }
       setCooldown(60);
     } catch (err) {
-      showToast(err.response?.data?.message || err.message || 'Failed to resend code', 'error');
+      showToast(err.message || 'Failed to resend code', 'error');
     } finally {
       setIsSendingOtp(false);
     }
@@ -109,7 +109,7 @@ export default function RegisterPage() {
         }
       }
     } catch (err) {
-      showToast(err.response?.data?.message || err.message || 'OTP verification failed', 'error');
+      showToast(err.message || 'OTP verification failed', 'error');
     } finally {
       setIsVerifyingOtp(false);
     }

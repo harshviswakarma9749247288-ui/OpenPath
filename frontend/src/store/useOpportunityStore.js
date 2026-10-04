@@ -1,8 +1,11 @@
 import { create } from 'zustand';
 import api from '../utils/api';
 
+let latestFetchId = 0;
+
 export const useOpportunityStore = create((set, get) => ({
   opportunities: [],
+  allOpportunities: [],
   selectedOpportunity: null,
   matchExplanation: null,
   skillGap: null,
@@ -20,29 +23,60 @@ export const useOpportunityStore = create((set, get) => ({
   setSelectedLocation: (loc) => set({ selectedLocation: loc }),
   setSelectedSort: (sort) => set({ selectedSort: sort }),
 
-  // Fetch opportunities with active filters
+  // Fetch opportunities with active filters (live search compatible)
   fetchOpportunities: async (customParams = {}) => {
+    const reqId = ++latestFetchId;
     set({ isLoading: true, error: null });
     try {
       const state = get();
       const params = new URLSearchParams();
-      if (customParams.search !== undefined ? customParams.search : state.searchQuery) {
-        params.append('search', customParams.search || state.searchQuery);
+
+      const activeSearch =
+        customParams.search !== undefined ? customParams.search : state.searchQuery;
+      if (activeSearch && activeSearch.trim()) {
+        params.append('search', activeSearch.trim());
       }
-      if ((customParams.type || state.selectedType) !== 'all') {
-        params.append('type', customParams.type || state.selectedType);
+
+      const activeType = customParams.type !== undefined ? customParams.type : state.selectedType;
+      if (activeType && activeType !== 'all') {
+        params.append('type', activeType);
       }
-      if ((customParams.locationType || state.selectedLocation) !== 'all') {
-        params.append('locationType', customParams.locationType || state.selectedLocation);
+
+      const activeLocation =
+        customParams.locationType !== undefined
+          ? customParams.locationType
+          : state.selectedLocation;
+      if (activeLocation && activeLocation !== 'all') {
+        params.append('locationType', activeLocation);
       }
-      if (customParams.sortBy || state.selectedSort) {
-        params.append('sortBy', customParams.sortBy || state.selectedSort);
+
+      const activeSort = customParams.sortBy !== undefined ? customParams.sortBy : state.selectedSort;
+      if (activeSort) {
+        params.append('sortBy', activeSort);
       }
 
       const res = await api.get(`/opportunities?${params.toString()}`);
-      set({ opportunities: res.data.opportunities, isLoading: false });
+      if (reqId === latestFetchId) {
+        const fetched = res?.data?.opportunities || [];
+        const isUnfiltered =
+          (!activeSearch || !activeSearch.trim()) &&
+          (!activeType || activeType === 'all') &&
+          (!activeLocation || activeLocation === 'all');
+
+        set((prev) => ({
+          opportunities: fetched,
+          allOpportunities: isUnfiltered
+            ? fetched
+            : prev.allOpportunities.length > 0
+            ? prev.allOpportunities
+            : fetched,
+          isLoading: false,
+        }));
+      }
     } catch (err) {
-      set({ isLoading: false, error: err.message });
+      if (reqId === latestFetchId) {
+        set({ isLoading: false, error: err.message });
+      }
     }
   },
 
@@ -95,8 +129,8 @@ export const useOpportunityStore = create((set, get) => ({
     }
   },
 
-  // Save / Bookmark toggle
-  toggleSaveOpportunity: (id) => {
+  // Save / Bookmark toggle synced with database
+  toggleSaveOpportunity: async (id) => {
     const current = get().savedIds;
     let updated;
     if (current.includes(id)) {
@@ -106,5 +140,20 @@ export const useOpportunityStore = create((set, get) => ({
     }
     localStorage.setItem('openpath_saved_opps', JSON.stringify(updated));
     set({ savedIds: updated });
+
+    if (localStorage.getItem('openpath_token')) {
+      try {
+        const res = await api.post(`/users/me/saved-opportunities/${id}`);
+        if (Array.isArray(res?.data?.savedOpportunities)) {
+          localStorage.setItem(
+            'openpath_saved_opps',
+            JSON.stringify(res.data.savedOpportunities)
+          );
+          set({ savedIds: res.data.savedOpportunities });
+        }
+      } catch (err) {
+        // Keep optimistic local update if request fails
+      }
+    }
   },
 }));

@@ -3,7 +3,8 @@ import api from '../utils/api';
 
 const getStoredUser = () => {
   try {
-    const raw = localStorage.getItem('openpath_user') || localStorage.getItem('openpath_mock_user');
+    localStorage.removeItem('openpath_mock_user');
+    const raw = localStorage.getItem('openpath_user');
     return raw ? JSON.parse(raw) : null;
   } catch (e) {
     return null;
@@ -17,6 +18,24 @@ const getStoredCompletion = () => {
   } catch (e) {
     return null;
   }
+};
+
+const syncUserCollectionsToLocal = (userData) => {
+  if (!userData) return;
+  try {
+    if (Array.isArray(userData.savedOpportunities)) {
+      const ids = userData.savedOpportunities.map((item) =>
+        typeof item === 'object' && item?._id ? item._id.toString() : String(item)
+      );
+      localStorage.setItem('openpath_saved_opps', JSON.stringify(ids));
+    }
+    if (Array.isArray(userData.completedLearningResources)) {
+      const ids = userData.completedLearningResources.map((item) =>
+        typeof item === 'object' && item?._id ? item._id.toString() : String(item)
+      );
+      localStorage.setItem('openpath_completed_learning', JSON.stringify(ids));
+    }
+  } catch (e) {}
 };
 
 const initialUser = getStoredUser();
@@ -49,6 +68,7 @@ export const useAuthStore = create((set, get) => ({
           if (profileCompletion) {
             localStorage.setItem('openpath_profile_completion', JSON.stringify(profileCompletion));
           }
+          syncUserCollectionsToLocal(userData);
         } catch (e) {}
         set({
           user: userData,
@@ -60,19 +80,18 @@ export const useAuthStore = create((set, get) => ({
         set({ isLoading: false });
       }
     } catch (err) {
-      // If error is 401 or 403, session has truly expired
       const isAuthError =
         err?.status === 401 ||
         err?.status === 403 ||
         err?.message?.includes('401') ||
-        err?.message?.includes('token expired');
+        err?.message?.includes('token expired') ||
+        err?.message?.includes('Not authorized');
       if (isAuthError) {
         localStorage.removeItem('openpath_token');
         localStorage.removeItem('openpath_user');
         localStorage.removeItem('openpath_profile_completion');
         set({ user: null, token: null, isAuthenticated: false, isLoading: false });
       } else {
-        // Keep cached offline/demo user, just stop loading
         set({ isLoading: false });
       }
     }
@@ -90,6 +109,7 @@ export const useAuthStore = create((set, get) => ({
       }
       if (userData) {
         localStorage.setItem('openpath_user', JSON.stringify(userData));
+        syncUserCollectionsToLocal(userData);
       }
       set({ user: userData, token, isAuthenticated: true, isLoading: false });
       get().initAuth();
@@ -112,40 +132,10 @@ export const useAuthStore = create((set, get) => ({
       }
       if (userData) {
         localStorage.setItem('openpath_user', JSON.stringify(userData));
+        syncUserCollectionsToLocal(userData);
       }
       set({ user: userData, token, isAuthenticated: true, isLoading: false });
       get().initAuth();
-      return { success: true, user: userData };
-    } catch (err) {
-      set({ isLoading: false, error: err.message });
-      return { success: false, error: err.message };
-    }
-  },
-
-  // One-click demo login for fast hackathon evaluation
-  demoLogin: async (role = 'student') => {
-    set({ isLoading: true, error: null });
-    try {
-      const res = await api.post('/auth/demo-login', { role });
-      const userData = res?.data?.user || res?.user;
-      const token = res?.data?.token || res?.token;
-      const profileCompletion = res?.data?.profileCompletion || res?.profileCompletion;
-      if (token) {
-        localStorage.setItem('openpath_token', token);
-      }
-      if (userData) {
-        localStorage.setItem('openpath_user', JSON.stringify(userData));
-      }
-      if (profileCompletion) {
-        localStorage.setItem('openpath_profile_completion', JSON.stringify(profileCompletion));
-      }
-      set({
-        user: userData,
-        token,
-        isAuthenticated: true,
-        isLoading: false,
-        profileCompletion: profileCompletion || get().profileCompletion,
-      });
       return { success: true, user: userData };
     } catch (err) {
       set({ isLoading: false, error: err.message });
@@ -165,6 +155,7 @@ export const useAuthStore = create((set, get) => ({
       }
       if (userData) {
         localStorage.setItem('openpath_user', JSON.stringify(userData));
+        syncUserCollectionsToLocal(userData);
       }
       set({ user: userData, token, isAuthenticated: true, isLoading: false });
       return { success: true, user: userData };
@@ -183,6 +174,7 @@ export const useAuthStore = create((set, get) => ({
       const profileCompletion = res?.data?.profileCompletion || res?.profileCompletion;
       if (userData) {
         localStorage.setItem('openpath_user', JSON.stringify(userData));
+        syncUserCollectionsToLocal(userData);
       }
       if (profileCompletion) {
         localStorage.setItem('openpath_profile_completion', JSON.stringify(profileCompletion));
@@ -199,6 +191,24 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
+  // Toggle completed learning resource in DB
+  toggleCompletedLearning: async (resourceId) => {
+    try {
+      const res = await api.post(`/users/me/completed-learning/${resourceId}`);
+      const updatedIds = res?.data?.completedLearningResources || [];
+      localStorage.setItem('openpath_completed_learning', JSON.stringify(updatedIds));
+      const currentUser = get().user;
+      if (currentUser) {
+        const nextUser = { ...currentUser, completedLearningResources: updatedIds };
+        localStorage.setItem('openpath_user', JSON.stringify(nextUser));
+        set({ user: nextUser });
+      }
+      return updatedIds;
+    } catch (err) {
+      return null;
+    }
+  },
+
   // Logout
   logout: async () => {
     try {
@@ -208,6 +218,7 @@ export const useAuthStore = create((set, get) => ({
     }
     localStorage.removeItem('openpath_token');
     localStorage.removeItem('openpath_user');
+    localStorage.removeItem('openpath_mock_user');
     localStorage.removeItem('openpath_profile_completion');
     sessionStorage.removeItem('openpath_active_route');
     set({

@@ -20,7 +20,7 @@ import Tilt3DCard from '../components/Tilt3DCard';
 import BackButton from '../components/BackButton';
 
 export default function LoginPage() {
-  const { login, loginWithOtp, demoLogin, isLoading, error } = useAuthStore();
+  const { login, loginWithOtp, isLoading, error } = useAuthStore();
   const { navigate, showToast } = useUIStore();
 
   // Mode: 'password' | 'otp'
@@ -81,15 +81,6 @@ export default function LoginPage() {
     }
   };
 
-  // Instant Demo Login for evaluators
-  const handleDemoLogin = async (role) => {
-    const res = await demoLogin(role);
-    if (res.success) {
-      showToast(`Signed in as Demo ${role}!`, 'success');
-      navigate(role === 'employer' ? 'employer-dashboard' : 'dashboard');
-    }
-  };
-
   // OTP Login - Send Code
   const handleSendLoginOtp = async (e) => {
     if (e) e.preventDefault();
@@ -102,8 +93,8 @@ export default function LoginPage() {
     setIsSendingLoginOtp(true);
     try {
       const res = await api.post('/auth/otp/send', { email: targetEmail, purpose: 'Login' });
-      const preview = res.data?.data?.previewOtp;
-      const delivered = res.data?.data?.delivered;
+      const preview = res?.data?.previewOtp || res?.data?.data?.previewOtp;
+      const delivered = res?.data?.delivered ?? res?.data?.data?.delivered;
       setOtpDeliveredViaSmtp(!!delivered);
       if (preview) {
         setOtpPreviewCode(preview);
@@ -115,7 +106,7 @@ export default function LoginPage() {
       setOtpCooldown(60);
       setOtpStep('code');
     } catch (err) {
-      showToast(err.response?.data?.message || err.message || 'Failed to send login code', 'error');
+      showToast(err.message || 'Failed to send login code', 'error');
     } finally {
       setIsSendingLoginOtp(false);
     }
@@ -128,8 +119,8 @@ export default function LoginPage() {
     setIsSendingLoginOtp(true);
     try {
       const res = await api.post('/auth/otp/send', { email: targetEmail, purpose: 'Login' });
-      const preview = res.data?.data?.previewOtp;
-      const delivered = res.data?.data?.delivered;
+      const preview = res?.data?.previewOtp || res?.data?.data?.previewOtp;
+      const delivered = res?.data?.delivered ?? res?.data?.data?.delivered;
       setOtpDeliveredViaSmtp(!!delivered);
       if (preview) {
         setOtpPreviewCode(preview);
@@ -140,7 +131,7 @@ export default function LoginPage() {
       }
       setOtpCooldown(60);
     } catch (err) {
-      showToast(err.response?.data?.message || err.message || 'Failed to resend code', 'error');
+      showToast(err.message || 'Failed to resend code', 'error');
     } finally {
       setIsSendingLoginOtp(false);
     }
@@ -175,18 +166,18 @@ export default function LoginPage() {
     setForgotLoading(true);
     try {
       const res = await api.post('/auth/password/forgot', { email: forgotEmail });
-      const preview = res.data?.data?.previewOtp;
-      const delivered = res.data?.data?.delivered;
+      const preview = res?.data?.previewOtp || res?.data?.data?.previewOtp;
+      const delivered = res?.data?.delivered ?? res?.data?.data?.delivered;
       setForgotDeliveredViaSmtp(!!delivered);
       if (preview) {
         setResetOtpPreview(preview);
         setResetCode(preview);
       }
-      showToast(res.data?.message || 'Reset code sent to your email.', 'info');
+      showToast(res?.message || 'Reset code sent to your email.', 'info');
       setForgotCooldown(60);
       setForgotStep('reset');
     } catch (err) {
-      showToast(err.response?.data?.message || err.message || 'Failed to send reset code', 'error');
+      showToast(err.message || 'Failed to send reset code', 'error');
     } finally {
       setForgotLoading(false);
     }
@@ -198,8 +189,8 @@ export default function LoginPage() {
     setForgotLoading(true);
     try {
       const res = await api.post('/auth/password/forgot', { email: forgotEmail });
-      const preview = res.data?.data?.previewOtp;
-      const delivered = res.data?.data?.delivered;
+      const preview = res?.data?.previewOtp || res?.data?.data?.previewOtp;
+      const delivered = res?.data?.delivered ?? res?.data?.data?.delivered;
       setForgotDeliveredViaSmtp(!!delivered);
       if (preview) {
         setResetOtpPreview(preview);
@@ -208,7 +199,7 @@ export default function LoginPage() {
       showToast('A new reset code has been sent.', 'info');
       setForgotCooldown(60);
     } catch (err) {
-      showToast(err.response?.data?.message || err.message || 'Failed to resend reset code', 'error');
+      showToast(err.message || 'Failed to resend reset code', 'error');
     } finally {
       setForgotLoading(false);
     }
@@ -232,7 +223,7 @@ export default function LoginPage() {
       setResetCode('');
       setNewPassword('');
     } catch (err) {
-      showToast(err.response?.data?.message || err.message || 'Failed to reset password', 'error');
+      showToast(err.message || 'Failed to reset password', 'error');
     } finally {
       setForgotLoading(false);
     }
@@ -296,7 +287,7 @@ export default function LoginPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', position: 'relative', zIndex: 1 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#E2E8F0', fontSize: '0.9rem' }}>
             <CheckCircle2 size={20} color="#A78BFA" />
-            <span>40% Skills, 20% Qualifications, 20% Location factor scoring</span>
+            <span>50% Skills, 15% Qualifications, 15% Experience factor scoring</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#E2E8F0', fontSize: '0.9rem' }}>
             <CheckCircle2 size={20} color="#F472B6" />
@@ -335,50 +326,6 @@ export default function LoginPage() {
             Please select your preferred sign-in method to access OpenPath.
           </p>
         </div>
-
-        {/* 1-Click Demo Evaluation Bar with 3D Tilt */}
-        <Tilt3DCard
-          style={{
-            padding: '16px',
-            backgroundColor: 'var(--card-bg)',
-            backdropFilter: 'blur(16px)',
-            borderRadius: 'var(--radius-lg)',
-            border: '1px solid var(--border-color)',
-            marginBottom: '20px',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
-            <Sparkles size={16} color="#C084FC" />
-            <strong style={{ fontSize: '0.825rem', color: 'var(--primary-text)' }}>
-              Hackathon Quick Access:
-            </strong>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-            <button
-              type="button"
-              onClick={() => handleDemoLogin('student')}
-              className="btn-outline"
-              style={{ padding: '8px', fontSize: '0.8rem', justifyContent: 'center' }}
-            >
-              Sign In as Student
-            </button>
-            <button
-              type="button"
-              onClick={() => handleDemoLogin('employer')}
-              className="btn-outline"
-              style={{
-                padding: '8px',
-                fontSize: '0.8rem',
-                justifyContent: 'center',
-                borderColor: 'rgba(236, 72, 153, 0.5)',
-                color: '#F472B6',
-                backgroundColor: 'rgba(236, 72, 153, 0.1)',
-              }}
-            >
-              Sign In as Employer
-            </button>
-          </div>
-        </Tilt3DCard>
 
         {/* Login Method Tabs */}
         <div
