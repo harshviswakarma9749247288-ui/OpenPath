@@ -1,15 +1,19 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Bot, X, Send, Sparkles, User, RefreshCw, Briefcase } from 'lucide-react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { Bot, X, Send, Sparkles, User, RefreshCw, Briefcase, Target } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
+import { useUIStore } from '../store/useUIStore';
 
-export default function AiAssistantDrawer({ activeOpportunity = null }) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function AiAssistantDrawer() {
+  const { user } = useAuthStore();
+  const { 
+    isAiDrawerOpen, 
+    setAiDrawerOpen, 
+    activeMentorOpportunity, 
+    clearMentorOpportunity 
+  } = useUIStore();
+
   const [inputMessage, setInputMessage] = useState('');
   const [loading, setLoading] = useState(false);
-
-  // Read current student profile from global auth state
-  const { user } = useAuthStore();
-
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -25,27 +29,15 @@ export default function AiAssistantDrawer({ activeOpportunity = null }) {
   };
 
   useEffect(() => {
-    if (isOpen) {
+    if (isAiDrawerOpen) {
       scrollToBottom();
     }
-  }, [messages, isOpen]);
+  }, [messages, isAiDrawerOpen]);
 
-  // Adjust quick prompts if an active opportunity is being viewed
-  const quickPrompts = activeOpportunity
-    ? [
-        `Analyze my gap for ${activeOpportunity.title}`,
-        `What projects should I build to qualify?`,
-        'Generate a 2-week learning roadmap',
-      ]
-    : [
-        'How can I improve my skill match score?',
-        'What projects should I build for React?',
-        'How do I prepare for a Full-Stack interview?',
-      ];
-
-  const handleSend = async (textToSend) => {
+  // Core Send message function
+  const handleSend = useCallback(async (textToSend) => {
     const message = textToSend || inputMessage;
-    if (!message.trim() || loading) return;
+    if (!message || !message.trim() || loading) return;
 
     const userMessage = { id: Date.now(), sender: 'user', text: message };
     setMessages((prev) => [...prev, userMessage]);
@@ -53,29 +45,30 @@ export default function AiAssistantDrawer({ activeOpportunity = null }) {
     setLoading(true);
 
     try {
-      // Build structured context payload matching your backend service
-      const context = {
-        student: {
-          name: user?.name || 'Candidate',
-          targetRole: user?.targetRole || 'Full-Stack Developer',
-          skills: user?.skills || ['React', 'JavaScript', 'HTML/CSS', 'Node.js'],
-          experienceLevel: user?.experienceLevel || 'Entry-Level',
-        },
-        opportunity: activeOpportunity
-          ? {
-              title: activeOpportunity.title,
-              requiredSkills: activeOpportunity.requiredSkills,
-              matchScore: activeOpportunity.matchScore,
-            }
-          : null,
+      const studentContext = {
+        name: user?.name || 'Candidate',
+        targetRole: user?.targetRole || 'Full-Stack Developer',
+        skills: user?.skills || ['React', 'JavaScript', 'HTML/CSS', 'Node.js'],
+        experienceLevel: user?.experienceLevel || 'Entry-Level',
       };
+
+      const opportunityContext = activeMentorOpportunity
+        ? {
+            title: activeMentorOpportunity.title,
+            requiredSkills: activeMentorOpportunity.requiredSkills || [],
+            matchScore: activeMentorOpportunity.matchScore || null,
+          }
+        : null;
 
       const response = await fetch('http://localhost:5000/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           prompt: message,
-          context,
+          context: {
+            student: studentContext,
+            opportunity: opportunityContext,
+          },
         }),
       });
 
@@ -104,14 +97,41 @@ export default function AiAssistantDrawer({ activeOpportunity = null }) {
     } finally {
       setLoading(false);
     }
+  }, [inputMessage, loading, user, activeMentorOpportunity]);
+
+  // Automated trigger when an opportunity is clicked
+  useEffect(() => {
+    if (activeMentorOpportunity && isAiDrawerOpen) {
+      const promptText = `Analyze my skill gap for "${activeMentorOpportunity.title}". Compare my current background against the role requirements. Acknowledge my existing tech strengths, pinpoint specific missing design tools/methods, and outline a full, day-by-day 14-day study and portfolio roadmap.`;
+      handleSend(promptText);
+    }
+  }, [activeMentorOpportunity, isAiDrawerOpen]);
+
+  const quickPrompts = activeMentorOpportunity
+    ? [
+        `What projects will qualify me for ${activeMentorOpportunity.title}?`,
+        `Mock technical interview for this role`,
+        `Prioritize my top missing skills`,
+      ]
+    : [
+        'How can I improve my skill match score?',
+        'What projects should I build for React?',
+        'How do I prepare for a Full-Stack interview?',
+      ];
+
+  const handleClose = () => {
+    setAiDrawerOpen(false);
+    if (clearMentorOpportunity) {
+      clearMentorOpportunity();
+    }
   };
 
   return (
     <>
-      {/* Floating Trigger Button */}
-      {!isOpen && (
+      {/* Floating Trigger Button (Bottom-Right) */}
+      {!isAiDrawerOpen && (
         <button
-          onClick={() => setIsOpen(true)}
+          onClick={() => setAiDrawerOpen(true)}
           style={{
             position: 'fixed',
             bottom: '28px',
@@ -124,15 +144,13 @@ export default function AiAssistantDrawer({ activeOpportunity = null }) {
             color: '#ffffff',
             padding: '12px 20px',
             borderRadius: '9999px',
-            boxShadow: '0 10px 25px -5px rgba(37, 99, 235, 0.4), 0 8px 10px -6px rgba(37, 99, 235, 0.2)',
+            boxShadow: '0 10px 25px -5px rgba(37, 99, 235, 0.4)',
             border: 'none',
             cursor: 'pointer',
             fontWeight: 600,
             fontSize: '0.95rem',
             transition: 'all 0.2s ease',
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.transform = 'translateY(-2px) scale(1.03)')}
-          onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0) scale(1)')}
         >
           <Bot size={22} />
           <span>AI Career Mentor</span>
@@ -148,32 +166,34 @@ export default function AiAssistantDrawer({ activeOpportunity = null }) {
         </button>
       )}
 
-      {/* Slide-out Drawer */}
-      {isOpen && (
+      {/* Slide-out Drawer Panel */}
+      {isAiDrawerOpen && (
         <div
           style={{
             position: 'fixed',
             inset: 0,
-            backgroundColor: 'rgba(15, 23, 42, 0.45)',
+            backgroundColor: 'rgba(15, 23, 42, 0.5)',
             backdropFilter: 'blur(4px)',
-            zIndex: 9995,
+            zIndex: 99999,
             display: 'flex',
             justifyContent: 'flex-end',
           }}
-          onClick={() => setIsOpen(false)}
+          onClick={handleClose}
         >
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
               width: '100%',
-              maxWidth: '420px',
+              maxWidth: '430px',
               height: '100%',
               backgroundColor: '#0f172a',
               color: '#f8fafc',
               borderLeft: '1px solid rgba(255, 255, 255, 0.1)',
               display: 'flex',
               flexDirection: 'column',
-              boxShadow: '-8px 0 25px rgba(0, 0, 0, 0.5)',
+              boxShadow: '-8px 0 25px rgba(0, 0, 0, 0.6)',
+              position: 'relative',
+              zIndex: 100000,
             }}
           >
             {/* Header */}
@@ -187,14 +207,7 @@ export default function AiAssistantDrawer({ activeOpportunity = null }) {
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div
-                  style={{
-                    backgroundColor: '#2563eb',
-                    padding: '8px',
-                    borderRadius: '8px',
-                    display: 'flex',
-                  }}
-                >
+                <div style={{ backgroundColor: '#2563eb', padding: '8px', borderRadius: '8px', display: 'flex' }}>
                   <Bot size={20} color="#fff" />
                 </div>
                 <div>
@@ -205,7 +218,7 @@ export default function AiAssistantDrawer({ activeOpportunity = null }) {
                 </div>
               </div>
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={handleClose}
                 style={{
                   background: 'transparent',
                   border: 'none',
@@ -218,11 +231,33 @@ export default function AiAssistantDrawer({ activeOpportunity = null }) {
               </button>
             </div>
 
-            {/* Live Context Badge */}
+            {/* Target Opportunity Alert Bar */}
+            {activeMentorOpportunity && (
+              <div
+                style={{
+                  padding: '10px 16px',
+                  backgroundColor: 'rgba(16, 185, 129, 0.12)',
+                  borderBottom: '1px solid rgba(16, 185, 129, 0.25)',
+                  fontSize: '0.78rem',
+                  color: '#6ee7b7',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
+              >
+                <Target size={16} />
+                <span>
+                  Analyzing: <strong>{activeMentorOpportunity.title}</strong>
+                  {activeMentorOpportunity.matchScore ? ` (${activeMentorOpportunity.matchScore}% Match)` : ''}
+                </span>
+              </div>
+            )}
+
+            {/* User Profile Context Badge */}
             <div
               style={{
                 padding: '8px 16px',
-                backgroundColor: 'rgba(37, 99, 235, 0.12)',
+                backgroundColor: 'rgba(37, 99, 235, 0.1)',
                 borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
                 fontSize: '0.75rem',
                 color: '#93c5fd',
@@ -304,14 +339,14 @@ export default function AiAssistantDrawer({ activeOpportunity = null }) {
                     <RefreshCw size={16} color="#fff" className="animate-spin" />
                   </div>
                   <div style={{ padding: '10px 14px', borderRadius: '12px', fontSize: '0.875rem', backgroundColor: 'rgba(255, 255, 255, 0.08)', color: '#94a3b8' }}>
-                    Analyzing with your profile context...
+                    Analyzing role with local Llama...
                   </div>
                 </div>
               )}
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input Bar */}
+            {/* Input Form */}
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -328,7 +363,7 @@ export default function AiAssistantDrawer({ activeOpportunity = null }) {
                 type="text"
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
-                placeholder="Ask for custom roadmaps, review, or prep..."
+                placeholder="Ask about this role or preparation..."
                 disabled={loading}
                 style={{
                   flex: 1,

@@ -19,9 +19,12 @@ export const VALID_PAGES = [
   'candidate-review',
 ];
 
-// Converts page + params to a clean, standard web URL path (e.g. /opportunities or /details?id=123)
+// Converts page + params to a clean web URL path
 export function routeToUrl(page, params = {}) {
-  if (!page || page === 'landing') return '/';
+  // If page is empty, invalid, or corrupted with template brackets, fall back to root '/'
+  if (!page || page === 'landing' || page.includes('{') || page.includes('(')) {
+    return '/';
+  }
 
   const query = new URLSearchParams();
   Object.entries(params || {}).forEach(([key, val]) => {
@@ -31,7 +34,7 @@ export function routeToUrl(page, params = {}) {
   });
 
   const qStr = query.toString();
-  return `/${page}${qStr ? '?' + qStr : ''}`;
+  return '/' + page + (qStr ? '?' + qStr : '');
 }
 
 // Parses window.location into { page, params }
@@ -44,20 +47,26 @@ export function parseLocationToRoute() {
     let path = window.location.pathname.replace(/^\/+/, '').replace(/\/+$/, '');
     let queryString = window.location.search.replace(/^\?/, '');
 
-    // Support hash fallback (e.g., #/dashboard or #/details?id=123)
-    if (!path || path === 'index.html') {
-      let hash = window.location.hash || '';
-      if (hash.startsWith('#')) hash = hash.slice(1);
-      if (hash.startsWith('/')) hash = hash.slice(1);
+    // Corrupted URL detector: if path contains URL-encoded or raw template strings
+    if (
+      !path ||
+      path === 'index.html' ||
+      path === 'landing' ||
+      path.includes('{') ||
+      path.includes('%7B') ||
+      path.includes('(')
+    ) {
+      return { page: 'landing', params: {} };
+    }
+
+    // Support hash fallback
+    if (window.location.hash) {
+      let hash = window.location.hash.slice(1).replace(/^\/+/, '');
       if (hash) {
         const parts = hash.split('?');
         path = parts[0] || '';
         queryString = parts[1] || queryString;
       }
-    }
-
-    if (!path || path === 'index.html' || path === 'landing') {
-      return { page: 'landing', params: {} };
     }
 
     const params = {};
@@ -83,6 +92,24 @@ export const useUIStore = create((set, get) => ({
   activePage: initialRoute.page,
   pageParams: initialRoute.params,
   toast: null,
+
+  // --- AI Career Mentor Drawer Global State ---
+  isAiDrawerOpen: false,
+  activeMentorOpportunity: null,
+
+  setAiDrawerOpen: (isOpen) => set({ isAiDrawerOpen: isOpen }),
+
+  openMentorForOpportunity: (opportunity) =>
+    set({
+      activeMentorOpportunity: opportunity,
+      isAiDrawerOpen: true,
+    }),
+
+  clearMentorOpportunity: () =>
+    set({
+      activeMentorOpportunity: null,
+    }),
+  // ---------------------------------------------
 
   theme: localStorage.getItem('openpath_theme') || 'dark',
 
@@ -144,13 +171,11 @@ export const useUIStore = create((set, get) => ({
 
   goBack: (fallbackPage = 'dashboard', fallbackParams = {}) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    // Use real browser history back if history exists
     if (typeof window !== 'undefined' && window.history.length > 1) {
       window.history.back();
       return;
     }
 
-    // Fallback if opened directly without prior history
     const state = get();
     if (state.history && state.history.length > 0) {
       const prev = state.history[state.history.length - 1];
@@ -181,9 +206,8 @@ export const useUIStore = create((set, get) => ({
   clearToast: () => set({ toast: null }),
 }));
 
-// Standard Browser Back, Forward & Popstate Sync Listeners
+// Browser Sync Listeners
 if (typeof window !== 'undefined') {
-  // 1. Synchronize initial state with browser history so Back button can reach the initial page
   const initialUrl = routeToUrl(initialRoute.page, initialRoute.params);
   window.history.replaceState(
     { page: initialRoute.page, params: initialRoute.params },
@@ -191,7 +215,6 @@ if (typeof window !== 'undefined') {
     initialUrl
   );
 
-  // 2. Browser Back / Forward Button handler
   window.addEventListener('popstate', (e) => {
     let targetPage;
     let targetParams;
@@ -212,7 +235,6 @@ if (typeof window !== 'undefined') {
     });
   });
 
-  // 3. Hash change listener for hash links or backwards compatibility
   window.addEventListener('hashchange', () => {
     if (window.location.hash) {
       const parsed = parseLocationToRoute();
