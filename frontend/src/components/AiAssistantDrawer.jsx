@@ -12,6 +12,7 @@ export default function AiAssistantDrawer() {
     clearMentorOpportunity 
   } = useUIStore();
 
+  const [isHovered, setIsHovered] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([
@@ -128,10 +129,16 @@ export default function AiAssistantDrawer() {
 
   return (
     <>
-      {/* Floating Trigger Button (Bottom-Right) */}
+      {/* Animated Floating Trigger Button (Bottom-Right): Circle by default, expands on hover */}
       {!isAiDrawerOpen && (
         <button
-          onClick={() => setAiDrawerOpen(true)}
+          onClick={() => {
+            setIsHovered(false);
+            setAiDrawerOpen(true);
+          }}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          aria-label="AI Career Mentor"
           style={{
             position: 'fixed',
             bottom: '28px',
@@ -139,30 +146,61 @@ export default function AiAssistantDrawer() {
             zIndex: 9990,
             display: 'flex',
             alignItems: 'center',
-            gap: '10px',
+            justifyContent: 'center',
+            gap: isHovered ? '10px' : '0px',
             backgroundColor: '#2563eb',
             color: '#ffffff',
-            padding: '12px 20px',
+            height: '52px',
+            minWidth: '52px',
+            maxWidth: isHovered ? '240px' : '52px',
+            padding: isHovered ? '0 20px' : '0',
             borderRadius: '9999px',
-            boxShadow: '0 10px 25px -5px rgba(37, 99, 235, 0.4)',
+            boxShadow: isHovered
+              ? '0 14px 28px -5px rgba(37, 99, 235, 0.5), 0 8px 12px -6px rgba(37, 99, 235, 0.3)'
+              : '0 10px 25px -5px rgba(37, 99, 235, 0.4)',
             border: 'none',
             cursor: 'pointer',
             fontWeight: 600,
             fontSize: '0.95rem',
-            transition: 'all 0.2s ease',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            transform: isHovered ? 'translateY(-2px) scale(1.03)' : 'translateY(0) scale(1)',
+            transition:
+              'max-width 0.35s cubic-bezier(0.22, 1, 0.36, 1), padding 0.35s cubic-bezier(0.22, 1, 0.36, 1), gap 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease',
           }}
         >
-          <Bot size={22} />
-          <span>AI Career Mentor</span>
-          <span
+          <Bot
+            size={22}
             style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              backgroundColor: '#4ade80',
-              display: 'inline-block',
+              flexShrink: 0,
+              transition: 'transform 0.3s ease',
+              transform: isHovered ? 'rotate(-6deg) scale(1.05)' : 'rotate(0deg) scale(1)',
             }}
           />
+          <span
+            style={{
+              maxWidth: isHovered ? '160px' : '0px',
+              opacity: isHovered ? 1 : 0,
+              overflow: 'hidden',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '10px',
+              transition:
+                'max-width 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease',
+            }}
+          >
+            <span>AI Career Mentor</span>
+            <span
+              style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                backgroundColor: '#4ade80',
+                display: 'inline-block',
+                flexShrink: 0,
+              }}
+            />
+          </span>
         </button>
       )}
 
