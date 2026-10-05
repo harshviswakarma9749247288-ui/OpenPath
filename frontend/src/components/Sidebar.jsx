@@ -20,8 +20,8 @@ import ThemeToggle from './ThemeToggle';
 import AnimatedLogo from './AnimatedLogo';
 
 export default function Sidebar() {
-  const { user, logout } = useAuthStore();
-  const { isSidebarCollapsed, toggleSidebar, activePage, navigate } = useUIStore();
+  const { user } = useAuthStore();
+  const { isSidebarCollapsed, toggleSidebar, activePage, navigate, openSignOutModal } = useUIStore();
 
   const isEmployer = user?.role === 'employer';
 
@@ -237,10 +237,7 @@ export default function Sidebar() {
           )}
 
           <button
-            onClick={() => {
-              logout();
-              navigate('login');
-            }}
+            onClick={openSignOutModal}
             title="Log Out"
             style={{
               color: '#64748B',
@@ -248,6 +245,10 @@ export default function Sidebar() {
               borderRadius: '6px',
               display: 'flex',
               alignItems: 'center',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'color 0.2s',
             }}
           >
             <LogOut size={18} />

@@ -85,6 +85,13 @@ app.get('/api/stats/overview', async (req, res, next) => {
     const platformContent =
       existingContent || (await PlatformContent.create(DEFAULT_PLATFORM_CONTENT));
 
+    if (platformContent?.heroAnnouncement?.text?.includes('Live Database Connected')) {
+      platformContent.heroAnnouncement.text = platformContent.heroAnnouncement.text
+        .replace(/•?\s*Live Database Connected/gi, '')
+        .trim();
+      await platformContent.save().catch(() => {});
+    }
+
     res.status(200).json({
       success: true,
       data: {
@@ -110,6 +117,11 @@ app.get('/api/platform-content', async (req, res, next) => {
     let content = await PlatformContent.findOne({ key: 'openpath_main' });
     if (!content) {
       content = await PlatformContent.create(DEFAULT_PLATFORM_CONTENT);
+    } else if (content.heroAnnouncement?.text?.includes('Live Database Connected')) {
+      content.heroAnnouncement.text = content.heroAnnouncement.text
+        .replace(/•?\s*Live Database Connected/gi, '')
+        .trim();
+      await content.save().catch(() => {});
     }
 
     res.status(200).json({

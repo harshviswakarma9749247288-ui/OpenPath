@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useAuthStore } from './store/useAuthStore';
-import { useUIStore } from './store/useUIStore';
+import { useUIStore, PROTECTED_PAGES } from './store/useUIStore';
 
 // Components
 import Navbar from './components/Navbar';
@@ -8,6 +8,7 @@ import Sidebar from './components/Sidebar';
 import ThemeToggle from './components/ThemeToggle';
 import FloatingParticles3D from './components/FloatingParticles3D';
 import AiAssistantDrawer from './components/AiAssistantDrawer';
+import SignOutModal from './components/SignOutModal';
 
 // Pages (All 16 Approved Screens)
 import LandingPage from './pages/LandingPage';
@@ -27,28 +28,99 @@ import CreateOpportunityPage from './pages/CreateOpportunityPage';
 import ManageOpportunitiesPage from './pages/ManageOpportunitiesPage';
 import CandidateReviewPage from './pages/CandidateReviewPage';
 
-import { X, CheckCircle2, AlertCircle, Info } from 'lucide-react';
+import { X, CheckCircle2, AlertCircle, Info, Lock, LogOut, ArrowRight } from 'lucide-react';
 
 export default function App() {
-  const { initAuth, isAuthenticated, user } = useAuthStore();
+  const { initAuth, isAuthenticated, user, isLoading } = useAuthStore();
   const {
     activePage,
     pageParams,
     navigate,
     isMobileDrawerOpen,
     setMobileDrawerOpen,
+    openSignOutModal,
     toast,
     clearToast,
+    showToast,
   } = useUIStore();
 
   useEffect(() => {
     initAuth();
   }, []);
 
+  const isProtectedPage = PROTECTED_PAGES.includes(activePage);
+
+  // Security route guard: Redirect unauthenticated visits to protected pages (including browser Back button)
+  useEffect(() => {
+    if (!isAuthenticated && isProtectedPage && !isLoading) {
+      navigate('login', {}, { replace: true });
+      showToast('Please sign in to access that page.', 'info');
+    }
+  }, [isAuthenticated, isProtectedPage, isLoading, navigate, showToast]);
+
   const isPublicPage = ['landing', 'login', 'register'].includes(activePage);
   const isEmployer = user?.role === 'employer';
 
   const renderActiveScreen = () => {
+    // If not authenticated and trying to view a protected page, render login requirement prompt
+    if (!isAuthenticated && isProtectedPage) {
+      return (
+        <div style={{ minHeight: '65vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+          <div
+            className="card card-featured animate-fade-in"
+            style={{
+              maxWidth: '450px',
+              width: '100%',
+              textAlign: 'center',
+              padding: '40px 32px',
+              backgroundColor: 'var(--card-bg)',
+              borderRadius: '20px',
+              border: '1px solid var(--border-color)',
+            }}
+          >
+            <div
+              style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                background: 'rgba(236, 72, 153, 0.15)',
+                border: '1px solid rgba(236, 72, 153, 0.3)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 18px auto',
+                color: '#EC4899',
+              }}
+            >
+              <Lock size={28} />
+            </div>
+            <h2 style={{ fontSize: '1.45rem', fontWeight: 800, marginBottom: '8px', color: 'var(--primary-text)' }}>
+              Sign In Required
+            </h2>
+            <p style={{ fontSize: '0.9rem', color: 'var(--secondary-text)', marginBottom: '24px', lineHeight: '1.6' }}>
+              Your session has ended or you signed out. Please sign in to access your dashboard, applications, and profile.
+            </p>
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+              <button
+                onClick={() => navigate('login', {}, { replace: true })}
+                className="btn-primary"
+                style={{ padding: '11px 26px', fontSize: '0.95rem' }}
+              >
+                Sign In Now <ArrowRight size={16} />
+              </button>
+              <button
+                onClick={() => navigate('landing')}
+                className="btn-secondary"
+                style={{ padding: '11px 20px', fontSize: '0.95rem' }}
+              >
+                Back to Home
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     switch (activePage) {
       case 'landing':
         return <LandingPage />;
@@ -288,6 +360,18 @@ export default function App() {
                     </button>
                   </>
                 )}
+                {isAuthenticated && (
+                  <button
+                    onClick={() => {
+                      setMobileDrawerOpen(false);
+                      openSignOutModal();
+                    }}
+                    className="btn-ghost"
+                    style={{ justifyContent: 'flex-start', color: '#F43F5E', marginTop: '6px' }}
+                  >
+                    <LogOut size={16} /> Sign Out
+                  </button>
+                )}
               </div>
             </div>
 
@@ -311,7 +395,7 @@ export default function App() {
       <FloatingParticles3D count={28} />
 
       {/* Main Layout Rendering with 3D Page Transitions */}
-      {isPublicPage ? (
+      {isPublicPage || (!isAuthenticated && isProtectedPage) ? (
         <div key={activePage} className="page-transition-3d" style={{ width: '100%', position: 'relative', zIndex: 1 }}>
           {renderActiveScreen()}
         </div>
@@ -329,6 +413,9 @@ export default function App() {
 
       {/* Privacy-Preserving Local AI Agent Drawer */}
       <AiAssistantDrawer />
+
+      {/* Centered Sign Out Confirmation Modal */}
+      <SignOutModal />
     </div>
   );
 }

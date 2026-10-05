@@ -10,6 +10,8 @@ import {
   ShieldCheck,
   RefreshCw,
   KeyRound,
+  GraduationCap,
+  Briefcase,
 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
@@ -22,6 +24,9 @@ import BackButton from '../components/BackButton';
 export default function LoginPage() {
   const { login, loginWithOtp, isLoading, error } = useAuthStore();
   const { navigate, showToast } = useUIStore();
+
+  // Role Portal: 'student' | 'employer'
+  const [portalRole, setPortalRole] = useState('student');
 
   // Mode: 'password' | 'otp'
   const [loginMode, setLoginMode] = useState('password');
@@ -318,13 +323,161 @@ export default function LoginPage() {
       >
         <BackButton label="Back to Home" fallbackPage="landing" style={{ alignSelf: 'flex-start', marginBottom: '20px' }} />
 
-        <div style={{ marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--primary-text)' }}>
-            Welcome Back
+        <div style={{ marginBottom: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+            <span
+              style={{
+                fontSize: '0.725rem',
+                fontWeight: 800,
+                padding: '3px 10px',
+                borderRadius: '9999px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                background: portalRole === 'employer' ? 'rgba(236, 72, 153, 0.2)' : 'rgba(124, 58, 237, 0.2)',
+                color: portalRole === 'employer' ? '#F472B6' : '#C084FC',
+                border: portalRole === 'employer' ? '1px solid rgba(236, 72, 153, 0.4)' : '1px solid rgba(124, 58, 237, 0.4)',
+              }}
+            >
+              {portalRole === 'employer' ? '💼 Employer Portal' : '🎓 Student Portal'}
+            </span>
+          </div>
+          <h2 style={{ fontSize: '1.95rem', fontWeight: 800, color: 'var(--primary-text)' }}>
+            {portalRole === 'employer' ? 'Employer Sign In' : 'Student Sign In'}
           </h2>
-          <p style={{ fontSize: '0.9rem', color: 'var(--secondary-text)', marginTop: '4px' }}>
-            Please select your preferred sign-in method to access OpenPath.
+          <p style={{ fontSize: '0.875rem', color: 'var(--secondary-text)', marginTop: '4px', lineHeight: '1.5' }}>
+            {portalRole === 'employer'
+              ? 'Sign in to manage opportunity listings, inspect match telemetry, and review applicants.'
+              : 'Sign in to access verified opportunities, 3D skill roadmaps, and AI career matching.'}
           </p>
+        </div>
+
+        {/* Role Portal Switcher */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '8px',
+            padding: '4px',
+            backgroundColor: 'var(--chip-bg)',
+            border: '1px solid var(--border-color)',
+            borderRadius: 'var(--radius-md)',
+            marginBottom: '14px',
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => {
+              setPortalRole('student');
+              if (email === 'recruiter@techcorp.io') {
+                setEmail('');
+                setPassword('');
+              }
+            }}
+            style={{
+              padding: '9px 12px',
+              borderRadius: 'var(--radius-sm)',
+              border: portalRole === 'student' ? '1px solid #A855F7' : '1px solid transparent',
+              backgroundColor: portalRole === 'student' ? 'rgba(124, 58, 237, 0.22)' : 'transparent',
+              color: portalRole === 'student' ? 'var(--primary-text)' : 'var(--secondary-text)',
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            <GraduationCap size={17} color={portalRole === 'student' ? '#C084FC' : 'currentColor'} />
+            <span>Student Portal</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setPortalRole('employer');
+              if (email === 'alex@example.com') {
+                setEmail('');
+                setPassword('');
+              }
+            }}
+            style={{
+              padding: '9px 12px',
+              borderRadius: 'var(--radius-sm)',
+              border: portalRole === 'employer' ? '1px solid #EC4899' : '1px solid transparent',
+              backgroundColor: portalRole === 'employer' ? 'rgba(236, 72, 153, 0.22)' : 'transparent',
+              color: portalRole === 'employer' ? 'var(--primary-text)' : 'var(--secondary-text)',
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            <Briefcase size={17} color={portalRole === 'employer' ? '#F472B6' : 'currentColor'} />
+            <span>Employer Portal</span>
+          </button>
+        </div>
+
+        {/* Quick Demo Autofill Pill */}
+        <div style={{ marginBottom: '18px' }}>
+          {portalRole === 'student' ? (
+            <button
+              type="button"
+              onClick={() => {
+                setEmail('alex@example.com');
+                setPassword('password123');
+                setOtpEmail('alex@example.com');
+                showToast('Filled Student Demo: alex@example.com', 'info');
+              }}
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                fontSize: '0.78rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                borderRadius: '8px',
+                border: '1px dashed rgba(168, 85, 247, 0.45)',
+                backgroundColor: 'rgba(124, 58, 237, 0.08)',
+                color: 'var(--primary-text)',
+                cursor: 'pointer',
+              }}
+            >
+              <span>🎓 Quick Demo Student: <strong>alex@example.com</strong></span>
+              <span style={{ color: '#C084FC', fontWeight: 600 }}>1-Click Fill</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                setEmail('recruiter@techcorp.io');
+                setPassword('password123');
+                setOtpEmail('recruiter@techcorp.io');
+                showToast('Filled Employer Demo: recruiter@techcorp.io', 'info');
+              }}
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                fontSize: '0.78rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                borderRadius: '8px',
+                border: '1px dashed rgba(236, 72, 153, 0.45)',
+                backgroundColor: 'rgba(236, 72, 153, 0.08)',
+                color: 'var(--primary-text)',
+                cursor: 'pointer',
+              }}
+            >
+              <span>💼 Quick Demo Employer: <strong>recruiter@techcorp.io</strong></span>
+              <span style={{ color: '#F472B6', fontWeight: 600 }}>1-Click Fill</span>
+            </button>
+          )}
         </div>
 
         {/* Login Method Tabs */}
@@ -420,7 +573,7 @@ export default function LoginPage() {
                   required
                   className="form-input"
                   style={{ paddingLeft: '40px' }}
-                  placeholder="name@university.edu or company.com"
+                  placeholder={portalRole === 'student' ? 'alex@example.com or university email' : 'recruiter@techcorp.io or company email'}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />

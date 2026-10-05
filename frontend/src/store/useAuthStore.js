@@ -221,6 +221,9 @@ export const useAuthStore = create((set, get) => ({
     localStorage.removeItem('openpath_mock_user');
     localStorage.removeItem('openpath_profile_completion');
     sessionStorage.removeItem('openpath_active_route');
+    if (typeof window !== 'undefined') {
+      window.history.replaceState({ page: 'login', params: {} }, '', '/login');
+    }
     set({
       user: null,
       token: null,

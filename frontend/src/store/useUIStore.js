@@ -19,6 +19,19 @@ export const VALID_PAGES = [
   'candidate-review',
 ];
 
+export const PROTECTED_PAGES = [
+  'dashboard',
+  'employer-dashboard',
+  'profile',
+  'profile-setup',
+  'applications',
+  'create-opportunity',
+  'manage-opportunities',
+  'candidate-review',
+  'match',
+  'skill-gap',
+];
+
 // Converts page + params to a clean web URL path
 export function routeToUrl(page, params = {}) {
   // If page is empty, invalid, or corrupted with template brackets, fall back to root '/'
@@ -110,6 +123,12 @@ export const useUIStore = create((set, get) => ({
       activeMentorOpportunity: null,
     }),
   // ---------------------------------------------
+
+  // --- Sign Out Confirmation Modal Global State ---
+  isSignOutModalOpen: false,
+  openSignOutModal: () => set({ isSignOutModalOpen: true }),
+  closeSignOutModal: () => set({ isSignOutModalOpen: false }),
+  // ------------------------------------------------
 
   theme: localStorage.getItem('openpath_theme') || 'dark',
 
@@ -226,6 +245,20 @@ if (typeof window !== 'undefined') {
       const parsed = parseLocationToRoute();
       targetPage = parsed.page;
       targetParams = parsed.params;
+    }
+
+    // Security Route Guard: If user is signed out, prevent Back/Forward button from entering protected pages
+    const token = localStorage.getItem('openpath_token');
+    if (!token && PROTECTED_PAGES.includes(targetPage)) {
+      const loginUrl = routeToUrl('login', {});
+      window.history.replaceState({ page: 'login', params: {} }, '', loginUrl);
+      useUIStore.setState({
+        activePage: 'login',
+        pageParams: {},
+        isMobileDrawerOpen: false,
+      });
+      useUIStore.getState().showToast('Please sign in to access your dashboard.', 'info');
+      return;
     }
 
     useUIStore.setState({

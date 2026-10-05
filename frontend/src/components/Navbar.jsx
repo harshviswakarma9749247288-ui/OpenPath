@@ -3,6 +3,7 @@ import {
   Menu,
   Bell,
   CheckCheck,
+  LogOut,
 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
@@ -11,7 +12,7 @@ import ThemeToggle from './ThemeToggle';
 
 export default function Navbar() {
   const { user, isAuthenticated } = useAuthStore();
-  const { activePage, navigate, setMobileDrawerOpen } = useUIStore();
+  const { activePage, navigate, setMobileDrawerOpen, openSignOutModal } = useUIStore();
 
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -264,47 +265,80 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* User Avatar & Role */}
+        {/* User Avatar & Role + Sign Out Button */}
         {isAuthenticated && user ? (
-          <div
-            onClick={() => navigate('profile')}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              padding: '4px 12px 4px 4px',
-              borderRadius: '9999px',
-              backgroundColor: 'var(--box-subtle)',
-              border: '1px solid var(--border-color)',
-              cursor: 'pointer',
-              backdropFilter: 'blur(8px)',
-            }}
-          >
-            <img
-              src={
-                user.avatar ||
-                'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120'
-              }
-              alt={user.name}
-              style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }}
-            />
-            <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--primary-text)' }}>
-              {(user.name || 'User').split(' ')[0]}
-            </span>
-            <span
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div
+              onClick={() => navigate('profile')}
+              title="View Digital Resume Profile"
               style={{
-                fontSize: '0.7rem',
-                padding: '2px 8px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                padding: '4px 12px 4px 4px',
                 borderRadius: '9999px',
-                background: user.role === 'employer' ? 'rgba(236, 72, 153, 0.2)' : 'rgba(124, 58, 237, 0.25)',
-                color: user.role === 'employer' ? '#F472B6' : '#C084FC',
-                border: user.role === 'employer' ? '1px solid rgba(236, 72, 153, 0.4)' : '1px solid rgba(124, 58, 237, 0.4)',
-                fontWeight: 700,
-                textTransform: 'uppercase',
+                backgroundColor: 'var(--box-subtle)',
+                border: '1px solid var(--border-color)',
+                cursor: 'pointer',
+                backdropFilter: 'blur(8px)',
               }}
             >
-              {user.role}
-            </span>
+              <img
+                src={
+                  user.avatar ||
+                  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120'
+                }
+                alt={user.name}
+                style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }}
+              />
+              <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--primary-text)' }}>
+                {(user.name || 'User').split(' ')[0]}
+              </span>
+              <span
+                style={{
+                  fontSize: '0.7rem',
+                  padding: '2px 8px',
+                  borderRadius: '9999px',
+                  background: user.role === 'employer' ? 'rgba(236, 72, 153, 0.2)' : 'rgba(124, 58, 237, 0.25)',
+                  color: user.role === 'employer' ? '#F472B6' : '#C084FC',
+                  border: user.role === 'employer' ? '1px solid rgba(236, 72, 153, 0.4)' : '1px solid rgba(124, 58, 237, 0.4)',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                }}
+              >
+                {user.role}
+              </span>
+            </div>
+
+            <button
+              onClick={openSignOutModal}
+              title="Sign Out"
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                backgroundColor: 'var(--chip-bg)',
+                border: '1px solid var(--border-color)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--secondary-text)',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = '#F43F5E';
+                e.currentTarget.style.borderColor = 'rgba(244, 63, 94, 0.4)';
+                e.currentTarget.style.backgroundColor = 'rgba(244, 63, 94, 0.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = 'var(--secondary-text)';
+                e.currentTarget.style.borderColor = 'var(--border-color)';
+                e.currentTarget.style.backgroundColor = 'var(--chip-bg)';
+              }}
+            >
+              <LogOut size={16} />
+            </button>
           </div>
         ) : (
           <div style={{ display: 'flex', gap: '8px' }}>

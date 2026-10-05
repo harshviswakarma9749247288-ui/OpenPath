@@ -232,8 +232,10 @@ export default function LandingPage() {
               <span className="pill-pulse-dot" />
               <Sparkles size={15} />
               <span>
-                {platformContent?.heroAnnouncement?.text ||
-                  'Next-Gen Career Intelligence • Get Started Free'}
+                {(platformContent?.heroAnnouncement?.text ||
+                  'Next-Gen 3D Career Intelligence')
+                  .replace(/•?\s*Live Database Connected/gi, '')
+                  .trim()}
               </span>
               <ArrowRight size={14} />
             </div>
