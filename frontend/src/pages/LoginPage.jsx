@@ -82,7 +82,13 @@ export default function LoginPage() {
     const res = await login(email, password);
     if (res.success) {
       showToast('Logged in successfully!', 'success');
-      navigate(res.user.role === 'employer' ? 'employer-dashboard' : 'dashboard');
+      navigate(
+        res.user.role === 'admin'
+          ? 'admin'
+          : res.user.role === 'employer'
+          ? 'employer-dashboard'
+          : 'dashboard'
+      );
     }
   };
 
@@ -153,7 +159,13 @@ export default function LoginPage() {
       const res = await loginWithOtp(targetEmail, otpLoginCode);
       if (res.success) {
         showToast('Logged in successfully via OTP verification!', 'success');
-        navigate(res.user.role === 'employer' ? 'employer-dashboard' : 'dashboard');
+        navigate(
+          res.user.role === 'admin'
+            ? 'admin'
+            : res.user.role === 'employer'
+            ? 'employer-dashboard'
+            : 'dashboard'
+        );
       } else {
         showToast(res.error || 'Invalid OTP code', 'error');
       }
@@ -333,19 +345,44 @@ export default function LoginPage() {
                 borderRadius: '9999px',
                 textTransform: 'uppercase',
                 letterSpacing: '0.5px',
-                background: portalRole === 'employer' ? 'rgba(236, 72, 153, 0.2)' : 'rgba(124, 58, 237, 0.2)',
-                color: portalRole === 'employer' ? '#F472B6' : '#C084FC',
-                border: portalRole === 'employer' ? '1px solid rgba(236, 72, 153, 0.4)' : '1px solid rgba(124, 58, 237, 0.4)',
+                background:
+                  portalRole === 'admin'
+                    ? 'rgba(239, 68, 68, 0.2)'
+                    : portalRole === 'employer'
+                    ? 'rgba(236, 72, 153, 0.2)'
+                    : 'rgba(124, 58, 237, 0.2)',
+                color:
+                  portalRole === 'admin'
+                    ? '#F87171'
+                    : portalRole === 'employer'
+                    ? '#F472B6'
+                    : '#C084FC',
+                border:
+                  portalRole === 'admin'
+                    ? '1px solid rgba(239, 68, 68, 0.4)'
+                    : portalRole === 'employer'
+                    ? '1px solid rgba(236, 72, 153, 0.4)'
+                    : '1px solid rgba(124, 58, 237, 0.4)',
               }}
             >
-              {portalRole === 'employer' ? '💼 Employer Portal' : '🎓 Student Portal'}
+              {portalRole === 'admin'
+                ? '🛡️ Admin Command Portal'
+                : portalRole === 'employer'
+                ? '💼 Employer Portal'
+                : '🎓 Student Portal'}
             </span>
           </div>
           <h2 style={{ fontSize: '1.95rem', fontWeight: 800, color: 'var(--primary-text)' }}>
-            {portalRole === 'employer' ? 'Employer Sign In' : 'Student Sign In'}
+            {portalRole === 'admin'
+              ? 'Administrator Sign In'
+              : portalRole === 'employer'
+              ? 'Employer Sign In'
+              : 'Student Sign In'}
           </h2>
           <p style={{ fontSize: '0.875rem', color: 'var(--secondary-text)', marginTop: '4px', lineHeight: '1.5' }}>
-            {portalRole === 'employer'
+            {portalRole === 'admin'
+              ? 'Sign in to access platform governance, user directory, listing moderation, and system telemetry.'
+              : portalRole === 'employer'
               ? 'Sign in to manage opportunity listings, inspect match telemetry, and review applicants.'
               : 'Sign in to access verified opportunities, 3D skill roadmaps, and AI career matching.'}
           </p>
@@ -355,8 +392,8 @@ export default function LoginPage() {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '8px',
+            gridTemplateColumns: '1fr 1fr 1fr',
+            gap: '6px',
             padding: '4px',
             backgroundColor: 'var(--chip-bg)',
             border: '1px solid var(--border-color)',
@@ -368,58 +405,87 @@ export default function LoginPage() {
             type="button"
             onClick={() => {
               setPortalRole('student');
-              if (email === 'recruiter@techcorp.io') {
+              if (email === 'recruiter@techcorp.io' || email === 'admin@openpath.io') {
                 setEmail('');
                 setPassword('');
               }
             }}
             style={{
-              padding: '9px 12px',
+              padding: '8px 10px',
               borderRadius: 'var(--radius-sm)',
               border: portalRole === 'student' ? '1px solid #A855F7' : '1px solid transparent',
               backgroundColor: portalRole === 'student' ? 'rgba(124, 58, 237, 0.22)' : 'transparent',
               color: portalRole === 'student' ? 'var(--primary-text)' : 'var(--secondary-text)',
               fontWeight: 700,
-              fontSize: '0.85rem',
+              fontSize: '0.8rem',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '6px',
+              gap: '5px',
               cursor: 'pointer',
               transition: 'all 0.2s ease',
             }}
           >
-            <GraduationCap size={17} color={portalRole === 'student' ? '#C084FC' : 'currentColor'} />
-            <span>Student Portal</span>
+            <GraduationCap size={15} color={portalRole === 'student' ? '#C084FC' : 'currentColor'} />
+            <span>Student</span>
           </button>
 
           <button
             type="button"
             onClick={() => {
               setPortalRole('employer');
-              if (email === 'alex@example.com') {
+              if (email === 'alex@example.com' || email === 'admin@openpath.io') {
                 setEmail('');
                 setPassword('');
               }
             }}
             style={{
-              padding: '9px 12px',
+              padding: '8px 10px',
               borderRadius: 'var(--radius-sm)',
               border: portalRole === 'employer' ? '1px solid #EC4899' : '1px solid transparent',
               backgroundColor: portalRole === 'employer' ? 'rgba(236, 72, 153, 0.22)' : 'transparent',
               color: portalRole === 'employer' ? 'var(--primary-text)' : 'var(--secondary-text)',
               fontWeight: 700,
-              fontSize: '0.85rem',
+              fontSize: '0.8rem',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '6px',
+              gap: '5px',
               cursor: 'pointer',
               transition: 'all 0.2s ease',
             }}
           >
-            <Briefcase size={17} color={portalRole === 'employer' ? '#F472B6' : 'currentColor'} />
-            <span>Employer Portal</span>
+            <Briefcase size={15} color={portalRole === 'employer' ? '#F472B6' : 'currentColor'} />
+            <span>Employer</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setPortalRole('admin');
+              if (email === 'alex@example.com' || email === 'recruiter@techcorp.io') {
+                setEmail('');
+                setPassword('');
+              }
+            }}
+            style={{
+              padding: '8px 10px',
+              borderRadius: 'var(--radius-sm)',
+              border: portalRole === 'admin' ? '1px solid #EF4444' : '1px solid transparent',
+              backgroundColor: portalRole === 'admin' ? 'rgba(239, 68, 68, 0.22)' : 'transparent',
+              color: portalRole === 'admin' ? 'var(--primary-text)' : 'var(--secondary-text)',
+              fontWeight: 700,
+              fontSize: '0.8rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '5px',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            <ShieldCheck size={15} color={portalRole === 'admin' ? '#F87171' : 'currentColor'} />
+            <span>Admin</span>
           </button>
         </div>
 
@@ -451,7 +517,7 @@ export default function LoginPage() {
               <span>🎓 Quick Demo Student: <strong>alex@example.com</strong></span>
               <span style={{ color: '#C084FC', fontWeight: 600 }}>1-Click Fill</span>
             </button>
-          ) : (
+          ) : portalRole === 'employer' ? (
             <button
               type="button"
               onClick={() => {
@@ -476,6 +542,32 @@ export default function LoginPage() {
             >
               <span>💼 Quick Demo Employer: <strong>recruiter@techcorp.io</strong></span>
               <span style={{ color: '#F472B6', fontWeight: 600 }}>1-Click Fill</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                setEmail('admin@openpath.io');
+                setPassword('password123');
+                setOtpEmail('admin@openpath.io');
+                showToast('Filled Admin Demo: admin@openpath.io', 'info');
+              }}
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                fontSize: '0.78rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                borderRadius: '8px',
+                border: '1px dashed rgba(239, 68, 68, 0.45)',
+                backgroundColor: 'rgba(239, 68, 68, 0.08)',
+                color: 'var(--primary-text)',
+                cursor: 'pointer',
+              }}
+            >
+              <span>🛡️ Quick Demo Admin: <strong>admin@openpath.io</strong></span>
+              <span style={{ color: '#F87171', fontWeight: 600 }}>1-Click Fill</span>
             </button>
           )}
         </div>
@@ -573,7 +665,13 @@ export default function LoginPage() {
                   required
                   className="form-input"
                   style={{ paddingLeft: '40px' }}
-                  placeholder={portalRole === 'student' ? 'alex@example.com or university email' : 'recruiter@techcorp.io or company email'}
+                  placeholder={
+                    portalRole === 'admin'
+                      ? 'admin@openpath.io or administrator email'
+                      : portalRole === 'student'
+                      ? 'alex@example.com or university email'
+                      : 'recruiter@techcorp.io or company email'
+                  }
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />

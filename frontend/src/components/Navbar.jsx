@@ -42,7 +42,9 @@ export default function Navbar() {
   const getPageTitle = () => {
     switch (activePage) {
       case 'dashboard':
-        return 'Student Hub';
+        return user?.role === 'admin' ? 'Admin Command Center' : user?.role === 'employer' ? 'Employer Hub' : 'Student Hub';
+      case 'admin':
+        return 'Admin Command Center';
       case 'opportunities':
         return 'Explore Opportunities';
       case 'details':
@@ -299,9 +301,20 @@ export default function Navbar() {
                   fontSize: '0.7rem',
                   padding: '2px 8px',
                   borderRadius: '9999px',
-                  background: user.role === 'employer' ? 'rgba(236, 72, 153, 0.2)' : 'rgba(124, 58, 237, 0.25)',
-                  color: user.role === 'employer' ? '#F472B6' : '#C084FC',
-                  border: user.role === 'employer' ? '1px solid rgba(236, 72, 153, 0.4)' : '1px solid rgba(124, 58, 237, 0.4)',
+                  background:
+                    user.role === 'admin'
+                      ? 'rgba(239, 68, 68, 0.2)'
+                      : user.role === 'employer'
+                      ? 'rgba(236, 72, 153, 0.2)'
+                      : 'rgba(124, 58, 237, 0.25)',
+                  color:
+                    user.role === 'admin' ? '#F87171' : user.role === 'employer' ? '#F472B6' : '#C084FC',
+                  border:
+                    user.role === 'admin'
+                      ? '1px solid rgba(239, 68, 68, 0.4)'
+                      : user.role === 'employer'
+                      ? '1px solid rgba(236, 72, 153, 0.4)'
+                      : '1px solid rgba(124, 58, 237, 0.4)',
                   fontWeight: 700,
                   textTransform: 'uppercase',
                 }}
@@ -309,6 +322,21 @@ export default function Navbar() {
                 {user.role}
               </span>
             </div>
+
+            {user.role === 'admin' && activePage !== 'admin' && (
+              <button
+                onClick={() => navigate('admin')}
+                className="btn-primary"
+                style={{
+                  padding: '6px 14px',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  background: 'linear-gradient(135deg, #EF4444 0%, #EC4899 100%)',
+                }}
+              >
+                Admin Command
+              </button>
+            )}
 
             <button
               onClick={openSignOutModal}

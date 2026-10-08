@@ -174,7 +174,15 @@ export default function LandingPage() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               {isAuthenticated ? (
                 <button
-                  onClick={() => navigate(user?.role === 'employer' ? 'employer-dashboard' : 'dashboard')}
+                  onClick={() =>
+                    navigate(
+                      user?.role === 'admin'
+                        ? 'admin'
+                        : user?.role === 'employer'
+                        ? 'employer-dashboard'
+                        : 'dashboard'
+                    )
+                  }
                   className="btn-liquid-glass"
                   style={{ padding: '8px 18px', fontSize: '0.875rem' }}
                 >
@@ -870,6 +878,19 @@ export default function LandingPage() {
             <p style={{ fontSize: '0.85rem', lineHeight: '1.6' }}>
               Explainable AI • Accessibility • Actionable Guidance • Privacy-First Data Protection.
             </p>
+            <a
+              onClick={() => navigate('login')}
+              style={{
+                cursor: 'pointer',
+                color: 'var(--secondary-text)',
+                fontSize: '0.8rem',
+                display: 'inline-block',
+                marginTop: '10px',
+                opacity: 0.7,
+              }}
+            >
+              🛡️ Admin Access Portal →
+            </a>
           </div>
         </div>
 

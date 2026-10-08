@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Sparkles,
   Layers,
+  ShieldCheck,
 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
@@ -24,6 +25,7 @@ export default function Sidebar() {
   const { isSidebarCollapsed, toggleSidebar, activePage, navigate, openSignOutModal } = useUIStore();
 
   const isEmployer = user?.role === 'employer';
+  const isAdmin = user?.role === 'admin';
 
   const studentNavItems = [
     { id: 'dashboard', label: 'Student Hub', icon: LayoutDashboard },
@@ -40,7 +42,13 @@ export default function Sidebar() {
     { id: 'candidate-review', label: 'Candidate Review', icon: Users },
   ];
 
-  const navItems = isEmployer ? employerNavItems : studentNavItems;
+  const adminNavItems = [
+    { id: 'admin', label: 'Admin Command', icon: ShieldCheck },
+    { id: 'opportunities', label: 'Browse Listings', icon: Compass },
+    { id: 'profile', label: 'Admin Profile', icon: User },
+  ];
+
+  const navItems = isAdmin ? adminNavItems : isEmployer ? employerNavItems : studentNavItems;
 
   return (
     <aside
@@ -230,7 +238,7 @@ export default function Sidebar() {
                   {user?.name || 'OpenPath User'}
                 </p>
                 <p style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>
-                  {isEmployer ? 'Employer Access' : 'Student Access'}
+                  {isAdmin ? 'System Administrator' : isEmployer ? 'Employer Access' : 'Student Access'}
                 </p>
               </div>
             </div>

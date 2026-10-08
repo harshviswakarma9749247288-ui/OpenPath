@@ -17,6 +17,7 @@ export const VALID_PAGES = [
   'create-opportunity',
   'manage-opportunities',
   'candidate-review',
+  'admin',
 ];
 
 export const PROTECTED_PAGES = [
@@ -30,6 +31,7 @@ export const PROTECTED_PAGES = [
   'candidate-review',
   'match',
   'skill-gap',
+  'admin',
 ];
 
 // Converts page + params to a clean web URL path

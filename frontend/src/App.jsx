@@ -27,8 +27,9 @@ import EmployerDashboard from './pages/EmployerDashboard';
 import CreateOpportunityPage from './pages/CreateOpportunityPage';
 import ManageOpportunitiesPage from './pages/ManageOpportunitiesPage';
 import CandidateReviewPage from './pages/CandidateReviewPage';
+import AdminPage from './pages/AdminPage';
 
-import { X, CheckCircle2, AlertCircle, Info, Lock, LogOut, ArrowRight } from 'lucide-react';
+import { X, CheckCircle2, AlertCircle, Info, Lock, LogOut, ArrowRight, ShieldCheck } from 'lucide-react';
 
 export default function App() {
   const { initAuth, isAuthenticated, user, isLoading } = useAuthStore();
@@ -60,6 +61,7 @@ export default function App() {
 
   const isPublicPage = ['landing', 'login', 'register'].includes(activePage);
   const isEmployer = user?.role === 'employer';
+  const isAdmin = user?.role === 'admin';
 
   const renderActiveScreen = () => {
     // If not authenticated and trying to view a protected page, render login requirement prompt
@@ -131,7 +133,9 @@ export default function App() {
       case 'profile-setup':
         return <ProfileSetupPage />;
       case 'dashboard':
-        return isEmployer ? <EmployerDashboard /> : <StudentDashboard />;
+        return isAdmin ? <AdminPage /> : isEmployer ? <EmployerDashboard /> : <StudentDashboard />;
+      case 'admin':
+        return <AdminPage />;
       case 'opportunities':
         return <OpportunitiesPage />;
       case 'details':
@@ -152,16 +156,16 @@ export default function App() {
       case 'profile':
         return <ProfilePage />;
       case 'employer-dashboard':
-        return isEmployer ? <EmployerDashboard /> : <StudentDashboard />;
+        return isEmployer ? <EmployerDashboard /> : isAdmin ? <AdminPage /> : <StudentDashboard />;
       case 'create-opportunity':
-        return isEmployer ? <CreateOpportunityPage /> : <StudentDashboard />;
+        return isEmployer ? <CreateOpportunityPage /> : isAdmin ? <CreateOpportunityPage /> : <StudentDashboard />;
       case 'manage-opportunities':
-        return isEmployer ? <ManageOpportunitiesPage /> : <StudentDashboard />;
+        return isEmployer ? <ManageOpportunitiesPage /> : isAdmin ? <ManageOpportunitiesPage /> : <StudentDashboard />;
       case 'candidate-review':
         return isEmployer ? (
           <CandidateReviewPage opportunityId={pageParams.opportunityId} />
         ) : (
-          <StudentDashboard />
+          isAdmin ? <CandidateReviewPage opportunityId={pageParams.opportunityId} /> : <StudentDashboard />
         );
       default:
         return <LandingPage />;
@@ -263,7 +267,40 @@ export default function App() {
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {isEmployer ? (
+                {isAdmin ? (
+                  <>
+                    <button
+                      onClick={() => {
+                        navigate('admin');
+                        setMobileDrawerOpen(false);
+                      }}
+                      className="btn-ghost"
+                      style={{ justifyContent: 'flex-start', color: '#EC4899', fontWeight: 700 }}
+                    >
+                      <ShieldCheck size={16} /> Admin Command Center
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate('opportunities');
+                        setMobileDrawerOpen(false);
+                      }}
+                      className="btn-ghost"
+                      style={{ justifyContent: 'flex-start' }}
+                    >
+                      Browse Opportunities
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate('profile');
+                        setMobileDrawerOpen(false);
+                      }}
+                      className="btn-ghost"
+                      style={{ justifyContent: 'flex-start' }}
+                    >
+                      Admin Profile
+                    </button>
+                  </>
+                ) : isEmployer ? (
                   <>
                     <button
                       onClick={() => {

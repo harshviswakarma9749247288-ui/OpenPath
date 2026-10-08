@@ -60,6 +60,7 @@ All 16 screens from the **App Flow / Navigation Logic** specification are built 
 14. **Create Opportunity Page**: 5-step wizard (*1. Basic Info → 2. Location & Salary → 3. Requirements → 4. Skills & Eligibility → 5. Review & Publish*).
 15. **Manage Opportunities Page**: Table of employer listings, active/closed status toggles, applicant counters, and delete actions.
 16. **Candidate Review Page**: Candidate cards ranked by algorithmic match score %, education, experience, and live recruitment stage buttons.
+17. **Admin Command Center**: System-wide analytics & telemetry, user account governance (role/status management), opportunity moderation, canonical skill taxonomy control, application oversight, and real-time announcement broadcasting.
 
 ---
 
@@ -93,6 +94,7 @@ For judges, evaluators, and testing:
 |---|---|---|
 | **Student / Fresher** | `alex.rivera@university.edu` | `password123` |
 | **Employer / Recruiter** | `recruiter@techcorp.io` | `password123` |
+| **Platform Administrator** | `admin@openpath.io` | `password123` |
 
 *Note: You can also use the **Instant Demo** buttons directly on the Landing Page and Login Page to switch between Student and Employer experiences in 1 click!*
 

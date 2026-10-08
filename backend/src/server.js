@@ -16,6 +16,7 @@ import employerRoutes from './routes/employerRoutes.js';
 import skillRoutes from './routes/skillRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 import { seedInitialData } from './config/seed.js';
 
 const app = express();
@@ -146,6 +147,7 @@ app.use('/api/employer', employerRoutes);
 app.use('/api/skills', skillRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Centralized error handler
 app.use(errorHandler);

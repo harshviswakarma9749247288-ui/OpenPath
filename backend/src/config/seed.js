@@ -123,6 +123,21 @@ export const seedInitialData = async () => {
       console.log('🌱 Synchronized PlatformContent sections in database.');
     }
 
+    // Ensure default demo admin account exists
+    const existingAdmin = await User.findOne({ email: 'admin@openpath.io' });
+    if (!existingAdmin) {
+      await User.create({
+        name: 'OpenPath System Admin',
+        email: 'admin@openpath.io',
+        password: 'password123',
+        role: 'admin',
+        bio: 'OpenPath Lead System Administrator & Platform Governance',
+        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=250',
+        profileCompleted: true,
+      });
+      console.log('🛡️ Created default Admin account: admin@openpath.io');
+    }
+
     const existingSkills = await Skill.countDocuments();
     if (existingSkills > 0) {
       console.log('⚡ Database already seeded. Skipping initial catalog seed.');
