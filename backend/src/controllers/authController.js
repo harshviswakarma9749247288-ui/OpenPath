@@ -83,6 +83,11 @@ export const login = async (req, res, next) => {
       return errorResponse(res, 'Invalid email or password.', 401);
     }
 
+    if (user.status === 'suspended' || user.status === 'banned') {
+      const reasonMsg = user.banReason ? ` (Reason: ${user.banReason})` : '';
+      return errorResponse(res, `Your account has been suspended by an administrator.${reasonMsg}`, 403);
+    }
+
     const token = sendTokenCookie(res, user);
 
     const safeUser = user.toObject();
@@ -234,6 +239,11 @@ export const loginWithOtp = async (req, res, next) => {
       return errorResponse(res, 'No account found with this email. Please register first.', 404);
     }
 
+    if (user.status === 'suspended' || user.status === 'banned') {
+      const reasonMsg = user.banReason ? ` (Reason: ${user.banReason})` : '';
+      return errorResponse(res, `Your account has been suspended by an administrator.${reasonMsg}`, 403);
+    }
+
     await OTP.deleteOne({ _id: record._id });
 
     const token = sendTokenCookie(res, user);
@@ -265,6 +275,9 @@ export const googleAuth = async (req, res, next) => {
         role: 'student',
         profileCompleted: false,
       });
+    } else if (user.status === 'suspended' || user.status === 'banned') {
+      const reasonMsg = user.banReason ? ` (Reason: ${user.banReason})` : '';
+      return errorResponse(res, `Your account has been suspended by an administrator.${reasonMsg}`, 403);
     }
 
     const token = sendTokenCookie(res, user);

@@ -220,24 +220,33 @@ export const updateUserRole = async (req, res, next) => {
   }
 };
 
-// @desc    Update user account status (active/suspended)
+// @desc    Update user account status (active/suspended/banned)
 // @route   PUT /api/admin/users/:id/status
 export const updateUserStatus = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { status } = req.body;
+    const { status, banReason } = req.body;
 
-    if (!['active', 'suspended'].includes(status)) {
-      return errorResponse(res, 'Invalid status specified', 400);
+    if (!['active', 'suspended', 'banned'].includes(status)) {
+      return errorResponse(res, 'Invalid status specified (must be active, suspended, or banned)', 400);
     }
 
     if (req.user._id.toString() === id) {
       return errorResponse(res, 'You cannot change your own account status', 400);
     }
 
+    const updateFields = { status };
+    if (status === 'suspended' || status === 'banned') {
+      updateFields.banReason = banReason ? String(banReason).trim() : 'Suspended by platform administrator';
+      updateFields.bannedAt = new Date();
+    } else {
+      updateFields.banReason = '';
+      updateFields.bannedAt = null;
+    }
+
     const user = await User.findByIdAndUpdate(
       id,
-      { status },
+      updateFields,
       { new: true }
     ).select('-password');
 
@@ -245,7 +254,13 @@ export const updateUserStatus = async (req, res, next) => {
       return errorResponse(res, 'User not found', 404);
     }
 
-    return successResponse(res, { user }, `User account marked as ${status}`);
+    const message = status === 'banned'
+      ? `User ID ${user._id} has been banned permanently`
+      : status === 'suspended'
+      ? `User account has been suspended`
+      : `User account has been reactivated successfully`;
+
+    return successResponse(res, { user }, message);
   } catch (error) {
     next(error);
   }

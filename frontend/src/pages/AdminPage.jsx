@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   ShieldAlert,
+  ShieldCheck,
   Users,
   Briefcase,
   Layers,
@@ -27,6 +28,12 @@ import {
   Cpu,
   ArrowUpRight,
   TrendingUp,
+  Eye,
+  Award,
+  Ban,
+  Check,
+  Copy,
+  ChevronRight,
 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
@@ -34,10 +41,19 @@ import api from '../utils/api';
 import BackButton from '../components/BackButton';
 import ApplicationStatusBadge from '../components/ApplicationStatusBadge';
 
+// SkillLoop-style Modals for Admin
+import RoleChangeModal from '../components/admin/RoleChangeModal';
+import UserBanModal from '../components/admin/UserBanModal';
+import UserDetailsModal from '../components/admin/UserDetailsModal';
+import DeleteConfirmationModal from '../components/admin/DeleteConfirmationModal';
+import EditSkillModal from '../components/admin/EditSkillModal';
+import OpportunityStatusModal from '../components/admin/OpportunityStatusModal';
+
 export default function AdminPage() {
   const { user } = useAuthStore();
   const { navigate, showToast } = useUIStore();
 
+  // Navigation tabs
   const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'users' | 'opportunities' | 'skills' | 'applications' | 'system'
   const [statsData, setStatsData] = useState(null);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
@@ -46,8 +62,8 @@ export default function AdminPage() {
   const [users, setUsers] = useState([]);
   const [userSearch, setUserSearch] = useState('');
   const [userRoleFilter, setUserRoleFilter] = useState('all');
+  const [userStatusFilter, setUserStatusFilter] = useState('all');
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
-  const [selectedUserForAction, setSelectedUserForAction] = useState(null);
 
   // Opportunities tab state
   const [opportunities, setOpportunities] = useState([]);
@@ -60,11 +76,6 @@ export default function AdminPage() {
   const [skillSearch, setSkillSearch] = useState('');
   const [skillCategoryFilter, setSkillCategoryFilter] = useState('all');
   const [isLoadingSkills, setIsLoadingSkills] = useState(false);
-  const [showAddSkillModal, setShowAddSkillModal] = useState(false);
-  const [newSkillName, setNewSkillName] = useState('');
-  const [newSkillCategory, setNewSkillCategory] = useState('Frontend');
-  const [newSkillDesc, setNewSkillDesc] = useState('');
-  const [isSubmittingSkill, setIsSubmittingSkill] = useState(false);
 
   // Applications tab state
   const [applications, setApplications] = useState([]);
@@ -76,13 +87,36 @@ export default function AdminPage() {
   const [announcementBadge, setAnnouncementBadge] = useState('');
   const [isSavingAnnouncement, setIsSavingAnnouncement] = useState(false);
 
-  // Delete modal state
-  const [deleteModal, setDeleteModal] = useState({
+  // --- MODAL STATES ---
+  // 1. Role Change Modal
+  const [roleModalUser, setRoleModalUser] = useState(null);
+  const [isUpdatingRole, setIsUpdatingRole] = useState(false);
+
+  // 2. User Ban / Suspend ID Modal
+  const [banModalUser, setBanModalUser] = useState(null);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+
+  // 3. User Details Inspect Modal
+  const [inspectUser, setInspectUser] = useState(null);
+
+  // 4. Delete Confirmation Modal
+  const [deleteModalState, setDeleteModalState] = useState({
     isOpen: false,
     type: null, // 'user' | 'opportunity' | 'skill'
-    id: null,
-    title: '',
+    item: null, // { id, title, subtitle }
   });
+  const [isDeletingResource, setIsDeletingResource] = useState(false);
+
+  // 5. Skill Modal (Add or Edit)
+  const [skillModalState, setSkillModalState] = useState({
+    isOpen: false,
+    skill: null, // null for create, object for edit
+  });
+  const [isSavingSkill, setIsSavingSkill] = useState(false);
+
+  // 6. Opportunity Status Modal
+  const [oppStatusModalOpp, setOppStatusModalOpp] = useState(null);
+  const [isUpdatingOppStatus, setIsUpdatingOppStatus] = useState(false);
 
   // Verify Admin authorization
   const isAdmin = user?.role === 'admin';
@@ -106,6 +140,7 @@ export default function AdminPage() {
     try {
       const params = new URLSearchParams();
       if (userRoleFilter !== 'all') params.append('role', userRoleFilter);
+      if (userStatusFilter !== 'all') params.append('status', userStatusFilter);
       if (userSearch.trim()) params.append('search', userSearch.trim());
 
       const res = await api.get(`/admin/users?${params.toString()}`);
@@ -189,7 +224,7 @@ export default function AdminPage() {
       const timer = setTimeout(() => fetchUsers(), 300);
       return () => clearTimeout(timer);
     }
-  }, [userSearch, userRoleFilter]);
+  }, [userSearch, userRoleFilter, userStatusFilter]);
 
   // Debounced opportunity search
   useEffect(() => {
@@ -207,75 +242,163 @@ export default function AdminPage() {
     }
   }, [skillSearch, skillCategoryFilter]);
 
-  // Actions: User Role
-  const handleUpdateRole = async (userId, newRole) => {
+  // --- ACTIONS WITH MODALS ---
+
+  // 1. Confirm Role Change (from RoleChangeModal)
+  const handleConfirmRoleChange = async (userId, newRole) => {
+    setIsUpdatingRole(true);
     try {
-      await api.put(`/admin/users/${userId}/role`, { role: newRole });
-      showToast(`User role updated to ${newRole}`, 'success');
+      const res = await api.put(`/admin/users/${userId}/role`, { role: newRole });
+      showToast(`User role successfully changed to ${newRole.toUpperCase()}`, 'success');
       setUsers((prev) =>
         prev.map((u) => (u._id === userId ? { ...u, role: newRole } : u))
       );
+      if (inspectUser?._id === userId) {
+        setInspectUser((prev) => ({ ...prev, role: newRole }));
+      }
+      setRoleModalUser(null);
       fetchStats();
     } catch (err) {
       showToast(err.message || 'Failed to update user role', 'error');
+    } finally {
+      setIsUpdatingRole(false);
     }
   };
 
-  // Actions: User Status (active / suspended)
-  const handleToggleUserStatus = async (userId, currentStatus) => {
-    const nextStatus = currentStatus === 'suspended' ? 'active' : 'suspended';
+  // 2. Confirm User Ban / Status Change (from UserBanModal)
+  const handleConfirmUserStatus = async (userId, targetStatus, banReason) => {
+    setIsUpdatingStatus(true);
     try {
-      await api.put(`/admin/users/${userId}/status`, { status: nextStatus });
-      showToast(`User status set to ${nextStatus}`, 'success');
+      const res = await api.put(`/admin/users/${userId}/status`, {
+        status: targetStatus,
+        banReason: banReason || '',
+      });
+
+      const updatedUser = res.data?.user || {};
+      const statusLabel =
+        targetStatus === 'banned'
+          ? 'Permanently Banned'
+          : targetStatus === 'suspended'
+          ? 'Suspended'
+          : 'Reactivated';
+
+      showToast(`User account status set to ${statusLabel}`, 'success');
+
       setUsers((prev) =>
-        prev.map((u) => (u._id === userId ? { ...u, status: nextStatus } : u))
+        prev.map((u) =>
+          u._id === userId
+            ? {
+                ...u,
+                status: targetStatus,
+                banReason: targetStatus === 'active' ? '' : banReason,
+                bannedAt: targetStatus === 'active' ? null : new Date().toISOString(),
+              }
+            : u
+        )
       );
+
+      if (inspectUser?._id === userId) {
+        setInspectUser((prev) => ({
+          ...prev,
+          status: targetStatus,
+          banReason: targetStatus === 'active' ? '' : banReason,
+          bannedAt: targetStatus === 'active' ? null : new Date().toISOString(),
+        }));
+      }
+
+      setBanModalUser(null);
+      fetchStats();
     } catch (err) {
       showToast(err.message || 'Failed to update user status', 'error');
+    } finally {
+      setIsUpdatingStatus(false);
     }
   };
 
-  // Actions: Opportunity Status
-  const handleToggleOppStatus = async (oppId, currentStatus) => {
-    const nextStatus = currentStatus === 'Active' ? 'Closed' : 'Active';
+  // 3. Confirm Opportunity Status (from OpportunityStatusModal)
+  const handleConfirmOppStatus = async (oppId, newStatus) => {
+    setIsUpdatingOppStatus(true);
     try {
-      await api.put(`/admin/opportunities/${oppId}/status`, { status: nextStatus });
-      showToast(`Listing set to ${nextStatus}`, 'success');
+      await api.put(`/admin/opportunities/${oppId}/status`, { status: newStatus });
+      showToast(`Listing status set to ${newStatus}`, 'success');
       setOpportunities((prev) =>
-        prev.map((o) => (o._id === oppId ? { ...o, status: nextStatus } : o))
+        prev.map((o) => (o._id === oppId ? { ...o, status: newStatus } : o))
       );
+      setOppStatusModalOpp(null);
       fetchStats();
     } catch (err) {
       showToast(err.message || 'Failed to update listing status', 'error');
+    } finally {
+      setIsUpdatingOppStatus(false);
     }
   };
 
-  // Actions: Add Skill
-  const handleAddSkill = async (e) => {
-    e.preventDefault();
-    if (!newSkillName.trim()) return;
-
-    setIsSubmittingSkill(true);
+  // 4. Save Skill (Create or Update from EditSkillModal)
+  const handleSaveSkill = async (skillData) => {
+    setIsSavingSkill(true);
     try {
-      const res = await api.post('/admin/skills', {
-        name: newSkillName.trim(),
-        category: newSkillCategory,
-        description: newSkillDesc.trim(),
-      });
-      showToast('Skill added to canonical taxonomy', 'success');
-      setShowAddSkillModal(false);
-      setNewSkillName('');
-      setNewSkillDesc('');
-      fetchSkills();
+      if (skillData._id) {
+        // Update existing skill
+        await api.put(`/admin/skills/${skillData._id}`, {
+          name: skillData.name,
+          category: skillData.category,
+          description: skillData.description,
+        });
+        showToast(`Skill "${skillData.name}" updated successfully`, 'success');
+        setSkills((prev) =>
+          prev.map((s) => (s._id === skillData._id ? { ...s, ...skillData } : s))
+        );
+      } else {
+        // Create new skill
+        const res = await api.post('/admin/skills', {
+          name: skillData.name,
+          category: skillData.category,
+          description: skillData.description,
+        });
+        showToast(`Skill "${skillData.name}" added to canonical taxonomy`, 'success');
+        fetchSkills();
+        fetchStats();
+      }
+      setSkillModalState({ isOpen: false, skill: null });
+    } catch (err) {
+      showToast(err.message || 'Failed to save skill', 'error');
+    } finally {
+      setIsSavingSkill(false);
+    }
+  };
+
+  // 5. Confirm Deletion (from DeleteConfirmationModal)
+  const handleConfirmDelete = async (id) => {
+    const { type } = deleteModalState;
+    if (!type || !id) return;
+
+    setIsDeletingResource(true);
+    try {
+      if (type === 'user') {
+        await api.delete(`/admin/users/${id}`);
+        showToast('User account and associated records deleted permanently', 'success');
+        setUsers((prev) => prev.filter((u) => u._id !== id));
+        if (inspectUser?._id === id) setInspectUser(null);
+      } else if (type === 'opportunity') {
+        await api.delete(`/admin/opportunities/${id}`);
+        showToast('Opportunity listing removed from platform', 'success');
+        setOpportunities((prev) => prev.filter((o) => o._id !== id));
+      } else if (type === 'skill') {
+        await api.delete(`/admin/skills/${id}`);
+        showToast('Skill removed from canonical ontology', 'success');
+        setSkills((prev) => prev.filter((s) => s._id !== id));
+      }
+
+      setDeleteModalState({ isOpen: false, type: null, item: null });
       fetchStats();
     } catch (err) {
-      showToast(err.message || 'Failed to add skill', 'error');
+      showToast(err.message || 'Deletion operation failed', 'error');
     } finally {
-      setIsSubmittingSkill(false);
+      setIsDeletingResource(false);
     }
   };
 
-  // Actions: Update Platform Content
+  // Actions: Update Platform Content Announcement
   const handleSaveAnnouncement = async (e) => {
     e.preventDefault();
     setIsSavingAnnouncement(true);
@@ -289,32 +412,6 @@ export default function AdminPage() {
       showToast(err.message || 'Failed to update announcement', 'error');
     } finally {
       setIsSavingAnnouncement(false);
-    }
-  };
-
-  // Execute Deletion
-  const confirmDelete = async () => {
-    const { type, id } = deleteModal;
-    if (!type || !id) return;
-
-    try {
-      if (type === 'user') {
-        await api.delete(`/admin/users/${id}`);
-        showToast('User account deleted permanently', 'success');
-        setUsers((prev) => prev.filter((u) => u._id !== id));
-      } else if (type === 'opportunity') {
-        await api.delete(`/admin/opportunities/${id}`);
-        showToast('Opportunity removed successfully', 'success');
-        setOpportunities((prev) => prev.filter((o) => o._id !== id));
-      } else if (type === 'skill') {
-        await api.delete(`/admin/skills/${id}`);
-        showToast('Skill removed from taxonomy', 'success');
-        setSkills((prev) => prev.filter((s) => s._id !== id));
-      }
-      setDeleteModal({ isOpen: false, type: null, id: null, title: '' });
-      fetchStats();
-    } catch (err) {
-      showToast(err.message || 'Deletion failed', 'error');
     }
   };
 
@@ -370,7 +467,7 @@ export default function AdminPage() {
   const funnel = statsData?.funnel || {};
 
   return (
-    <div style={{ maxWidth: '1320px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
+    <div style={{ maxWidth: '1340px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
       <BackButton label="Back to Dashboard" fallbackPage="dashboard" style={{ marginBottom: '18px' }} />
 
       {/* 1. Header Banner */}
@@ -384,8 +481,9 @@ export default function AdminPage() {
           alignItems: 'center',
           flexWrap: 'wrap',
           gap: '20px',
-          background: 'linear-gradient(135deg, rgba(30, 27, 75, 0.85) 0%, rgba(15, 23, 42, 0.9) 100%)',
+          background: 'linear-gradient(135deg, rgba(30, 27, 75, 0.88) 0%, rgba(15, 23, 42, 0.92) 100%)',
           border: '1px solid rgba(168, 85, 247, 0.35)',
+          borderRadius: '22px',
         }}
       >
         <div>
@@ -424,7 +522,7 @@ export default function AdminPage() {
 
           <h1
             style={{
-              fontSize: '2.1rem',
+              fontSize: '2.2rem',
               fontWeight: 800,
               marginTop: '10px',
               color: 'var(--primary-text)',
@@ -434,7 +532,7 @@ export default function AdminPage() {
             Admin <span className="gradient-text">Command Center</span>
           </h1>
           <p style={{ fontSize: '0.92rem', color: 'var(--secondary-text)', marginTop: '4px' }}>
-            Global platform governance, algorithmic telemetry, account auditing, listing moderation, and taxonomy control.
+            Global platform governance, account role switching, ID ban enforcement, listing moderation, and taxonomy control.
           </p>
         </div>
 
@@ -458,7 +556,7 @@ export default function AdminPage() {
           <button
             onClick={() => {
               setActiveTab('skills');
-              setShowAddSkillModal(true);
+              setSkillModalState({ isOpen: true, skill: null });
             }}
             className="btn-primary"
             style={{ padding: '9px 18px', fontSize: '0.85rem' }}
@@ -530,7 +628,7 @@ export default function AdminPage() {
         })}
       </div>
 
-      {/* 3. TAB CONTENT */}
+      {/* 3. TAB CONTENTS */}
 
       {/* TAB 1: OVERVIEW */}
       {activeTab === 'overview' && (
@@ -539,7 +637,7 @@ export default function AdminPage() {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
               gap: '16px',
             }}
           >
@@ -720,7 +818,7 @@ export default function AdminPage() {
                   Live Platform Announcement
                 </h3>
                 <p style={{ fontSize: '0.82rem', color: 'var(--secondary-text)', marginBottom: '16px' }}>
-                  Update the top banner message shown on the public landing page in real-time.
+                  Update the banner announcement shown on the public landing page in real-time.
                 </p>
 
                 <form onSubmit={handleSaveAnnouncement} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -822,20 +920,23 @@ export default function AdminPage() {
                 {(statsData?.recentUsers || []).map((u) => (
                   <div
                     key={u._id}
+                    onClick={() => setInspectUser(u)}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      padding: '8px 10px',
-                      borderRadius: '8px',
+                      padding: '10px 12px',
+                      borderRadius: '10px',
                       backgroundColor: 'var(--chip-bg)',
+                      cursor: 'pointer',
+                      transition: 'background-color 0.15s ease',
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                       <img
                         src={u.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=60'}
                         alt={u.name}
-                        style={{ width: '30px', height: '30px', borderRadius: '50%', objectFit: 'cover' }}
+                        style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }}
                       />
                       <div>
                         <p style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--primary-text)', margin: 0 }}>
@@ -846,24 +947,27 @@ export default function AdminPage() {
                         </p>
                       </div>
                     </div>
-                    <span
-                      style={{
-                        fontSize: '0.72rem',
-                        padding: '2px 8px',
-                        borderRadius: '9999px',
-                        fontWeight: 700,
-                        backgroundColor:
-                          u.role === 'admin'
-                            ? 'rgba(239, 68, 68, 0.18)'
-                            : u.role === 'employer'
-                            ? 'rgba(236, 72, 153, 0.18)'
-                            : 'rgba(124, 58, 237, 0.18)',
-                        color:
-                          u.role === 'admin' ? '#F87171' : u.role === 'employer' ? '#F472B6' : '#C084FC',
-                      }}
-                    >
-                      {u.role}
-                    </span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span
+                        style={{
+                          fontSize: '0.72rem',
+                          padding: '2px 8px',
+                          borderRadius: '9999px',
+                          fontWeight: 700,
+                          backgroundColor:
+                            u.role === 'admin'
+                              ? 'rgba(239, 68, 68, 0.18)'
+                              : u.role === 'employer'
+                              ? 'rgba(236, 72, 153, 0.18)'
+                              : 'rgba(124, 58, 237, 0.18)',
+                          color:
+                            u.role === 'admin' ? '#F87171' : u.role === 'employer' ? '#F472B6' : '#C084FC',
+                        }}
+                      >
+                        {u.role}
+                      </span>
+                      <ChevronRight size={14} color="var(--secondary-text)" />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -887,13 +991,16 @@ export default function AdminPage() {
                 {(statsData?.recentOpportunities || []).map((opp) => (
                   <div
                     key={opp._id}
+                    onClick={() => setOppStatusModalOpp(opp)}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      padding: '8px 10px',
-                      borderRadius: '8px',
+                      padding: '10px 12px',
+                      borderRadius: '10px',
                       backgroundColor: 'var(--chip-bg)',
+                      cursor: 'pointer',
+                      transition: 'background-color 0.15s ease',
                     }}
                   >
                     <div>
@@ -904,19 +1011,22 @@ export default function AdminPage() {
                         {opp.organization} • {opp.type}
                       </p>
                     </div>
-                    <span
-                      style={{
-                        fontSize: '0.72rem',
-                        padding: '2px 8px',
-                        borderRadius: '9999px',
-                        fontWeight: 700,
-                        backgroundColor:
-                          opp.status === 'Active' ? 'rgba(16, 185, 129, 0.18)' : 'rgba(100, 116, 139, 0.2)',
-                        color: opp.status === 'Active' ? '#34D399' : '#94A3B8',
-                      }}
-                    >
-                      {opp.status}
-                    </span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span
+                        style={{
+                          fontSize: '0.72rem',
+                          padding: '2px 8px',
+                          borderRadius: '9999px',
+                          fontWeight: 700,
+                          backgroundColor:
+                            opp.status === 'Active' ? 'rgba(16, 185, 129, 0.18)' : 'rgba(100, 116, 139, 0.2)',
+                          color: opp.status === 'Active' ? '#34D399' : '#94A3B8',
+                        }}
+                      >
+                        {opp.status}
+                      </span>
+                      <ChevronRight size={14} color="var(--secondary-text)" />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -950,7 +1060,7 @@ export default function AdminPage() {
               />
               <input
                 type="text"
-                placeholder="Search users by name or email..."
+                placeholder="Search users by name, email, or ID..."
                 className="form-input"
                 style={{ paddingLeft: '36px', fontSize: '0.85rem' }}
                 value={userSearch}
@@ -959,7 +1069,7 @@ export default function AdminPage() {
             </div>
 
             {/* Role Filter Chips */}
-            <div style={{ display: 'flex', gap: '6px' }}>
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
               {['all', 'student', 'employer', 'admin'].map((role) => (
                 <button
                   key={role}
@@ -980,14 +1090,37 @@ export default function AdminPage() {
                 </button>
               ))}
             </div>
+
+            {/* Status Filter Chips */}
+            <div style={{ display: 'flex', gap: '6px' }}>
+              {['all', 'active', 'suspended', 'banned'].map((st) => (
+                <button
+                  key={st}
+                  onClick={() => setUserStatusFilter(st)}
+                  style={{
+                    padding: '6px 10px',
+                    borderRadius: 'var(--radius-sm)',
+                    fontSize: '0.78rem',
+                    fontWeight: 600,
+                    textTransform: 'capitalize',
+                    border: userStatusFilter === st ? '1px solid #EC4899' : '1px solid var(--border-color)',
+                    backgroundColor: userStatusFilter === st ? 'rgba(236, 72, 153, 0.2)' : 'var(--chip-bg)',
+                    color: userStatusFilter === st ? 'var(--primary-text)' : 'var(--secondary-text)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {st === 'all' ? 'All Status' : st}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Users Table */}
-          <div className="card" style={{ padding: '0', overflowX: 'auto' }}>
+          <div className="card" style={{ padding: '0', overflowX: 'auto', borderRadius: '18px' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--box-subtle)' }}>
-                  <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700 }}>USER</th>
+                  <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700 }}>USER & ID</th>
                   <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700 }}>ROLE</th>
                   <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700 }}>ACTIVITY</th>
                   <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700 }}>STATUS</th>
@@ -1000,21 +1133,21 @@ export default function AdminPage() {
               <tbody>
                 {isLoadingUsers ? (
                   <tr>
-                    <td colSpan="6" style={{ padding: '36px', textAlign: 'center', color: 'var(--secondary-text)' }}>
+                    <td colSpan="6" style={{ padding: '40px', textAlign: 'center', color: 'var(--secondary-text)' }}>
                       <RefreshCw size={24} className="spin" style={{ margin: '0 auto 10px auto' }} />
                       Loading platform users...
                     </td>
                   </tr>
                 ) : users.length === 0 ? (
                   <tr>
-                    <td colSpan="6" style={{ padding: '36px', textAlign: 'center', color: 'var(--secondary-text)' }}>
+                    <td colSpan="6" style={{ padding: '40px', textAlign: 'center', color: 'var(--secondary-text)' }}>
                       No users found matching current filters.
                     </td>
                   </tr>
                 ) : (
                   users.map((u) => {
                     const isSelf = user?._id === u._id;
-                    const isSuspended = u.status === 'suspended';
+                    const isBannedOrSuspended = u.status === 'suspended' || u.status === 'banned';
 
                     return (
                       <tr
@@ -1022,56 +1155,69 @@ export default function AdminPage() {
                         style={{
                           borderBottom: '1px solid var(--border-color)',
                           transition: 'background-color 0.15s ease',
-                          opacity: isSuspended ? 0.6 : 1,
+                          opacity: isBannedOrSuspended ? 0.75 : 1,
                         }}
                       >
-                        {/* User Identity */}
+                        {/* User Identity & Inspect Trigger */}
                         <td style={{ padding: '14px 18px' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                          <div
+                            onClick={() => setInspectUser(u)}
+                            style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}
+                            title="Click to inspect profile"
+                          >
                             <img
                               src={
                                 u.avatar ||
                                 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=80'
                               }
                               alt={u.name}
-                              style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover' }}
+                              style={{ width: '38px', height: '38px', borderRadius: '50%', objectFit: 'cover' }}
                             />
                             <div>
-                              <div style={{ fontWeight: 700, color: 'var(--primary-text)' }}>
-                                {u.name} {isSelf && <span style={{ color: '#F472B6', fontSize: '0.75rem' }}>(You)</span>}
+                              <div style={{ fontWeight: 700, color: 'var(--primary-text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <span>{u.name}</span>
+                                {isSelf && <span style={{ color: '#F472B6', fontSize: '0.72rem' }}>(You)</span>}
                               </div>
                               <div style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>{u.email}</div>
+                              <div style={{ fontSize: '0.68rem', color: 'var(--secondary-text)', fontFamily: 'monospace', opacity: 0.7 }}>
+                                #{u._id.slice(-6)}
+                              </div>
                             </div>
                           </div>
                         </td>
 
-                        {/* Role Selector */}
+                        {/* Role Badge & Modal Button */}
                         <td style={{ padding: '14px 18px' }}>
-                          <select
+                          <button
                             disabled={isSelf}
-                            value={u.role}
-                            onChange={(e) => handleUpdateRole(u._id, e.target.value)}
+                            onClick={() => setRoleModalUser(u)}
+                            title={isSelf ? 'Cannot change own role' : 'Click to change user role'}
                             style={{
-                              padding: '4px 8px',
-                              borderRadius: '6px',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                              padding: '5px 10px',
+                              borderRadius: '8px',
+                              border: '1px solid var(--border-color)',
                               backgroundColor:
                                 u.role === 'admin'
-                                  ? 'rgba(239, 68, 68, 0.2)'
+                                  ? 'rgba(239, 68, 68, 0.18)'
                                   : u.role === 'employer'
-                                  ? 'rgba(236, 72, 153, 0.2)'
-                                  : 'rgba(124, 58, 237, 0.2)',
+                                  ? 'rgba(236, 72, 153, 0.18)'
+                                  : 'rgba(124, 58, 237, 0.18)',
                               color:
                                 u.role === 'admin' ? '#F87171' : u.role === 'employer' ? '#F472B6' : '#C084FC',
-                              border: '1px solid var(--border-color)',
                               fontWeight: 700,
                               fontSize: '0.78rem',
                               cursor: isSelf ? 'not-allowed' : 'pointer',
+                              textTransform: 'capitalize',
+                              transition: 'all 0.2s ease',
                             }}
                           >
-                            <option value="student">Student</option>
-                            <option value="employer">Employer</option>
-                            <option value="admin">Admin</option>
-                          </select>
+                            <Award size={13} />
+                            <span>{u.role}</span>
+                            {!isSelf && <Edit size={11} style={{ opacity: 0.7, marginLeft: '2px' }} />}
+                          </button>
                         </td>
 
                         {/* Activity Metric */}
@@ -1083,24 +1229,58 @@ export default function AdminPage() {
                           )}
                         </td>
 
-                        {/* Status */}
+                        {/* Status with Ban Reason Pill */}
                         <td style={{ padding: '14px 18px' }}>
-                          <span
-                            style={{
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '4px',
-                              fontSize: '0.75rem',
-                              fontWeight: 700,
-                              padding: '2px 8px',
-                              borderRadius: '9999px',
-                              backgroundColor: isSuspended ? 'rgba(239, 68, 68, 0.15)' : 'rgba(16, 185, 129, 0.15)',
-                              color: isSuspended ? '#F87171' : '#34D399',
-                            }}
-                          >
-                            {isSuspended ? <UserX size={12} /> : <UserCheck size={12} />}
-                            {isSuspended ? 'Suspended' : 'Active'}
-                          </span>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', alignItems: 'flex-start' }}>
+                            <span
+                              style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                padding: '3px 8px',
+                                borderRadius: '9999px',
+                                backgroundColor:
+                                  u.status === 'banned'
+                                    ? 'rgba(239, 68, 68, 0.22)'
+                                    : u.status === 'suspended'
+                                    ? 'rgba(245, 158, 11, 0.2)'
+                                    : 'rgba(16, 185, 129, 0.15)',
+                                color:
+                                  u.status === 'banned'
+                                    ? '#F87171'
+                                    : u.status === 'suspended'
+                                    ? '#FBBF24'
+                                    : '#34D399',
+                                border: '1px solid var(--border-color)',
+                              }}
+                            >
+                              {u.status === 'banned' ? (
+                                <Ban size={12} />
+                              ) : u.status === 'suspended' ? (
+                                <UserX size={12} />
+                              ) : (
+                                <UserCheck size={12} />
+                              )}
+                              {u.status?.toUpperCase() || 'ACTIVE'}
+                            </span>
+                            {u.banReason && (
+                              <span
+                                style={{
+                                  fontSize: '0.68rem',
+                                  color: 'var(--secondary-text)',
+                                  maxWidth: '180px',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  whiteSpace: 'nowrap',
+                                }}
+                                title={u.banReason}
+                              >
+                                {u.banReason}
+                              </span>
+                            )}
+                          </div>
                         </td>
 
                         {/* Joined Date */}
@@ -1108,36 +1288,82 @@ export default function AdminPage() {
                           {new Date(u.createdAt).toLocaleDateString()}
                         </td>
 
-                        {/* Actions */}
+                        {/* Actions (Inspect, Ban Modal, Delete Modal) */}
                         <td style={{ padding: '14px 18px', textAlign: 'right' }}>
-                          <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end' }}>
+                          <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end', alignItems: 'center' }}>
+                            {/* Inspect Profile */}
                             <button
-                              disabled={isSelf}
-                              onClick={() => handleToggleUserStatus(u._id, u.status)}
-                              title={isSuspended ? 'Reactivate Account' : 'Suspend Account'}
+                              onClick={() => setInspectUser(u)}
+                              title="Inspect User Details"
                               style={{
-                                padding: '6px',
+                                padding: '6px 8px',
                                 borderRadius: '6px',
                                 background: 'none',
                                 border: '1px solid var(--border-color)',
-                                color: isSuspended ? '#10B981' : '#F59E0B',
-                                cursor: isSelf ? 'not-allowed' : 'pointer',
+                                color: 'var(--secondary-text)',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '0.75rem',
                               }}
                             >
-                              {isSuspended ? <UserCheck size={14} /> : <UserX size={14} />}
+                              <Eye size={13} /> Inspect
                             </button>
 
+                            {/* Ban / Suspend ID Modal Trigger */}
+                            <button
+                              disabled={isSelf}
+                              onClick={() => setBanModalUser(u)}
+                              title={
+                                isSelf
+                                  ? 'Cannot ban own account'
+                                  : isBannedOrSuspended
+                                  ? 'Reactivate User ID'
+                                  : 'Suspend or Ban User ID'
+                              }
+                              style={{
+                                padding: '6px 9px',
+                                borderRadius: '6px',
+                                border: '1px solid var(--border-color)',
+                                backgroundColor: isBannedOrSuspended
+                                  ? 'rgba(16, 185, 129, 0.15)'
+                                  : 'rgba(239, 68, 68, 0.12)',
+                                color: isBannedOrSuspended ? '#10B981' : '#F87171',
+                                cursor: isSelf ? 'not-allowed' : 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '0.75rem',
+                                fontWeight: 600,
+                              }}
+                            >
+                              {isBannedOrSuspended ? (
+                                <>
+                                  <UserCheck size={13} /> Reactivate
+                                </>
+                              ) : (
+                                <>
+                                  <UserX size={13} /> Ban ID
+                                </>
+                              )}
+                            </button>
+
+                            {/* Delete User Modal Trigger */}
                             <button
                               disabled={isSelf}
                               onClick={() =>
-                                setDeleteModal({
+                                setDeleteModalState({
                                   isOpen: true,
                                   type: 'user',
-                                  id: u._id,
-                                  title: `User: ${u.name} (${u.email})`,
+                                  item: {
+                                    id: u._id,
+                                    title: `${u.name} (${u.email})`,
+                                    subtitle: `Role: ${u.role} • ID: ${u._id}`,
+                                  },
                                 })
                               }
-                              title="Delete User"
+                              title={isSelf ? 'Cannot delete own account' : 'Delete User Permanently'}
                               style={{
                                 padding: '6px',
                                 borderRadius: '6px',
@@ -1147,7 +1373,7 @@ export default function AdminPage() {
                                 cursor: isSelf ? 'not-allowed' : 'pointer',
                               }}
                             >
-                              <Trash2 size={14} />
+                              <Trash2 size={13} />
                             </button>
                           </div>
                         </td>
@@ -1216,7 +1442,7 @@ export default function AdminPage() {
           </div>
 
           {/* Opportunities Table */}
-          <div className="card" style={{ padding: '0', overflowX: 'auto' }}>
+          <div className="card" style={{ padding: '0', overflowX: 'auto', borderRadius: '18px' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--box-subtle)' }}>
@@ -1233,14 +1459,14 @@ export default function AdminPage() {
               <tbody>
                 {isLoadingOpps ? (
                   <tr>
-                    <td colSpan="6" style={{ padding: '36px', textAlign: 'center', color: 'var(--secondary-text)' }}>
+                    <td colSpan="6" style={{ padding: '40px', textAlign: 'center', color: 'var(--secondary-text)' }}>
                       <RefreshCw size={24} className="spin" style={{ margin: '0 auto 10px auto' }} />
                       Loading opportunities...
                     </td>
                   </tr>
                 ) : opportunities.length === 0 ? (
                   <tr>
-                    <td colSpan="6" style={{ padding: '36px', textAlign: 'center', color: 'var(--secondary-text)' }}>
+                    <td colSpan="6" style={{ padding: '40px', textAlign: 'center', color: 'var(--secondary-text)' }}>
                       No opportunities found matching search parameters.
                     </td>
                   </tr>
@@ -1282,21 +1508,43 @@ export default function AdminPage() {
                         {opp.applicantCount || 0} candidates
                       </td>
 
-                      {/* Status */}
+                      {/* Status Modal Trigger */}
                       <td style={{ padding: '14px 18px' }}>
-                        <span
+                        <button
+                          onClick={() => setOppStatusModalOpp(opp)}
+                          title="Click to change listing status"
                           style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '5px',
                             fontSize: '0.75rem',
-                            padding: '2px 8px',
+                            padding: '3px 10px',
                             borderRadius: '9999px',
                             fontWeight: 700,
                             backgroundColor:
-                              opp.status === 'Active' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(100, 116, 139, 0.18)',
-                            color: opp.status === 'Active' ? '#34D399' : '#94A3B8',
+                              opp.status === 'Active'
+                                ? 'rgba(16, 185, 129, 0.15)'
+                                : opp.status === 'Closed'
+                                ? 'rgba(245, 158, 11, 0.15)'
+                                : 'rgba(100, 116, 139, 0.18)',
+                            color:
+                              opp.status === 'Active'
+                                ? '#34D399'
+                                : opp.status === 'Closed'
+                                ? '#FBBF24'
+                                : '#94A3B8',
+                            border: '1px solid var(--border-color)',
+                            cursor: 'pointer',
                           }}
                         >
-                          {opp.status}
-                        </span>
+                          {opp.status === 'Active' ? (
+                            <CheckCircle2 size={12} />
+                          ) : (
+                            <XCircle size={12} />
+                          )}
+                          <span>{opp.status}</span>
+                          <Edit size={10} style={{ opacity: 0.6 }} />
+                        </button>
                       </td>
 
                       {/* Actions */}
@@ -1318,8 +1566,8 @@ export default function AdminPage() {
                           </button>
 
                           <button
-                            onClick={() => handleToggleOppStatus(opp._id, opp.status)}
-                            title={opp.status === 'Active' ? 'Close Listing' : 'Activate Listing'}
+                            onClick={() => setOppStatusModalOpp(opp)}
+                            title="Moderate Status"
                             style={{
                               padding: '6px',
                               borderRadius: '6px',
@@ -1334,11 +1582,14 @@ export default function AdminPage() {
 
                           <button
                             onClick={() =>
-                              setDeleteModal({
+                              setDeleteModalState({
                                 isOpen: true,
                                 type: 'opportunity',
-                                id: opp._id,
-                                title: `Opportunity: ${opp.title} (${opp.organization})`,
+                                item: {
+                                  id: opp._id,
+                                  title: `${opp.title} (${opp.organization})`,
+                                  subtitle: `Type: ${opp.type} • ID: ${opp._id}`,
+                                },
                               })
                             }
                             title="Delete Opportunity"
@@ -1415,11 +1666,11 @@ export default function AdminPage() {
               </select>
 
               <button
-                onClick={() => setShowAddSkillModal(true)}
+                onClick={() => setSkillModalState({ isOpen: true, skill: null })}
                 className="btn-primary"
                 style={{ padding: '8px 16px', fontSize: '0.82rem' }}
               >
-                <PlusCircle size={15} /> Add Skill
+                <PlusCircle size={15} /> Add Canonical Skill
               </button>
             </div>
           </div>
@@ -1452,6 +1703,7 @@ export default function AdminPage() {
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                     gap: '12px',
+                    borderRadius: '16px',
                   }}
                 >
                   <div>
@@ -1491,17 +1743,40 @@ export default function AdminPage() {
                     style={{
                       display: 'flex',
                       justifyContent: 'flex-end',
+                      gap: '8px',
                       borderTop: '1px solid var(--border-color)',
                       paddingTop: '10px',
                     }}
                   >
                     <button
+                      onClick={() => setSkillModalState({ isOpen: true, skill })}
+                      title="Edit Skill"
+                      style={{
+                        padding: '4px 10px',
+                        background: 'none',
+                        border: '1px solid var(--border-color)',
+                        borderRadius: '6px',
+                        color: 'var(--primary-text)',
+                        cursor: 'pointer',
+                        fontSize: '0.75rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                      }}
+                    >
+                      <Edit size={12} /> Edit
+                    </button>
+
+                    <button
                       onClick={() =>
-                        setDeleteModal({
+                        setDeleteModalState({
                           isOpen: true,
                           type: 'skill',
-                          id: skill._id,
-                          title: `Skill: ${skill.name} (${skill.category})`,
+                          item: {
+                            id: skill._id,
+                            title: skill.name,
+                            subtitle: `Category: ${skill.category} • ID: ${skill._id}`,
+                          },
                         })
                       }
                       title="Delete Skill"
@@ -1518,7 +1793,7 @@ export default function AdminPage() {
                         gap: '4px',
                       }}
                     >
-                      <Trash2 size={13} /> Delete
+                      <Trash2 size={12} /> Delete
                     </button>
                   </div>
                 </div>
@@ -1576,7 +1851,7 @@ export default function AdminPage() {
           </div>
 
           {/* Applications Table */}
-          <div className="card" style={{ padding: '0', overflowX: 'auto' }}>
+          <div className="card" style={{ padding: '0', overflowX: 'auto', borderRadius: '18px' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--box-subtle)' }}>
@@ -1590,14 +1865,14 @@ export default function AdminPage() {
               <tbody>
                 {isLoadingApps ? (
                   <tr>
-                    <td colSpan="5" style={{ padding: '36px', textAlign: 'center', color: 'var(--secondary-text)' }}>
+                    <td colSpan="5" style={{ padding: '40px', textAlign: 'center', color: 'var(--secondary-text)' }}>
                       <RefreshCw size={24} className="spin" style={{ margin: '0 auto 10px auto' }} />
                       Loading application audit log...
                     </td>
                   </tr>
                 ) : applications.length === 0 ? (
                   <tr>
-                    <td colSpan="5" style={{ padding: '36px', textAlign: 'center', color: 'var(--secondary-text)' }}>
+                    <td colSpan="5" style={{ padding: '40px', textAlign: 'center', color: 'var(--secondary-text)' }}>
                       No applications recorded for current filter.
                     </td>
                   </tr>
@@ -1606,7 +1881,13 @@ export default function AdminPage() {
                     <tr key={app._id} style={{ borderBottom: '1px solid var(--border-color)' }}>
                       {/* Candidate */}
                       <td style={{ padding: '14px 18px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div
+                          onClick={() => {
+                            if (app.user) setInspectUser(app.user);
+                          }}
+                          style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
+                          title="Click to inspect candidate"
+                        >
                           <img
                             src={
                               app.user?.avatar ||
@@ -1658,7 +1939,7 @@ export default function AdminPage() {
       {activeTab === 'system' && (
         <div className="animate-fade-in" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
           {/* Server Runtime */}
-          <div className="card" style={{ padding: '24px' }}>
+          <div className="card" style={{ padding: '24px', borderRadius: '18px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
               <div
                 style={{
@@ -1678,7 +1959,7 @@ export default function AdminPage() {
                 <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--primary-text)', margin: 0 }}>
                   Runtime Environment
                 </h3>
-                <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>Node.js Core Process</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>Node.js Process Telemetry</span>
               </div>
             </div>
 
@@ -1709,7 +1990,7 @@ export default function AdminPage() {
           </div>
 
           {/* Database Health */}
-          <div className="card" style={{ padding: '24px' }}>
+          <div className="card" style={{ padding: '24px', borderRadius: '18px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
               <div
                 style={{
@@ -1759,177 +2040,73 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* 4. MODALS */}
+      {/* --- ALL SKILLLOOP-STYLE CENTERED MODALS --- */}
 
-      {/* Modal: Add Canonical Skill */}
-      {showAddSkillModal && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(3, 7, 18, 0.75)',
-            backdropFilter: 'blur(12px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-            padding: '16px',
-          }}
-        >
-          <div className="card" style={{ maxWidth: '460px', width: '100%', padding: '28px', backgroundColor: 'var(--card-bg)' }}>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '6px', color: 'var(--primary-text)' }}>
-              Add Canonical Skill
-            </h3>
-            <p style={{ fontSize: '0.825rem', color: 'var(--secondary-text)', marginBottom: '18px' }}>
-              Add a recognized technical or domain competency to the matching graph.
-            </p>
+      {/* 1. Role Change Modal */}
+      <RoleChangeModal
+        isOpen={!!roleModalUser}
+        onClose={() => setRoleModalUser(null)}
+        user={roleModalUser}
+        onConfirm={handleConfirmRoleChange}
+        isLoading={isUpdatingRole}
+      />
 
-            <form onSubmit={handleAddSkill}>
-              <div className="form-group" style={{ marginBottom: '14px' }}>
-                <label className="form-label">Skill Name *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Next.js, Kubernetes, Tailwind CSS"
-                  className="form-input"
-                  value={newSkillName}
-                  onChange={(e) => setNewSkillName(e.target.value)}
-                />
-              </div>
+      {/* 2. User Ban / Suspend ID Modal */}
+      <UserBanModal
+        isOpen={!!banModalUser}
+        onClose={() => setBanModalUser(null)}
+        user={banModalUser}
+        onConfirm={handleConfirmUserStatus}
+        isLoading={isUpdatingStatus}
+      />
 
-              <div className="form-group" style={{ marginBottom: '14px' }}>
-                <label className="form-label">Category *</label>
-                <select
-                  className="form-input"
-                  value={newSkillCategory}
-                  onChange={(e) => setNewSkillCategory(e.target.value)}
-                >
-                  <option value="Frontend">Frontend</option>
-                  <option value="Backend">Backend</option>
-                  <option value="Programming">Programming</option>
-                  <option value="Database">Database</option>
-                  <option value="DevOps & Tools">DevOps & Tools</option>
-                  <option value="Design">Design</option>
-                  <option value="Data & AI">Data & AI</option>
-                  <option value="Cloud">Cloud</option>
-                  <option value="Computer Science">Computer Science</option>
-                  <option value="General">General</option>
-                </select>
-              </div>
+      {/* 3. User Details Inspection Modal */}
+      <UserDetailsModal
+        isOpen={!!inspectUser}
+        onClose={() => setInspectUser(null)}
+        user={inspectUser}
+        onRequestRoleChange={(u) => setRoleModalUser(u)}
+        onRequestBanToggle={(u) => setBanModalUser(u)}
+        onRequestDelete={(u) =>
+          setDeleteModalState({
+            isOpen: true,
+            type: 'user',
+            item: {
+              id: u._id,
+              title: `${u.name} (${u.email})`,
+              subtitle: `Role: ${u.role} • ID: ${u._id}`,
+            },
+          })
+        }
+      />
 
-              <div className="form-group" style={{ marginBottom: '20px' }}>
-                <label className="form-label">Description / Summary</label>
-                <textarea
-                  className="form-input"
-                  rows={3}
-                  placeholder="Brief description of the skill competency..."
-                  value={newSkillDesc}
-                  onChange={(e) => setNewSkillDesc(e.target.value)}
-                />
-              </div>
+      {/* 4. Opportunity Status Moderate Modal */}
+      <OpportunityStatusModal
+        isOpen={!!oppStatusModalOpp}
+        onClose={() => setOppStatusModalOpp(null)}
+        opportunity={oppStatusModalOpp}
+        onConfirm={handleConfirmOppStatus}
+        isLoading={isUpdatingOppStatus}
+      />
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-                <button
-                  type="button"
-                  onClick={() => setShowAddSkillModal(false)}
-                  className="btn-secondary"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmittingSkill}
-                  className="btn-primary"
-                >
-                  {isSubmittingSkill ? 'Saving...' : 'Add Skill'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {/* 5. Edit / Add Skill Modal */}
+      <EditSkillModal
+        isOpen={skillModalState.isOpen}
+        onClose={() => setSkillModalState({ isOpen: false, skill: null })}
+        skill={skillModalState.skill}
+        onSave={handleSaveSkill}
+        isLoading={isSavingSkill}
+      />
 
-      {/* Modal: Permanent Deletion Confirmation */}
-      {deleteModal.isOpen && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(3, 7, 18, 0.8)',
-            backdropFilter: 'blur(12px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-            padding: '16px',
-          }}
-        >
-          <div
-            className="card"
-            style={{
-              maxWidth: '440px',
-              width: '100%',
-              padding: '28px',
-              backgroundColor: 'var(--card-bg)',
-              border: '1px solid rgba(239, 68, 68, 0.4)',
-            }}
-          >
-            <div
-              style={{
-                width: '48px',
-                height: '48px',
-                borderRadius: '50%',
-                backgroundColor: 'rgba(239, 68, 68, 0.15)',
-                color: '#F87171',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginBottom: '16px',
-              }}
-            >
-              <AlertTriangle size={24} />
-            </div>
-
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '8px', color: 'var(--primary-text)' }}>
-              Confirm Deletion
-            </h3>
-            <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', marginBottom: '16px', lineHeight: '1.5' }}>
-              Are you sure you want to permanently delete this resource? This action cannot be undone.
-            </p>
-
-            <div
-              style={{
-                padding: '10px 14px',
-                backgroundColor: 'rgba(255, 255, 255, 0.04)',
-                border: '1px solid var(--border-color)',
-                borderRadius: '8px',
-                fontSize: '0.85rem',
-                color: 'var(--primary-text)',
-                fontWeight: 600,
-                marginBottom: '20px',
-              }}
-            >
-              {deleteModal.title}
-            </div>
-
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-              <button
-                onClick={() => setDeleteModal({ isOpen: false, type: null, id: null, title: '' })}
-                className="btn-secondary"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmDelete}
-                className="btn-primary"
-                style={{ backgroundColor: '#EF4444', borderColor: '#EF4444' }}
-              >
-                Delete Permanently
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* 6. Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={deleteModalState.isOpen}
+        onClose={() => setDeleteModalState({ isOpen: false, type: null, item: null })}
+        type={deleteModalState.type}
+        item={deleteModalState.item}
+        onConfirm={handleConfirmDelete}
+        isLoading={isDeletingResource}
+      />
     </div>
   );
 }

@@ -25,6 +25,11 @@ export const protect = async (req, res, next) => {
       return errorResponse(res, 'User account no longer exists.', 401);
     }
 
+    if (user.status === 'suspended' || user.status === 'banned') {
+      const reasonMsg = user.banReason ? ` (Reason: ${user.banReason})` : '';
+      return errorResponse(res, `Your account has been suspended by an administrator.${reasonMsg}`, 403);
+    }
+
     req.user = user;
     next();
   } catch (error) {

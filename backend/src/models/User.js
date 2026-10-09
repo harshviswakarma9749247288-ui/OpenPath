@@ -40,8 +40,16 @@ const userSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['active', 'suspended'],
+      enum: ['active', 'suspended', 'banned'],
       default: 'active',
+    },
+    banReason: {
+      type: String,
+      default: '',
+    },
+    bannedAt: {
+      type: Date,
+      default: null,
     },
     bio: {
       type: String,
