@@ -60,12 +60,20 @@ export const sendOtpEmail = async ({ to, code, purpose = 'Registration' }) => {
               <tr>
                 <td style="padding: 32px;">
                   <h2 style="margin: 0 0 12px 0; font-size: 18px; font-weight: 700; color: #f1f5f9;">
-                    ${purpose === 'Password Reset' ? 'Password Reset Verification' : 'Verify Your Email Address'}
+                    ${
+                      purpose === 'Password Reset'
+                        ? 'Password Reset Verification'
+                        : purpose === 'Login'
+                        ? 'Account Sign-In Verification Code'
+                        : 'Verify Your Email Address'
+                    }
                   </h2>
                   <p style="margin: 0 0 24px 0; font-size: 14px; line-height: 1.6; color: #cbd5e1;">
                     ${
                       purpose === 'Password Reset'
                         ? 'We received a request to reset your OpenPath account password. Use the verification code below to confirm this action:'
+                        : purpose === 'Login'
+                        ? 'We received a sign-in request for your OpenPath account. Use the single-use 6-digit verification code below to log in safely:'
                         : 'Welcome to OpenPath! Please enter the 6-digit verification code below to verify your email and complete your account setup:'
                     }
                   </p>

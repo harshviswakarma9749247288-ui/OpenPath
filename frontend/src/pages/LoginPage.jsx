@@ -107,11 +107,12 @@ export default function LoginPage() {
       const preview = res?.data?.previewOtp || res?.data?.data?.previewOtp;
       const delivered = res?.data?.delivered ?? res?.data?.data?.delivered;
       setOtpDeliveredViaSmtp(!!delivered);
+      setOtpLoginCode(''); // Require manual input
       if (preview) {
         setOtpPreviewCode(preview);
-        setOtpLoginCode(preview);
-        showToast(`Login OTP generated: ${preview}`, 'info');
+        showToast(`Login OTP code: ${preview}`, 'info');
       } else {
+        setOtpPreviewCode('');
         showToast(`Login OTP code dispatched to ${targetEmail}`, 'success');
       }
       setOtpCooldown(60);
@@ -133,11 +134,12 @@ export default function LoginPage() {
       const preview = res?.data?.previewOtp || res?.data?.data?.previewOtp;
       const delivered = res?.data?.delivered ?? res?.data?.data?.delivered;
       setOtpDeliveredViaSmtp(!!delivered);
+      setOtpLoginCode(''); // Require manual input
       if (preview) {
         setOtpPreviewCode(preview);
-        setOtpLoginCode(preview);
         showToast(`New login code: ${preview}`, 'info');
       } else {
+        setOtpPreviewCode('');
         showToast(`A new login code was sent to ${targetEmail}`, 'success');
       }
       setOtpCooldown(60);
@@ -489,89 +491,6 @@ export default function LoginPage() {
           </button>
         </div>
 
-        {/* Quick Demo Autofill Pill */}
-        <div style={{ marginBottom: '18px' }}>
-          {portalRole === 'student' ? (
-            <button
-              type="button"
-              onClick={() => {
-                setEmail('alex@example.com');
-                setPassword('password123');
-                setOtpEmail('alex@example.com');
-                showToast('Filled Student Demo: alex@example.com', 'info');
-              }}
-              style={{
-                width: '100%',
-                padding: '8px 12px',
-                fontSize: '0.78rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                borderRadius: '8px',
-                border: '1px dashed rgba(168, 85, 247, 0.45)',
-                backgroundColor: 'rgba(124, 58, 237, 0.08)',
-                color: 'var(--primary-text)',
-                cursor: 'pointer',
-              }}
-            >
-              <span>🎓 Quick Demo Student: <strong>alex@example.com</strong></span>
-              <span style={{ color: '#C084FC', fontWeight: 600 }}>1-Click Fill</span>
-            </button>
-          ) : portalRole === 'employer' ? (
-            <button
-              type="button"
-              onClick={() => {
-                setEmail('recruiter@techcorp.io');
-                setPassword('password123');
-                setOtpEmail('recruiter@techcorp.io');
-                showToast('Filled Employer Demo: recruiter@techcorp.io', 'info');
-              }}
-              style={{
-                width: '100%',
-                padding: '8px 12px',
-                fontSize: '0.78rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                borderRadius: '8px',
-                border: '1px dashed rgba(236, 72, 153, 0.45)',
-                backgroundColor: 'rgba(236, 72, 153, 0.08)',
-                color: 'var(--primary-text)',
-                cursor: 'pointer',
-              }}
-            >
-              <span>💼 Quick Demo Employer: <strong>recruiter@techcorp.io</strong></span>
-              <span style={{ color: '#F472B6', fontWeight: 600 }}>1-Click Fill</span>
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => {
-                setEmail('admin@openpath.io');
-                setPassword('password123');
-                setOtpEmail('admin@openpath.io');
-                showToast('Filled Admin Demo: admin@openpath.io', 'info');
-              }}
-              style={{
-                width: '100%',
-                padding: '8px 12px',
-                fontSize: '0.78rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                borderRadius: '8px',
-                border: '1px dashed rgba(239, 68, 68, 0.45)',
-                backgroundColor: 'rgba(239, 68, 68, 0.08)',
-                color: 'var(--primary-text)',
-                cursor: 'pointer',
-              }}
-            >
-              <span>🛡️ Quick Demo Admin: <strong>admin@openpath.io</strong></span>
-              <span style={{ color: '#F87171', fontWeight: 600 }}>1-Click Fill</span>
-            </button>
-          )}
-        </div>
-
         {/* Login Method Tabs */}
         <div
           style={{
@@ -629,7 +548,7 @@ export default function LoginPage() {
               transition: 'all 0.2s ease',
             }}
           >
-            <ShieldCheck size={16} /> Instant OTP Sign In
+            <Mail size={16} /> Email OTP Sign In
           </button>
         </div>
 
@@ -734,6 +653,29 @@ export default function LoginPage() {
             >
               {isLoading ? 'Signing In...' : 'Sign In'} <ArrowRight size={18} />
             </button>
+
+            <div style={{ textAlign: 'center', marginTop: '16px' }}>
+              <button
+                type="button"
+                onClick={() => {
+                  setLoginMode('otp');
+                  if (!otpEmail && email) setOtpEmail(email);
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#A78BFA',
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                }}
+              >
+                <Mail size={15} /> Sign in using Email OTP Code instead
+              </button>
+            </div>
           </form>
         ) : (
           /* 2. PASSWORDLESS OTP LOGIN FLOW */
@@ -769,8 +711,27 @@ export default function LoginPage() {
                   className="btn-primary"
                   style={{ width: '100%', padding: '12px', marginTop: '6px' }}
                 >
-                  {isSendingLoginOtp ? 'Generating Code...' : 'Get Login OTP'} <ArrowRight size={18} />
+                  {isSendingLoginOtp ? 'Generating Code...' : 'Get Login OTP Code'} <ArrowRight size={18} />
                 </button>
+
+                <div style={{ textAlign: 'center', marginTop: '16px' }}>
+                  <button
+                    type="button"
+                    onClick={() => setLoginMode('password')}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: 'var(--secondary-text)',
+                      fontSize: '0.85rem',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                    }}
+                  >
+                    <KeyRound size={15} /> Sign in with Password instead
+                  </button>
+                </div>
               </form>
             ) : (
               /* OTP Code Input Step */
@@ -791,13 +752,13 @@ export default function LoginPage() {
                       padding: '10px 14px',
                       backgroundColor: 'rgba(16, 185, 129, 0.12)',
                       borderRadius: 'var(--radius-md)',
-                      border: '1px solid rgba(16, 185, 129, 0.3)',
+                      border: '1px solid rgba(168, 85, 129, 0.3)',
                       color: '#10B981',
                       fontSize: '0.85rem',
                       marginBottom: '16px',
                     }}
                   >
-                    <CheckCircle2 size={16} /> Login code delivered to your email inbox!
+                    <CheckCircle2 size={16} /> Verification code delivered to your email inbox!
                   </div>
                 ) : otpPreviewCode ? (
                   <div
@@ -812,12 +773,12 @@ export default function LoginPage() {
                       color: 'var(--primary-text)',
                     }}
                   >
-                    <span>Demo / Test Login OTP: </span>
-                    <strong style={{ color: '#F472B6', letterSpacing: '2px', fontSize: '1.05rem' }}>
+                    <span style={{ color: 'var(--secondary-text)' }}>Email Verification Code: </span>
+                    <strong style={{ color: '#F472B6', letterSpacing: '4px', fontSize: '1.25rem', display: 'block', margin: '4px 0' }}>
                       {otpPreviewCode}
                     </strong>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--secondary-text)', marginTop: '4px' }}>
-                      (Auto-filled for rapid testing & evaluation)
+                    <div style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>
+                      (Enter this 6-digit code below to authenticate)
                     </div>
                   </div>
                 ) : null}
@@ -898,6 +859,28 @@ export default function LoginPage() {
                   >
                     <RefreshCw size={13} className={isSendingLoginOtp ? 'spin' : ''} />
                     {otpCooldown > 0 ? `Resend Code (${otpCooldown}s)` : 'Resend Code'}
+                  </button>
+                </div>
+
+                <div style={{ textAlign: 'center', marginTop: '14px' }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLoginMode('password');
+                      setOtpStep('email');
+                    }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: 'var(--secondary-text)',
+                      fontSize: '0.8rem',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                    }}
+                  >
+                    <KeyRound size={13} /> Switch back to Password Sign In
                   </button>
                 </div>
               </div>

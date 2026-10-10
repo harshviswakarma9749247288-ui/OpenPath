@@ -49,12 +49,18 @@ import DeleteConfirmationModal from '../components/admin/DeleteConfirmationModal
 import EditSkillModal from '../components/admin/EditSkillModal';
 import OpportunityStatusModal from '../components/admin/OpportunityStatusModal';
 
-export default function AdminPage() {
+export default function AdminPage({ initialTab = 'overview' }) {
   const { user } = useAuthStore();
   const { navigate, showToast } = useUIStore();
 
   // Navigation tabs
-  const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'users' | 'opportunities' | 'skills' | 'applications' | 'system'
+  const [activeTab, setActiveTab] = useState(initialTab || 'overview'); // 'overview' | 'users' | 'opportunities' | 'skills' | 'applications' | 'system'
+
+  useEffect(() => {
+    if (initialTab) {
+      setActiveTab(initialTab);
+    }
+  }, [initialTab]);
   const [statsData, setStatsData] = useState(null);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
 

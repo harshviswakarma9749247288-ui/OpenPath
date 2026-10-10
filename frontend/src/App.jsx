@@ -152,7 +152,7 @@ export default function App() {
           />
         );
       case 'applications':
-        return <ApplicationsPage />;
+        return isAdmin ? <AdminPage initialTab="applications" /> : <ApplicationsPage />;
       case 'profile':
         return <ProfilePage />;
       case 'employer-dashboard':

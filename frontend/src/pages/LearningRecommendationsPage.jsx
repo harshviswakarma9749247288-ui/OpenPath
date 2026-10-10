@@ -21,6 +21,7 @@ import BackButton from '../components/BackButton';
 export default function LearningRecommendationsPage({ skillId, skillName }) {
   const { navigate } = useUIStore();
   const { user, isAuthenticated, toggleCompletedLearning } = useAuthStore();
+  const isAdmin = user?.role === 'admin';
 
   const [resources, setResources] = useState([]);
   const [roadmap, setRoadmap] = useState([]);
@@ -107,7 +108,7 @@ export default function LearningRecommendationsPage({ skillId, skillName }) {
 
   return (
     <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
-      <BackButton label="Back to Dashboard" fallbackPage="dashboard" />
+      <BackButton label={isAdmin ? "Back to Command Center" : "Back to Dashboard"} fallbackPage={isAdmin ? "admin" : "dashboard"} />
 
       {/* Header Banner */}
       <div
@@ -136,14 +137,15 @@ export default function LearningRecommendationsPage({ skillId, skillName }) {
               letterSpacing: '0.05em',
             }}
           >
-            ACTIONABLE CAREER PATHWAY
+            {isAdmin ? 'ADMIN CURRICULUM INSPECTION' : 'ACTIONABLE CAREER PATHWAY'}
           </span>
           <h1 style={{ fontSize: '2rem', marginTop: '12px', color: 'var(--primary-text)' }}>
             {skillName ? `Curated Roadmap for ${skillName}` : 'Personalized Learning Roadmap'}
           </h1>
           <p style={{ fontSize: '0.95rem', color: 'var(--secondary-text)', marginTop: '4px', maxWidth: '560px' }}>
-            Follow the 5-stage progression (Skill Gap → Beginner → Practice → Project → Ready) to convert
-            missing competencies into hiring strengths.
+            {isAdmin
+              ? 'Administrator governance mode: Review curated learning roadmaps and canonical skill competency modules.'
+              : 'Follow the 5-stage progression (Skill Gap → Beginner → Practice → Project → Ready) to convert missing competencies into hiring strengths.'}
           </p>
         </div>
 
@@ -160,15 +162,31 @@ export default function LearningRecommendationsPage({ skillId, skillName }) {
             minWidth: '180px',
           }}
         >
-          <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>
-            CURRICULUM PROGRESS
-          </span>
-          <h2 style={{ fontSize: '2.4rem', color: '#C084FC', fontWeight: 800, textShadow: '0 0 20px rgba(192, 132, 252, 0.4)' }}>
-            {progressPct}%
-          </h2>
-          <span style={{ fontSize: '0.8rem', color: '#34D399', fontWeight: 600 }}>
-            {completedCount} of {totalCount} Completed
-          </span>
+          {isAdmin ? (
+            <>
+              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>
+                CURRICULUM NODES
+              </span>
+              <h2 style={{ fontSize: '2.4rem', color: '#C084FC', fontWeight: 800 }}>
+                {totalCount}
+              </h2>
+              <span style={{ fontSize: '0.8rem', color: '#38BDF8', fontWeight: 600 }}>
+                Admin Inspection View
+              </span>
+            </>
+          ) : (
+            <>
+              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>
+                CURRICULUM PROGRESS
+              </span>
+              <h2 style={{ fontSize: '2.4rem', color: '#C084FC', fontWeight: 800, textShadow: '0 0 20px rgba(192, 132, 252, 0.4)' }}>
+                {progressPct}%
+              </h2>
+              <span style={{ fontSize: '0.8rem', color: '#34D399', fontWeight: 600 }}>
+                {completedCount} of {totalCount} Completed
+              </span>
+            </>
+          )}
         </Tilt3DCard>
       </div>
 

@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { useOpportunityStore } from '../store/useOpportunityStore';
 import { useApplicationStore } from '../store/useApplicationStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
 import BackButton from '../components/BackButton';
 
@@ -68,6 +69,8 @@ export default function OpportunitiesPage() {
   } = useOpportunityStore();
 
   const { applications, fetchMyApplications, apply } = useApplicationStore();
+  const { user } = useAuthStore();
+  const isAdmin = user?.role === 'admin';
   const { navigate, showToast, openMentorForOpportunity } = useUIStore();
 
   const [viewMode, setViewMode] = useState('grid');
@@ -389,22 +392,24 @@ export default function OpportunitiesPage() {
                         </div>
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (toggleSaveOpportunity) toggleSaveOpportunity(opp._id);
-                        }}
-                        style={{
-                          background: 'transparent',
-                          border: 'none',
-                          cursor: 'pointer',
-                          color: isSaved ? '#EC4899' : 'var(--secondary-text)',
-                          padding: '4px',
-                        }}
-                      >
-                        <Bookmark size={18} fill={isSaved ? 'currentColor' : 'none'} />
-                      </button>
+                      {!isAdmin && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (toggleSaveOpportunity) toggleSaveOpportunity(opp._id);
+                          }}
+                          style={{
+                            background: 'transparent',
+                            border: 'none',
+                            cursor: 'pointer',
+                            color: isSaved ? '#EC4899' : 'var(--secondary-text)',
+                            padding: '4px',
+                          }}
+                        >
+                          <Bookmark size={18} fill={isSaved ? 'currentColor' : 'none'} />
+                        </button>
+                      )}
                     </div>
 
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' }}>
@@ -534,7 +539,23 @@ export default function OpportunitiesPage() {
                         Details <ChevronRight size={13} />
                       </button>
 
-                      {isApplied ? (
+                      {isAdmin ? (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate('admin');
+                          }}
+                          className="btn-primary"
+                          style={{
+                            fontSize: '0.78rem',
+                            padding: '6px 14px',
+                            background: 'linear-gradient(135deg, #EF4444 0%, #A855F7 100%)',
+                          }}
+                        >
+                          Moderate
+                        </button>
+                      ) : isApplied ? (
                         <span
                           style={{
                             display: 'inline-flex',

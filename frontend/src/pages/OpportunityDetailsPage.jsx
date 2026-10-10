@@ -15,6 +15,7 @@ import {
   Check,
   Send,
   Bot,
+  ShieldCheck,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useOpportunityStore } from '../store/useOpportunityStore';
@@ -55,6 +56,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
   const { fetchOpportunityById, toggleSaveOpportunity, savedIds } = useOpportunityStore();
   const { apply, applications, fetchMyApplications } = useApplicationStore();
   const { user, isAuthenticated } = useAuthStore();
+  const isAdmin = user?.role === 'admin';
   const { navigate, showToast, openMentorForOpportunity } = useUIStore();
 
   const [opp, setOpp] = useState(null);
@@ -128,7 +130,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
   return (
     <div style={{ maxWidth: '1080px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
       {/* Top back button */}
-      <BackButton label="Back to Opportunities" fallbackPage="opportunities" />
+      <BackButton label={isAdmin ? "Back to Command Center" : "Back to Opportunities"} fallbackPage={isAdmin ? "admin" : "opportunities"} />
 
       {/* 1. MATCH-FIRST HEADER CARD */}
       <div
@@ -178,7 +180,24 @@ export default function OpportunityDetailsPage({ opportunityId }) {
 
         {/* Right Match Indicator & Actions */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-          {matchScore !== null && matchScore !== undefined && (
+          {isAdmin ? (
+            <span
+              style={{
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                padding: '8px 14px',
+                borderRadius: '9999px',
+                backgroundColor: opp.status === 'Active' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                color: opp.status === 'Active' ? '#34D399' : '#F87171',
+                border: '1px solid var(--border-color)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+            >
+              <ShieldCheck size={14} /> STATUS: {opp.status?.toUpperCase() || 'ACTIVE'}
+            </span>
+          ) : matchScore !== null && matchScore !== undefined ? (
             <div
               onClick={() => navigate('match', { id: opp._id })}
               style={{
@@ -205,7 +224,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
                 </span>
               </div>
             </div>
-          )}
+          ) : null}
 
           {/* AI Career Mentor Trigger */}
           <button
@@ -229,22 +248,40 @@ export default function OpportunityDetailsPage({ opportunityId }) {
             <Bot size={18} /> Ask AI Mentor
           </button>
 
-          <button
-            onClick={() => toggleSaveOpportunity(opp._id)}
-            style={{
-              padding: '10px',
-              borderRadius: 'var(--radius-md)',
-              border: '1px solid var(--border-color)',
-              color: isSaved ? '#EC4899' : 'var(--secondary-text)',
-              backgroundColor: 'var(--chip-bg)',
-              backdropFilter: 'blur(8px)',
-              cursor: 'pointer',
-            }}
-          >
-            <Bookmark size={20} fill={isSaved ? 'currentColor' : 'none'} />
-          </button>
+          {!isAdmin && (
+            <button
+              onClick={() => toggleSaveOpportunity(opp._id)}
+              style={{
+                padding: '10px',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-color)',
+                color: isSaved ? '#EC4899' : 'var(--secondary-text)',
+                backgroundColor: 'var(--chip-bg)',
+                backdropFilter: 'blur(8px)',
+                cursor: 'pointer',
+              }}
+              title="Save Opportunity"
+            >
+              <Bookmark size={20} fill={isSaved ? 'currentColor' : 'none'} />
+            </button>
+          )}
 
-          {isApplied ? (
+          {isAdmin ? (
+            <button
+              onClick={() => navigate('admin')}
+              className="btn-primary"
+              style={{
+                padding: '10px 20px',
+                fontSize: '0.88rem',
+                background: 'linear-gradient(135deg, #EF4444 0%, #A855F7 100%)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+              }}
+            >
+              <ShieldCheck size={16} /> Admin Command Center
+            </button>
+          ) : isApplied ? (
             <button
               disabled
               style={{
@@ -336,7 +373,9 @@ export default function OpportunityDetailsPage({ opportunityId }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '10px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Sparkles size={18} color="#7C3AED" />
-            <h3 style={{ fontSize: '1.1rem', color: 'var(--primary-text)', margin: 0 }}>Candidate Skill Alignment</h3>
+            <h3 style={{ fontSize: '1.1rem', color: 'var(--primary-text)', margin: 0 }}>
+              {isAdmin ? `Required Technical Competencies (${allRequiredSkills.length})` : 'Candidate Skill Alignment'}
+            </h3>
           </div>
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             <button
@@ -352,22 +391,26 @@ export default function OpportunityDetailsPage({ opportunityId }) {
                 borderColor: 'rgba(59, 130, 246, 0.4)',
               }}
             >
-              <Sparkles size={13} /> AI Gap Analysis
+              <Sparkles size={13} /> AI Mentor Analysis
             </button>
-            <button
-              onClick={() => navigate('match', { id: opp._id })}
-              className="btn-secondary"
-              style={{ padding: '6px 14px', fontSize: '0.775rem' }}
-            >
-              5-Factor Math
-            </button>
-            <button
-              onClick={() => navigate('skill-gap', { id: opp._id })}
-              className="btn-primary"
-              style={{ padding: '6px 16px', fontSize: '0.775rem' }}
-            >
-              Bridge Skill Gap <ArrowRight size={14} />
-            </button>
+            {!isAdmin && (
+              <>
+                <button
+                  onClick={() => navigate('match', { id: opp._id })}
+                  className="btn-secondary"
+                  style={{ padding: '6px 14px', fontSize: '0.775rem' }}
+                >
+                  5-Factor Math
+                </button>
+                <button
+                  onClick={() => navigate('skill-gap', { id: opp._id })}
+                  className="btn-primary"
+                  style={{ padding: '6px 16px', fontSize: '0.775rem' }}
+                >
+                  Bridge Skill Gap <ArrowRight size={14} />
+                </button>
+              </>
+            )}
           </div>
         </div>
 

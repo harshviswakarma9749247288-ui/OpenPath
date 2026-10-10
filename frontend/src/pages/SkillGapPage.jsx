@@ -9,6 +9,7 @@ import {
   Target,
 } from 'lucide-react';
 import { useUIStore } from '../store/useUIStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { useOpportunityStore } from '../store/useOpportunityStore';
 import api from '../utils/api';
 import CyberLoader from '../components/CyberLoader';
@@ -16,6 +17,8 @@ import Tilt3DCard from '../components/Tilt3DCard';
 import BackButton from '../components/BackButton';
 
 export default function SkillGapPage({ opportunityId }) {
+  const { user } = useAuthStore();
+  const isAdmin = user?.role === 'admin';
   const { navigate } = useUIStore();
   const { opportunities } = useOpportunityStore();
 
@@ -84,9 +87,9 @@ export default function SkillGapPage({ opportunityId }) {
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
       <BackButton
-        label="Back to Opportunity"
-        fallbackPage="details"
-        fallbackParams={{ id: targetId }}
+        label={isAdmin ? "Back to Admin Command" : "Back to Opportunity"}
+        fallbackPage={isAdmin ? "admin" : "details"}
+        fallbackParams={isAdmin ? {} : { id: targetId }}
       />
 
       {/* Header Banner */}

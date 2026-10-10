@@ -12,6 +12,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { useUIStore } from '../store/useUIStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { useOpportunityStore } from '../store/useOpportunityStore';
 import api from '../utils/api';
 import MatchScoreBadge from '../components/MatchScoreBadge';
@@ -21,6 +22,8 @@ import CyberLoader from '../components/CyberLoader';
 import BackButton from '../components/BackButton';
 
 export default function MatchExplanationPage({ opportunityId }) {
+  const { user } = useAuthStore();
+  const isAdmin = user?.role === 'admin';
   const { navigate } = useUIStore();
   const { opportunities } = useOpportunityStore();
 
@@ -133,9 +136,9 @@ export default function MatchExplanationPage({ opportunityId }) {
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
       <BackButton
-        label="Back to Opportunity Details"
-        fallbackPage="details"
-        fallbackParams={{ id: targetId }}
+        label={isAdmin ? "Back to Admin Command Center" : "Back to Opportunity Details"}
+        fallbackPage={isAdmin ? "admin" : "details"}
+        fallbackParams={isAdmin ? {} : { id: targetId }}
       />
 
       {/* Main Score Header */}
@@ -273,7 +276,7 @@ export default function MatchExplanationPage({ opportunityId }) {
         })}
       </div>
 
-      {/* Skills Comparison & Bridge CTA */}
+      {/* Skills Comparison & Bridge CTA / Admin Moderation CTA */}
       <div
         className="card"
         style={{
@@ -283,18 +286,30 @@ export default function MatchExplanationPage({ opportunityId }) {
           alignItems: 'center',
           flexWrap: 'wrap',
           gap: '16px',
+          border: isAdmin ? '1px solid rgba(239, 68, 68, 0.35)' : undefined,
+          backgroundColor: isAdmin ? 'rgba(239, 68, 68, 0.06)' : undefined,
         }}
       >
         <div>
-          <h4 style={{ fontSize: '1.1rem', marginBottom: '6px' }}>Want to improve your match score?</h4>
+          <h4 style={{ fontSize: '1.1rem', marginBottom: '6px', color: isAdmin ? '#F87171' : 'var(--primary-text)' }}>
+            {isAdmin ? 'Listing Governance & Candidate Tracking' : 'Want to improve your match score?'}
+          </h4>
           <p style={{ fontSize: '0.875rem', color: 'var(--secondary-text)' }}>
-            Visit the Skill Gap roadmap to find targeted tutorials for your missing competencies.
+            {isAdmin
+              ? 'Access candidate submissions, audit matching criteria, and adjust visibility status in Admin Command.'
+              : 'Visit the Skill Gap roadmap to find targeted tutorials for your missing competencies.'}
           </p>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
-          <button onClick={() => navigate('skill-gap', { id: targetId })} className="btn-primary">
-            Analyze Skill Gap <ArrowRight size={16} />
-          </button>
+          {isAdmin ? (
+            <button onClick={() => navigate('admin')} className="btn-primary" style={{ backgroundColor: '#EF4444' }}>
+              Open Admin Command Center <ArrowRight size={16} />
+            </button>
+          ) : (
+            <button onClick={() => navigate('skill-gap', { id: targetId })} className="btn-primary">
+              Analyze Skill Gap <ArrowRight size={16} />
+            </button>
+          )}
         </div>
       </div>
     </div>

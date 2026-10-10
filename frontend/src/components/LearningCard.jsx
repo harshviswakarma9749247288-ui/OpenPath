@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { ExternalLink, CheckCircle2, Clock, BookOpen, Video, FileText } from 'lucide-react';
+import { useAuthStore } from '../store/useAuthStore';
 
 export default function LearningCard({ resource, onToggleComplete, isCompleted = false }) {
+  const { user } = useAuthStore();
+  const isAdmin = user?.role === 'admin';
   const [completed, setCompleted] = useState(isCompleted);
 
   const handleToggle = () => {
@@ -120,20 +123,22 @@ export default function LearningCard({ resource, onToggleComplete, isCompleted =
         </span>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <button
-            onClick={handleToggle}
-            style={{
-              fontSize: '0.775rem',
-              fontWeight: 600,
-              color: completed ? '#34D399' : 'var(--secondary-text)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-            }}
-          >
-            <CheckCircle2 size={16} color={completed ? '#34D399' : '#64748B'} />
-            {completed ? 'Completed' : 'Mark Done'}
-          </button>
+          {!isAdmin && (
+            <button
+              onClick={handleToggle}
+              style={{
+                fontSize: '0.775rem',
+                fontWeight: 600,
+                color: completed ? '#34D399' : 'var(--secondary-text)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+              }}
+            >
+              <CheckCircle2 size={16} color={completed ? '#34D399' : '#64748B'} />
+              {completed ? 'Completed' : 'Mark Done'}
+            </button>
+          )}
 
           <a
             href={resource.url}
