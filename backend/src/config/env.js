@@ -22,8 +22,8 @@ export const ENV = {
   SMTP_PORT: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587,
   SMTP_SECURE: process.env.SMTP_SECURE === 'true',
   SMTP_USER: process.env.SMTP_USER || '',
-  SMTP_PASS: process.env.SMTP_PASS || '',
-  EMAIL_FROM: process.env.EMAIL_FROM || 'OpenPath ',
+  SMTP_PASS: process.env.SMTP_PASS ? process.env.SMTP_PASS.replace(/\s+/g, '') : '',
+  EMAIL_FROM: process.env.EMAIL_FROM || (process.env.SMTP_USER ? `OpenPath <${process.env.SMTP_USER}>` : 'OpenPath <noreply@openpath.dev>'),
 
   // Local AI Agent Configuration
   LOCAL_AI_BASE_URL: process.env.LOCAL_AI_BASE_URL || 'http://localhost:11434',

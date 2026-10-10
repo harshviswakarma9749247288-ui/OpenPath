@@ -164,7 +164,7 @@ export const sendOtp = async (req, res, next) => {
       {
         email: emailNorm,
         delivered,
-        previewOtp,
+        previewOtp: delivered ? undefined : previewOtp,
         expiresIn: '10 minutes',
       },
       delivered
@@ -330,7 +330,7 @@ export const forgotPassword = async (req, res, next) => {
 
     return successResponse(
       res,
-      { email: emailNorm, delivered, previewOtp },
+      { email: emailNorm, delivered, previewOtp: delivered ? undefined : previewOtp },
       delivered
         ? `Password reset code sent to ${emailNorm}. Please check your inbox.`
         : `Reset code generated for ${emailNorm} (Demo Code: ${previewOtp})`

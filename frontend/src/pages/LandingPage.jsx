@@ -70,9 +70,21 @@ export default function LandingPage() {
   const employerHighlight = platformContent?.roleHighlights?.employer;
   const skillGapPreview = platformContent?.skillGapPreview;
 
+  const isStudent = user?.role === 'student';
+  const isEmployer = user?.role === 'employer';
+  const isAdmin = user?.role === 'admin';
+
+  const getDashboardRoute = () => {
+    if (isAdmin) return 'admin';
+    if (isEmployer) return 'employer-dashboard';
+    return 'dashboard';
+  };
+
   const handleEmployerPortalClick = () => {
     if (isAuthenticated && user?.role === 'employer') {
       navigate('employer-dashboard');
+    } else if (isAuthenticated && user?.role === 'admin') {
+      navigate('admin');
     } else if (isAuthenticated) {
       navigate('dashboard');
     } else {
@@ -171,24 +183,72 @@ export default function LandingPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <ThemeToggle showLabel={true} size="default" />
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              {isAuthenticated ? (
+            {isAuthenticated ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <button
-                  onClick={() =>
-                    navigate(
-                      user?.role === 'admin'
-                        ? 'admin'
-                        : user?.role === 'employer'
-                        ? 'employer-dashboard'
-                        : 'dashboard'
-                    )
-                  }
-                  className="btn-liquid-glass"
-                  style={{ padding: '8px 18px', fontSize: '0.875rem' }}
+                  onClick={() => navigate('profile')}
+                  title="View Profile"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    background: 'rgba(255, 255, 255, 0.06)',
+                    border: '1px solid var(--border-color)',
+                    borderRadius: '9999px',
+                    padding: '5px 12px 5px 6px',
+                    color: 'var(--primary-text)',
+                    cursor: 'pointer',
+                    fontSize: '0.825rem',
+                    fontWeight: 600,
+                  }}
                 >
-                  Dashboard <ArrowRight size={14} />
+                  <img
+                    src={
+                      user?.avatar ||
+                      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100'
+                    }
+                    alt={user?.name}
+                    style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover' }}
+                  />
+                  <span>{user?.name?.split(' ')[0] || 'User'}</span>
+                  <span
+                    style={{
+                      fontSize: '0.65rem',
+                      fontWeight: 800,
+                      padding: '2px 7px',
+                      borderRadius: '9999px',
+                      textTransform: 'uppercase',
+                      backgroundColor: isAdmin
+                        ? 'rgba(239, 68, 68, 0.2)'
+                        : isEmployer
+                        ? 'rgba(236, 72, 153, 0.2)'
+                        : 'rgba(124, 58, 237, 0.2)',
+                      color: isAdmin ? '#F87171' : isEmployer ? '#F472B6' : '#C084FC',
+                      border: isAdmin
+                        ? '1px solid rgba(239, 68, 68, 0.35)'
+                        : isEmployer
+                        ? '1px solid rgba(236, 72, 153, 0.35)'
+                        : '1px solid rgba(124, 58, 237, 0.35)',
+                    }}
+                  >
+                    {user?.role}
+                  </span>
                 </button>
-              ) : (
+
+                <button
+                  onClick={() => navigate(getDashboardRoute())}
+                  className="btn-glow-ring"
+                  style={{ padding: '8px 20px', fontSize: '0.875rem', fontWeight: 700 }}
+                >
+                  {isAdmin
+                    ? '🛡️ Admin Command'
+                    : isEmployer
+                    ? '💼 Employer Hub'
+                    : '🎓 Student Hub'} <ArrowRight size={14} />
+                </button>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <button
                   onClick={() => navigate('login')}
                   className="btn-liquid-glass"
@@ -196,16 +256,16 @@ export default function LandingPage() {
                 >
                   Sign In
                 </button>
-              )}
 
-              <button
-                onClick={() => navigate('register')}
-                className="btn-glow-ring"
-                style={{ padding: '8px 22px', fontSize: '0.875rem', fontWeight: 700 }}
-              >
-                Get Started Free <ArrowRight size={15} />
-              </button>
-            </div>
+                <button
+                  onClick={() => navigate('register')}
+                  className="btn-glow-ring"
+                  style={{ padding: '8px 22px', fontSize: '0.875rem', fontWeight: 700 }}
+                >
+                  Get Started Free <ArrowRight size={15} />
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -233,17 +293,23 @@ export default function LandingPage() {
           <div>
             {/* Scrolltide-Style Animated Announcement Pill */}
             <div
-              onClick={() => navigate('register')}
+              onClick={() => navigate(isAuthenticated ? getDashboardRoute() : 'register')}
               className="announcement-pill"
               style={{ marginBottom: '22px' }}
             >
               <span className="pill-pulse-dot" />
               <Sparkles size={15} />
               <span>
-                {(platformContent?.heroAnnouncement?.text ||
-                  'Next-Gen 3D Career Intelligence')
-                  .replace(/•?\s*Live Database Connected/gi, '')
-                  .trim()}
+                {isAuthenticated
+                  ? (isAdmin
+                      ? '🛡️ Administrator Session Active • Manage Platform'
+                      : isEmployer
+                      ? `💼 ${user?.companyDetails?.companyName || 'Employer'} Portal Active • Review Candidates`
+                      : '🎓 Student Portal Active • View AI Matches')
+                  : (platformContent?.heroAnnouncement?.text ||
+                      'Next-Gen 3D Career Intelligence')
+                      .replace(/•?\s*Live Database Connected/gi, '')
+                      .trim()}
               </span>
               <ArrowRight size={14} />
             </div>
@@ -279,20 +345,45 @@ export default function LandingPage() {
 
             {/* Scrolltide Animated CTAs */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
-              <button
-                onClick={() => navigate('register')}
-                className="btn-glow-ring"
-                style={{ padding: '15px 36px', fontSize: '1.05rem', fontWeight: 700 }}
-              >
-                Get Started Free <ArrowRight size={18} />
-              </button>
-              <button
-                onClick={() => navigate('opportunities')}
-                className="btn-liquid-glass"
-                style={{ padding: '14px 34px', fontSize: '1.025rem' }}
-              >
-                Explore Opportunities <ArrowRight size={18} />
-              </button>
+              {isAuthenticated ? (
+                <>
+                  <button
+                    onClick={() => navigate(getDashboardRoute())}
+                    className="btn-glow-ring"
+                    style={{ padding: '15px 36px', fontSize: '1.05rem', fontWeight: 700 }}
+                  >
+                    {isAdmin
+                      ? '🛡️ Admin Command Center'
+                      : isEmployer
+                      ? '💼 Go to Employer Hub'
+                      : '🎓 Go to Student Hub'} <ArrowRight size={18} />
+                  </button>
+                  <button
+                    onClick={() => navigate(isEmployer ? 'create-opportunity' : 'opportunities')}
+                    className="btn-liquid-glass"
+                    style={{ padding: '14px 34px', fontSize: '1.025rem' }}
+                  >
+                    {isEmployer ? 'Post Opportunity' : 'Explore Opportunities'} <ArrowRight size={18} />
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => navigate('register')}
+                    className="btn-glow-ring"
+                    style={{ padding: '15px 36px', fontSize: '1.05rem', fontWeight: 700 }}
+                  >
+                    Get Started Free <ArrowRight size={18} />
+                  </button>
+                  <button
+                    onClick={() => navigate('opportunities')}
+                    className="btn-liquid-glass"
+                    style={{ padding: '14px 34px', fontSize: '1.025rem' }}
+                  >
+                    Explore Opportunities <ArrowRight size={18} />
+                  </button>
+                </>
+              )}
             </div>
           </div>
 
@@ -635,8 +726,18 @@ export default function LandingPage() {
                   </li>
                 ))}
               </ul>
-              <button onClick={() => navigate('register')} className="btn-primary" style={{ width: '100%' }}>
-                {studentHighlight?.ctaText || 'Create Student Profile'} <ArrowRight size={16} />
+              <button
+                onClick={() => navigate(isAuthenticated ? (isAdmin ? 'admin' : 'dashboard') : 'register')}
+                className="btn-primary"
+                style={{ width: '100%' }}
+              >
+                {isAuthenticated
+                  ? (isStudent
+                      ? 'Open Student Hub'
+                      : isAdmin
+                      ? 'Inspect Student Catalog'
+                      : 'Candidate Portal')
+                  : (studentHighlight?.ctaText || 'Create Student Profile')} <ArrowRight size={16} />
               </button>
             </Tilt3DCard>
 
@@ -668,7 +769,13 @@ export default function LandingPage() {
                 className="btn-secondary"
                 style={{ width: '100%', borderColor: 'rgba(236, 72, 153, 0.4)', color: '#EC4899' }}
               >
-                {employerHighlight?.ctaText || 'Register as Employer'} <ArrowRight size={16} />
+                {isAuthenticated
+                  ? (isEmployer
+                      ? 'Open Employer Hub'
+                      : isAdmin
+                      ? 'Admin Moderation'
+                      : 'Employer Portal')
+                  : (employerHighlight?.ctaText || 'Register as Employer')} <ArrowRight size={16} />
               </button>
             </Tilt3DCard>
           </div>
@@ -764,24 +871,50 @@ export default function LandingPage() {
         >
           <div>
             <h2 style={{ color: '#FFFFFF', fontSize: '2.4rem', fontWeight: 800, marginBottom: '10px' }}>
-              Ready to Discover Your Path?
+              {isAuthenticated
+                ? `Welcome back, ${user?.name?.split(' ')[0] || 'User'}!`
+                : 'Ready to Discover Your Path?'}
             </h2>
             <p style={{ color: '#FDF4FF', fontSize: '1.05rem', maxWidth: '580px' }}>
-              Connect with top companies hiring students, explore explainable match criteria, and upgrade your skills today.
+              {isAuthenticated
+                ? (isAdmin
+                    ? 'Supervise user accounts, inspect opportunity listings, and monitor live telemetry.'
+                    : isEmployer
+                    ? 'Review incoming applicants, manage active postings, and inspect candidate vector matches.'
+                    : 'Track your application status, inspect 5-factor compatibility scores, and close skill gaps.')
+                : 'Connect with top companies hiring students, explore explainable match criteria, and upgrade your skills today.'}
             </p>
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
-            <button
-              onClick={() => navigate('register')}
-              className="btn-glow-ring"
-              style={{
-                padding: '14px 34px',
-                fontSize: '1.025rem',
-                boxShadow: '0 8px 25px rgba(0, 0, 0, 0.4)',
-              }}
-            >
-              Get Started Free <ArrowRight size={18} />
-            </button>
+            {isAuthenticated ? (
+              <button
+                onClick={() => navigate(getDashboardRoute())}
+                className="btn-glow-ring"
+                style={{
+                  padding: '14px 34px',
+                  fontSize: '1.025rem',
+                  boxShadow: '0 8px 25px rgba(0, 0, 0, 0.4)',
+                }}
+              >
+                {isAdmin
+                  ? '🛡️ Admin Command Center'
+                  : isEmployer
+                  ? '💼 Go to Employer Hub'
+                  : '🎓 Go to Student Hub'} <ArrowRight size={18} />
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate('register')}
+                className="btn-glow-ring"
+                style={{
+                  padding: '14px 34px',
+                  fontSize: '1.025rem',
+                  boxShadow: '0 8px 25px rgba(0, 0, 0, 0.4)',
+                }}
+              >
+                Get Started Free <ArrowRight size={18} />
+              </button>
+            )}
             <button
               onClick={() => navigate('opportunities')}
               className="btn-liquid-glass"
@@ -849,9 +982,15 @@ export default function LandingPage() {
               <a onClick={() => navigate('learning')} style={{ cursor: 'pointer', color: 'var(--secondary-text)' }}>
                 Skill Roadmaps
               </a>
-              <a onClick={() => navigate('register')} style={{ cursor: 'pointer', color: 'var(--secondary-text)' }}>
-                Student Registration
-              </a>
+              {isAuthenticated ? (
+                <a onClick={() => navigate(getDashboardRoute())} style={{ cursor: 'pointer', color: 'var(--secondary-text)' }}>
+                  {isAdmin ? 'Admin Command' : isEmployer ? 'Employer Hub' : 'Student Hub'}
+                </a>
+              ) : (
+                <a onClick={() => navigate('register')} style={{ cursor: 'pointer', color: 'var(--secondary-text)' }}>
+                  Student Registration
+                </a>
+              )}
             </div>
           </div>
 
