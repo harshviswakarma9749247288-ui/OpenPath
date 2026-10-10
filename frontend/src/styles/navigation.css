@@ -620,12 +620,14 @@
 .app-root {
   position: relative;
   min-height: 100vh;
+  overflow: visible;
 }
 
 .app-public-page {
   width: 100%;
   position: relative;
   z-index: 1;
+  overflow: visible;
 }
 
 .app-main-content {
