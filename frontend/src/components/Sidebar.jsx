@@ -11,9 +11,8 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
-  Sparkles,
-  Layers,
   ShieldCheck,
+  Layers,
 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
@@ -52,53 +51,22 @@ export default function Sidebar() {
 
   return (
     <aside
-      className="sidebar-desktop"
-      style={{
-        width: isSidebarCollapsed ? '72px' : '240px',
-        backgroundColor: 'var(--sidebar-bg)',
-        backdropFilter: 'blur(24px)',
-        WebkitBackdropFilter: 'blur(24px)',
-        borderRight: '1px solid var(--border-color)',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        transition: 'width 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-        position: 'sticky',
-        top: 0,
-        height: '100vh',
-        zIndex: 50,
-        flexShrink: 0,
-      }}
+      className={`sidebar-desktop ${isSidebarCollapsed ? 'collapsed' : 'expanded'}`}
     >
       <div>
         {/* Brand Logo & Collapse Toggle */}
         <div
-          style={{
-            height: '68px',
-            borderBottom: '1px solid var(--border-color)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: isSidebarCollapsed ? 'center' : 'space-between',
-            padding: isSidebarCollapsed ? '0' : '0 18px',
-          }}
+          className={`sidebar-header ${isSidebarCollapsed ? 'collapsed' : 'expanded'}`}
         >
           <div
             onClick={() => navigate('landing')}
-            style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
+            className="sidebar-logo-brand"
           >
             {/* 3D Animated Logo Mark */}
             <AnimatedLogo size="sm" showRings={!isSidebarCollapsed} />
             {!isSidebarCollapsed && (
               <div>
-                <span
-                  style={{
-                    fontFamily: 'var(--font-heading)',
-                    fontSize: '1.25rem',
-                    fontWeight: 800,
-                    color: 'var(--primary-text)',
-                    letterSpacing: '-0.3px',
-                  }}
-                >
+                <span className="sidebar-logo-text">
                   Open<span className="gradient-text">Path</span>
                 </span>
               </div>
@@ -109,13 +77,7 @@ export default function Sidebar() {
             <button
               onClick={toggleSidebar}
               title="Collapse Sidebar"
-              style={{
-                color: 'var(--secondary-text)',
-                padding: '4px',
-                borderRadius: '6px',
-                display: 'flex',
-                alignItems: 'center',
-              }}
+              className="btn-ghost"
             >
               <ChevronLeft size={18} />
             </button>
@@ -124,15 +86,11 @@ export default function Sidebar() {
 
         {/* Sidebar Toggle for Collapsed Mode */}
         {isSidebarCollapsed && (
-          <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '10px' }}>
+          <div className="sidebar-expand-btn-wrap">
             <button
               onClick={toggleSidebar}
               title="Expand Sidebar"
-              style={{
-                color: 'var(--secondary-text)',
-                padding: '4px',
-                borderRadius: '6px',
-              }}
+              className="btn-ghost"
             >
               <ChevronRight size={18} />
             </button>
@@ -140,7 +98,7 @@ export default function Sidebar() {
         )}
 
         {/* Navigation Links */}
-        <nav style={{ padding: '16px 10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+        <nav className="sidebar-nav-container">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activePage === item.id;
@@ -150,31 +108,9 @@ export default function Sidebar() {
                 key={item.id}
                 onClick={() => navigate(item.id)}
                 title={item.label}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  padding: isSidebarCollapsed ? '12px 0' : '10px 14px',
-                  justifyContent: isSidebarCollapsed ? 'center' : 'flex-start',
-                  borderRadius: 'var(--radius-md)',
-                  background: isActive
-                    ? 'linear-gradient(135deg, rgba(124, 58, 237, 0.25) 0%, rgba(236, 72, 153, 0.2) 100%)'
-                    : 'transparent',
-                  color: isActive ? 'var(--primary-text)' : 'var(--secondary-text)',
-                  fontWeight: isActive ? 600 : 500,
-                  fontSize: '0.9rem',
-                  border: isActive
-                    ? '1px solid rgba(168, 85, 247, 0.45)'
-                    : '1px solid transparent',
-                  boxShadow: isActive ? '0 0 15px rgba(124, 58, 237, 0.25)' : 'none',
-                  position: 'relative',
-                  transition: 'var(--transition-normal)',
-                }}
+                className={`sidebar-nav-item ${isActive ? 'active' : ''} ${isSidebarCollapsed ? 'collapsed' : 'expanded'}`}
               >
-                <Icon
-                  size={19}
-                  color={isActive ? '#F472B6' : 'currentColor'}
-                />
+                <Icon size={19} color={isActive ? '#F472B6' : 'currentColor'} />
                 {!isSidebarCollapsed && <span>{item.label}</span>}
               </button>
             );
@@ -183,19 +119,11 @@ export default function Sidebar() {
       </div>
 
       {/* Bottom Section: Theme Toggle & User Profile / Logout */}
-      <div style={{ padding: '14px 10px', borderTop: '1px solid var(--border-color)' }}>
+      <div className="sidebar-footer">
         {/* Appearance / Theme Toggle */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: isSidebarCollapsed ? 'center' : 'space-between',
-            marginBottom: '12px',
-            padding: isSidebarCollapsed ? '0' : '0 4px',
-          }}
-        >
+        <div className={`sidebar-theme-wrap ${isSidebarCollapsed ? 'collapsed' : 'expanded'}`}>
           {!isSidebarCollapsed && (
-            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--secondary-text)', letterSpacing: '0.5px' }}>
+            <span className="sidebar-theme-label">
               THEME
             </span>
           )}
@@ -203,18 +131,11 @@ export default function Sidebar() {
         </div>
 
         {/* User Card & Logout */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: isSidebarCollapsed ? 'center' : 'space-between',
-            gap: '8px',
-          }}
-        >
+        <div className={`sidebar-user-wrap ${isSidebarCollapsed ? 'collapsed' : 'expanded'}`}>
           {!isSidebarCollapsed && (
             <div
               onClick={() => navigate('profile')}
-              style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', overflow: 'hidden' }}
+              className="sidebar-user-profile"
             >
               <img
                 src={
@@ -222,22 +143,13 @@ export default function Sidebar() {
                   'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120'
                 }
                 alt={user?.name || 'User'}
-                style={{ width: '34px', height: '34px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--border-color)' }}
+                className="sidebar-user-avatar"
               />
-              <div style={{ overflow: 'hidden' }}>
-                <p
-                  style={{
-                    fontSize: '0.85rem',
-                    fontWeight: 600,
-                    color: 'var(--primary-text)',
-                    whiteSpace: 'nowrap',
-                    textOverflow: 'ellipsis',
-                    overflow: 'hidden',
-                  }}
-                >
+              <div className="sidebar-user-meta">
+                <p className="sidebar-user-name">
                   {user?.name || 'OpenPath User'}
                 </p>
-                <p style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>
+                <p className="sidebar-user-role">
                   {isAdmin ? 'System Administrator' : isEmployer ? 'Employer Access' : 'Student Access'}
                 </p>
               </div>
@@ -247,19 +159,9 @@ export default function Sidebar() {
           <button
             onClick={openSignOutModal}
             title="Log Out"
-            style={{
-              color: '#64748B',
-              padding: '6px',
-              borderRadius: '6px',
-              display: 'flex',
-              alignItems: 'center',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'color 0.2s',
-            }}
+            className="navbar-signout-btn"
           >
-            <LogOut size={18} />
+            <LogOut size={16} />
           </button>
         </div>
       </div>

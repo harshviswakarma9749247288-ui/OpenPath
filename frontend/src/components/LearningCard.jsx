@@ -25,115 +25,53 @@ export default function LearningCard({ resource, onToggleComplete, isCompleted =
     }
   };
 
-  const difficultyColor =
-    resource.difficulty === 'Beginner'
-      ? { text: '#34D399', bg: 'rgba(16, 185, 129, 0.15)', border: 'rgba(16, 185, 129, 0.35)' }
-      : resource.difficulty === 'Intermediate'
-      ? { text: '#FBBF24', bg: 'rgba(245, 158, 11, 0.15)', border: 'rgba(245, 158, 11, 0.35)' }
-      : { text: '#C084FC', bg: 'rgba(192, 38, 211, 0.15)', border: 'rgba(192, 38, 211, 0.35)' };
+  const diffClass = (resource.difficulty || 'beginner').toLowerCase();
 
   return (
     <div
-      className="card"
-      style={{
-        padding: '20px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        borderRadius: 'var(--radius-lg)',
-        border: completed ? '1.5px solid #10B981' : '1px solid var(--border-color)',
-        backgroundColor: completed ? 'var(--status-green-bg)' : 'var(--card-bg)',
-        boxShadow: completed ? '0 0 20px rgba(16, 185, 129, 0.2)' : 'var(--shadow-subtle)',
-        transition: 'var(--transition-normal)',
-      }}
+      className={`card learning-card-container ${completed ? 'completed' : ''}`}
     >
       <div>
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '10px', marginBottom: '12px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div
-              style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '8px',
-                backgroundColor: 'var(--box-subtle)',
-                border: '1px solid var(--box-subtle-border)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
+        <div className="candidate-top-row mb-8">
+          <div className="candidate-card-title-row">
+            <div className="learning-icon-box">
               {getIcon()}
             </div>
-            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>
+            <span className="candidate-bg-desc">
               {resource.provider || 'OpenPath Academy'}
             </span>
           </div>
 
-          <span
-            style={{
-              fontSize: '0.7rem',
-              fontWeight: 700,
-              padding: '2px 8px',
-              borderRadius: '9999px',
-              color: difficultyColor.text,
-              backgroundColor: difficultyColor.bg,
-              border: `1px solid ${difficultyColor.border}`,
-            }}
-          >
+          <span className={`learning-difficulty-pill ${diffClass}`}>
             {resource.difficulty}
           </span>
         </div>
 
-        <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--primary-text)', marginBottom: '6px' }}>
+        <h4 className="candidate-card-title mb-4">
           {resource.title}
         </h4>
 
-        <p
-          style={{
-            fontSize: '0.825rem',
-            color: 'var(--secondary-text)',
-            marginBottom: '14px',
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-          }}
-        >
+        <p className="learning-card-desc">
           {resource.description}
         </p>
 
         {resource.skill && (
-          <span className="skill-chip" style={{ fontSize: '0.75rem', padding: '2px 10px', marginBottom: '14px' }}>
+          <span className="skill-chip mb-14">
             Target: {resource.skill.name || resource.skill}
           </span>
         )}
       </div>
 
-      <div
-        style={{
-          borderTop: '1px solid var(--border-color)',
-          paddingTop: '14px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
-        <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+      <div className="learning-card-footer">
+        <span className="learning-duration-label">
           <Clock size={12} /> {resource.estimatedDuration || '2 hours'}
         </span>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div className="candidate-card-title-row">
           {!isAdmin && (
             <button
               onClick={handleToggle}
-              style={{
-                fontSize: '0.775rem',
-                fontWeight: 600,
-                color: completed ? '#34D399' : 'var(--secondary-text)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-              }}
+              className={`learning-toggle-btn ${completed ? 'done' : 'undone'}`}
             >
               <CheckCircle2 size={16} color={completed ? '#34D399' : '#64748B'} />
               {completed ? 'Completed' : 'Mark Done'}
@@ -145,7 +83,6 @@ export default function LearningCard({ resource, onToggleComplete, isCompleted =
             target="_blank"
             rel="noreferrer"
             className="btn-outline"
-            style={{ padding: '4px 12px', fontSize: '0.775rem' }}
           >
             Start <ExternalLink size={12} />
           </a>

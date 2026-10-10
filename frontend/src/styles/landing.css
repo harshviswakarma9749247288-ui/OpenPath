@@ -1,0 +1,954 @@
+/* =========================================================
+   OpenPath — Landing Page Styles (Hero, Badges, Roles, Stats, CTA, Footer)
+   ========================================================= */
+
+.landing-page-wrapper {
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Ambient Cyber Glow Blobs */
+.ambient-glow-violet {
+  position: absolute;
+  top: 100px;
+  left: -150px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.18) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ambient-glow-pink {
+  position: absolute;
+  top: 400px;
+  right: -150px;
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Hero Section */
+.landing-hero-section {
+  max-width: 1340px;
+  margin: 0 auto;
+  padding: 80px 24px 100px 24px;
+  position: relative;
+  z-index: 10;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.hero-headline {
+  font-size: clamp(2.6rem, 5vw, 4.1rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -1.5px;
+  color: var(--primary-text);
+  margin-bottom: 20px;
+}
+
+.hero-subtitle {
+  font-size: 1.15rem;
+  line-height: 1.65;
+  color: var(--secondary-text);
+  max-width: 580px;
+  margin-bottom: 34px;
+}
+
+.hero-cta-group {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+
+.hero-badge-strip {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.hero-badge-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--secondary-text);
+}
+
+/* 3D Scene Viewport Container */
+.hero-3d-viewport {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 560px;
+}
+
+.hero-canvas-container {
+  position: absolute;
+  inset: -40px;
+  z-index: 1;
+  pointer-events: auto;
+  opacity: 0.98;
+}
+
+.hero-drag-tip-badge {
+  position: absolute;
+  top: -20px;
+  z-index: 12;
+  font-size: 0.75rem;
+  padding: 5px 14px;
+  background: rgba(124, 58, 237, 0.25);
+  border: 1px solid rgba(168, 85, 247, 0.5);
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.35);
+}
+
+/* Platform Stats Strip */
+.landing-stats-section {
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--box-subtle);
+  padding: 48px 24px;
+}
+
+.landing-stats-grid {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 20px;
+}
+
+.stat-item-card {
+  text-align: center;
+  padding: 16px;
+}
+
+.stat-item-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--primary-text);
+  margin-bottom: 4px;
+  letter-spacing: -0.5px;
+}
+
+.stat-item-label {
+  font-size: 0.85rem;
+  color: var(--secondary-text);
+  font-weight: 500;
+}
+
+/* Dual Role Cards Section */
+.landing-roles-section {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 90px 24px;
+}
+
+.landing-roles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 32px;
+}
+
+.role-card-banner {
+  padding: 36px 32px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 400px;
+}
+
+/* Featured Listings Section */
+.landing-featured-section {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px 90px 24px;
+}
+
+.landing-featured-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* Bottom CTA Banner */
+.landing-cta-banner {
+  max-width: 1240px;
+  margin: 0 auto 90px auto;
+  padding: 0 24px;
+}
+
+.cta-banner-card {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.28) 0%, rgba(192, 38, 211, 0.22) 50%, rgba(236, 72, 153, 0.2) 100%);
+  border: 1px solid rgba(168, 85, 247, 0.45);
+  border-radius: 28px;
+  padding: 64px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(124, 58, 237, 0.2);
+}
+
+/* Footer */
+.landing-footer {
+  border-top: 1px solid var(--border-color);
+  background-color: var(--card-bg);
+  color: var(--secondary-text);
+  padding: 60px 24px 30px 24px;
+}
+
+.landing-footer-grid {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+/* Header & Top Navigation Bar */
+.landing-nav-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: var(--nav-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-color);
+  padding: 12px 24px;
+}
+
+.landing-nav-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.landing-nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.landing-nav-brand-text {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--primary-text);
+  letter-spacing: -0.4px;
+}
+
+.landing-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.landing-nav-link-btn {
+  background: none;
+  border: none;
+  color: var(--secondary-text);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.landing-nav-link-btn:hover {
+  color: var(--primary-text);
+}
+
+.landing-nav-link-anchor {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--secondary-text);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.landing-nav-link-anchor:hover {
+  color: var(--primary-text);
+}
+
+.landing-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.landing-nav-auth-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.landing-nav-user-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-color);
+  border-radius: 9999px;
+  padding: 5px 12px 5px 6px;
+  color: var(--primary-text);
+  cursor: pointer;
+  font-size: 0.825rem;
+  font-weight: 600;
+}
+
+.landing-nav-user-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.landing-nav-user-role-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+}
+
+.landing-nav-user-role-badge.role-admin {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #F87171;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.landing-nav-user-role-badge.role-employer {
+  background-color: rgba(236, 72, 153, 0.2);
+  color: #F472B6;
+  border: 1px solid rgba(236, 72, 153, 0.35);
+}
+
+.landing-nav-user-role-badge.role-student {
+  background-color: rgba(124, 58, 237, 0.2);
+  color: #C084FC;
+  border: 1px solid rgba(124, 58, 237, 0.35);
+}
+
+.landing-nav-hub-btn {
+  padding: 8px 20px;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.landing-nav-signin-btn {
+  padding: 8px 18px;
+  font-size: 0.875rem;
+}
+
+.landing-nav-register-btn {
+  padding: 8px 22px;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+/* Hero Section Refinements */
+.landing-hero-announcement-margin {
+  margin-bottom: 22px;
+}
+
+.landing-hero-title-text {
+  font-size: clamp(2.6rem, 5vw, 4.1rem);
+  font-weight: 800;
+  color: var(--primary-text);
+  letter-spacing: -1.5px;
+  margin-bottom: 20px;
+  line-height: 1.15;
+}
+
+.landing-hero-desc-text {
+  font-size: 1.15rem;
+  color: var(--secondary-text);
+  margin-bottom: 34px;
+  line-height: 1.65;
+  max-width: 540px;
+}
+
+.hero-cta-btn-primary-lg {
+  padding: 15px 36px;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.hero-cta-btn-secondary-lg {
+  padding: 14px 34px;
+  font-size: 1.025rem;
+}
+
+/* Orbit Badges Positions */
+.holo-orbit-pos-1 {
+  position: absolute;
+  top: 35px;
+  left: -30px;
+  z-index: 11;
+}
+
+.holo-orbit-pos-2 {
+  position: absolute;
+  top: 45px;
+  right: -30px;
+  z-index: 11;
+}
+
+.holo-orbit-pos-3 {
+  position: absolute;
+  bottom: 110px;
+  left: -40px;
+  z-index: 11;
+}
+
+.holo-orbit-pos-4 {
+  position: absolute;
+  bottom: 20px;
+  right: -25px;
+  z-index: 11;
+}
+
+/* Hero Featured Match Card */
+.hero-match-card-pos {
+  padding: 24px 26px;
+  position: relative;
+  z-index: 2;
+  max-width: 400px;
+  width: 100%;
+  margin-top: 130px;
+  background-color: rgba(15, 23, 42, 0.48);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.5), inset 0 1.5px 1px rgba(255, 255, 255, 0.35);
+}
+
+.hero-match-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.hero-match-title-text {
+  font-size: 1.2rem;
+  margin-bottom: 4px;
+  color: var(--primary-text);
+}
+
+.hero-match-sub-text {
+  font-size: 0.85rem;
+  color: var(--secondary-text);
+  margin-bottom: 14px;
+}
+
+.hero-match-factors-container {
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  background-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.hero-match-factors-label-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.775rem;
+}
+
+.hero-match-factor-status-high {
+  color: #10B981;
+}
+
+.hero-match-factor-track {
+  height: 6px;
+  background-color: var(--border-color);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.hero-match-factor-bar-green {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #10B981, #34D399);
+  box-shadow: 0 0 10px #10B981;
+}
+
+.hero-match-skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.hero-match-footer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: 14px;
+}
+
+.hero-match-salary-text {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--primary-text);
+}
+
+.hero-match-btn-sm {
+  padding: 8px 18px;
+  font-size: 0.825rem;
+}
+
+/* Skill Gap Preview Overlay Card */
+.hero-skillgap-card-pos {
+  position: absolute;
+  bottom: -20px;
+  right: -10px;
+  padding: 18px;
+  width: 270px;
+  z-index: 3;
+  box-shadow: var(--shadow-lg), 0 0 20px rgba(236, 72, 153, 0.25);
+  border: 1px solid rgba(236, 72, 153, 0.45);
+  background-color: var(--card-bg);
+  backdrop-filter: blur(16px);
+  cursor: pointer;
+}
+
+.hero-skillgap-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #EC4899;
+  margin-bottom: 8px;
+}
+
+.hero-skillgap-title-text {
+  font-size: 0.8rem;
+}
+
+.hero-skillgap-body-text {
+  font-size: 0.75rem;
+  color: var(--secondary-text);
+  margin-bottom: 8px;
+}
+
+.hero-skillgap-chip-sm {
+  font-size: 0.7rem;
+}
+
+/* How It Works Section */
+.landing-how-section {
+  padding: 80px 24px;
+  background-color: rgba(124, 58, 237, 0.04);
+  border-top: 1px solid var(--border-color);
+}
+
+.landing-section-container {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.landing-section-header-center {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.landing-section-tag-purple {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #C084FC;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.landing-section-title-lg {
+  font-size: 2.4rem;
+  margin-top: 8px;
+  color: var(--primary-text);
+}
+
+.landing-section-desc-sub {
+  font-size: 1rem;
+  color: var(--secondary-text);
+  margin-top: 8px;
+}
+
+.landing-how-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 20px;
+}
+
+.landing-how-card {
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border-top: 3px solid #A855F7;
+}
+
+.landing-how-step-num {
+  font-size: 1.8rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #7C3AED, #EC4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: var(--font-heading);
+  margin-bottom: 10px;
+}
+
+.landing-how-title-text {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  color: var(--primary-text);
+}
+
+.landing-how-desc-text {
+  font-size: 0.85rem;
+  color: var(--secondary-text);
+  line-height: 1.6;
+}
+
+/* Features Section */
+.landing-features-section {
+  padding: 80px 24px;
+}
+
+.landing-features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.landing-feature-card {
+  padding: 28px;
+}
+
+.landing-feature-icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.landing-feature-title-text {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: var(--primary-text);
+}
+
+.landing-feature-desc-text {
+  font-size: 0.875rem;
+  color: var(--secondary-text);
+  line-height: 1.6;
+}
+
+/* Roles Split Section */
+.landing-split-section {
+  padding: 80px 24px;
+  background-color: rgba(124, 58, 237, 0.03);
+  border-top: 1px solid var(--border-color);
+}
+
+.landing-split-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 32px;
+}
+
+.landing-split-card-student {
+  padding: 36px;
+  background: var(--card-bg);
+  border: 1.5px solid rgba(124, 58, 237, 0.35);
+}
+
+.landing-split-card-employer {
+  padding: 36px;
+  background: var(--card-bg);
+  border: 1.5px solid rgba(236, 72, 153, 0.35);
+}
+
+.landing-split-badge-margin {
+  margin-bottom: 14px;
+}
+
+.landing-split-title-text {
+  font-size: 1.6rem;
+  margin-bottom: 12px;
+  color: var(--primary-text);
+}
+
+.landing-split-bullets-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 0;
+}
+
+.landing-split-bullet-item {
+  display: flex;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: var(--secondary-text);
+}
+
+.landing-split-bullet-icon {
+  flex-shrink: 0;
+}
+
+.landing-split-btn-full {
+  width: 100%;
+}
+
+.landing-split-btn-employer {
+  width: 100%;
+  border-color: rgba(236, 72, 153, 0.4) !important;
+  color: #EC4899 !important;
+}
+
+/* Preview Opportunities Section */
+.landing-opps-preview-section {
+  padding: 80px 24px;
+}
+
+.landing-opps-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 36px;
+}
+
+.landing-opps-preview-title {
+  font-size: 2.2rem;
+  margin-top: 6px;
+  color: var(--primary-text);
+}
+
+.landing-opps-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* Trust & Metrics Section */
+.landing-trust-section {
+  padding: 60px 24px;
+  background-color: rgba(124, 58, 237, 0.03);
+  border-top: 1px solid var(--border-color);
+}
+
+.landing-trust-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.landing-trust-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.landing-trust-num-purple {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #C084FC;
+}
+
+.landing-trust-num-pink {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #F472B6;
+}
+
+.landing-trust-num-cyan {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #38BDF8;
+}
+
+.landing-trust-num-green {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #34D399;
+}
+
+.landing-trust-label {
+  font-size: 0.95rem;
+  color: var(--secondary-text);
+  font-weight: 500;
+}
+
+.landing-trust-footnote {
+  font-size: 0.75rem;
+  color: #64748B;
+}
+
+/* Final CTA Banner */
+.landing-final-cta-section {
+  padding: 80px 24px;
+}
+
+.landing-final-cta-card {
+  max-width: 1240px;
+  margin: 0 auto;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.8) 0%, rgba(217, 70, 239, 0.8) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 56px 40px;
+  color: #FFFFFF;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  box-shadow: var(--shadow-neon);
+}
+
+.landing-final-cta-title {
+  color: #FFFFFF;
+  font-size: 2.4rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.landing-final-cta-desc {
+  color: #FDF4FF;
+  font-size: 1.05rem;
+  max-width: 580px;
+}
+
+.landing-final-cta-btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.landing-final-cta-btn-glow {
+  padding: 14px 34px;
+  font-size: 1.025rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.landing-final-cta-btn-glass {
+  padding: 14px 34px;
+  font-size: 1.025rem;
+  background-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Footer Section */
+.landing-footer-brand-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--primary-text);
+  margin-bottom: 14px;
+}
+
+.landing-footer-brand-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #7C3AED, #EC4899);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.landing-footer-brand-title {
+  font-size: 1.15rem;
+}
+
+.landing-footer-desc-text {
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.landing-footer-col-title {
+  color: var(--primary-text);
+  font-size: 0.95rem;
+  margin-bottom: 14px;
+}
+
+.landing-footer-links-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.landing-footer-link-item {
+  cursor: pointer;
+  color: var(--secondary-text);
+  transition: color 0.15s ease;
+}
+
+.landing-footer-link-item:hover {
+  color: var(--primary-text);
+}
+
+.landing-footer-admin-link {
+  cursor: pointer;
+  color: var(--secondary-text);
+  font-size: 0.8rem;
+  display: inline-block;
+  margin-top: 10px;
+  opacity: 0.7;
+}
+
+.landing-footer-admin-link:hover {
+  opacity: 1;
+  color: #A855F7;
+}
+
+.landing-footer-bottom-bar {
+  max-width: 1240px;
+  margin: 0 auto;
+  border-top: 1px solid var(--border-color);
+  padding-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.var-primary-text {
+  color: var(--primary-text);
+}

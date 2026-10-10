@@ -74,13 +74,7 @@ export default function FloatingParticles3D({ count = 35 }) {
   return (
     <canvas
       ref={canvasRef}
-      style={{
-        position: 'fixed',
-        inset: 0,
-        pointerEvents: 'none',
-        zIndex: 0,
-        opacity: 0.8,
-      }}
+      className="floating-particles-canvas"
     />
   );
 }

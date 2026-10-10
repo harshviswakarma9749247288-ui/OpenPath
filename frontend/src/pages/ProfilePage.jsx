@@ -101,94 +101,56 @@ export default function ProfilePage() {
   };
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
+    <div className="profile-page-wrapper">
       <BackButton
         label={isAdmin ? "Back to Admin Command Center" : "Back to Dashboard"}
         fallbackPage={isAdmin ? "admin" : "dashboard"}
-        style={{ marginBottom: '20px' }}
+        className="profile-back-btn"
       />
 
       {/* 1. Profile Top Card */}
-      <div
-        className="card card-featured"
-        style={{
-          padding: '32px',
-          marginBottom: '28px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '24px',
-        }}
-      >
-        <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+      <div className="card card-featured profile-top-card">
+        <div className="profile-header-user">
           <img
             src={
               user?.avatar ||
               'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200'
             }
             alt={user?.name}
-            style={{
-              width: '84px',
-              height: '84px',
-              borderRadius: '50%',
-              objectFit: 'cover',
-              border: isAdmin ? '3px solid rgba(239, 68, 68, 0.5)' : '3px solid rgba(168, 85, 247, 0.5)',
-              boxShadow: isAdmin ? '0 0 20px rgba(239, 68, 68, 0.35)' : '0 0 20px rgba(124, 58, 237, 0.4)',
-            }}
+            className={`profile-user-avatar ${isAdmin ? 'admin-mode' : ''}`}
           />
 
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--primary-text)' }}>
+            <div className="profile-name-row">
+              <h1 className="profile-name-text">
                 {user?.name}
               </h1>
               <span
-                className="badge badge-internship"
-                style={{
-                  textTransform: 'uppercase',
-                  backgroundColor: isAdmin ? 'rgba(239, 68, 68, 0.2)' : undefined,
-                  color: isAdmin ? '#F87171' : undefined,
-                  border: isAdmin ? '1px solid rgba(239, 68, 68, 0.4)' : undefined,
-                }}
+                className={`badge badge-internship profile-role-badge ${isAdmin ? 'admin-badge' : ''}`}
               >
                 {user?.role} Profile
               </span>
             </div>
-            <p style={{ fontSize: '0.9rem', color: 'var(--secondary-text)', marginTop: '2px' }}>
+            <p className="profile-email-meta">
               {user?.email} • {user?.location?.city || 'Location not specified'} ({user?.location?.remotePreference || 'Remote'})
             </p>
-            <p style={{ fontSize: '0.85rem', color: 'var(--primary-text)', marginTop: '8px', maxWidth: '540px' }}>
+            <p className="profile-bio-text">
               {user?.bio || (isAdmin ? 'Platform Administrator with complete system access.' : 'No bio provided yet. Click "Edit Profile" to introduce yourself.')}
             </p>
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '12px' }}>
+        <div className="profile-header-actions">
           {isAdmin ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span
-                style={{
-                  fontSize: '0.75rem',
-                  fontWeight: 800,
-                  padding: '6px 14px',
-                  borderRadius: '9999px',
-                  backgroundColor: 'rgba(239, 68, 68, 0.15)',
-                  color: '#F87171',
-                  border: '1px solid rgba(239, 68, 68, 0.4)',
-                  letterSpacing: '0.5px',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                }}
-              >
+            <div className="profile-name-row">
+              <span className="profile-admin-shield-badge">
                 <ShieldCheck size={14} /> PLATFORM ADMINISTRATOR
               </span>
             </div>
           ) : (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div style={{ textAlign: 'right' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>
+            <div className="profile-completion-row">
+              <div className="text-right">
+                <span className="profile-completion-label">
                   PROFILE COMPLETION
                 </span>
               </div>
@@ -196,27 +158,24 @@ export default function ProfilePage() {
             </div>
           )}
 
-          <div style={{ display: 'flex', gap: '10px' }}>
+          <div className="profile-btn-group">
             <button
               onClick={() => setIsEditing(!isEditing)}
-              className="btn-secondary"
-              style={{ padding: '8px 14px', fontSize: '0.825rem' }}
+              className="btn-secondary profile-btn-sm"
             >
               <Edit3 size={14} /> {isEditing ? 'Cancel Edit' : 'Edit Profile'}
             </button>
             {isAdmin ? (
               <button
                 onClick={() => navigate('admin')}
-                className="btn-primary"
-                style={{ padding: '8px 16px', fontSize: '0.825rem', backgroundColor: '#EF4444' }}
+                className="btn-primary profile-btn-admin-action"
               >
                 <ShieldCheck size={14} /> Admin Command Center
               </button>
             ) : (
               <button
                 onClick={handleDownloadDigitalResume}
-                className="btn-primary"
-                style={{ padding: '8px 16px', fontSize: '0.825rem' }}
+                className="btn-primary profile-btn-resume-action"
               >
                 <Download size={14} /> Download Resume (PDF)
               </button>
@@ -227,10 +186,10 @@ export default function ProfilePage() {
 
       {isEditing ? (
         /* Edit Profile Form */
-        <form onSubmit={handleSaveProfile} className="card card-featured" style={{ padding: '32px', marginBottom: '28px' }}>
-          <h3 style={{ fontSize: '1.25rem', marginBottom: '20px', color: 'var(--primary-text)' }}>Edit Profile Information</h3>
+        <form onSubmit={handleSaveProfile} className="card card-featured profile-edit-form">
+          <h3 className="profile-edit-title">Edit Profile Information</h3>
 
-          <div className="form-grid-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div className="form-grid-2col">
             <div className="form-group">
               <label className="form-label">Full Name</label>
               <input
@@ -252,7 +211,7 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <div className="form-grid-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div className="form-grid-2col">
             <div className="form-group">
               <label className="form-label">Work Mode Preference</label>
               <select
@@ -280,8 +239,8 @@ export default function ProfilePage() {
 
           {!isAdmin && (
             <>
-              <h4 style={{ fontSize: '1rem', color: '#38BDF8', marginTop: '16px', marginBottom: '12px' }}>Education</h4>
-              <div className="form-grid-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <h4 className="profile-section-heading-cyan">Education</h4>
+              <div className="form-grid-2col">
                 <div className="form-group">
                   <label className="form-label">Degree</label>
                   <input
@@ -304,7 +263,7 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              <div className="form-grid-2col" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px' }}>
+              <div className="form-grid-2-1">
                 <div className="form-group">
                   <label className="form-label">Field of Study / Major</label>
                   <input
@@ -327,8 +286,8 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              <h4 style={{ fontSize: '1rem', color: '#F472B6', marginTop: '16px', marginBottom: '12px' }}>Experience & Projects</h4>
-              <div className="form-grid-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <h4 className="profile-section-heading-pink">Experience & Projects</h4>
+              <div className="form-grid-2col">
                 <div className="form-group">
                   <label className="form-label">Role / Title</label>
                   <input
@@ -351,7 +310,7 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              <div className="form-grid-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '16px' }}>
+              <div className="form-grid-1-2">
                 <div className="form-group">
                   <label className="form-label">Duration</label>
                   <input
@@ -376,7 +335,7 @@ export default function ProfilePage() {
             </>
           )}
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '16px' }}>
+          <div className="profile-form-footer">
             <button type="button" onClick={() => setIsEditing(false)} className="btn-secondary">
               Cancel
             </button>
@@ -389,139 +348,138 @@ export default function ProfilePage() {
 
       {/* 2. Structured Sections (Admin Governance Grid vs Student Education & Skills) */}
       {isAdmin ? (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
+        <div className="profile-cards-grid">
           {/* Admin Platform Authority */}
-          <div className="card" style={{ padding: '24px', borderLeft: '4px solid #EF4444' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+          <div className="card profile-card-admin-governance">
+            <div className="profile-card-title-row">
               <ShieldCheck size={20} color="#EF4444" />
-              <h3 style={{ fontSize: '1.15rem', color: 'var(--primary-text)' }}>Platform Governance Rights</h3>
+              <h3 className="profile-card-title-text">Platform Governance Rights</h3>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.85rem', color: 'var(--secondary-text)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className="profile-rights-list">
+              <div className="profile-rights-item">
                 <Check size={16} color="#10B981" />
                 <span>Manage, inspect, and suspend student and employer accounts</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="profile-rights-item">
                 <Check size={16} color="#10B981" />
                 <span>Moderate, verify, and close internship & job listings</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="profile-rights-item">
                 <Check size={16} color="#10B981" />
                 <span>Govern standardized skill ontology and curriculum roadmaps</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="profile-rights-item">
                 <Check size={16} color="#10B981" />
                 <span>Real-time platform telemetry, database health, and activity logs</span>
               </div>
             </div>
             <button
               onClick={() => navigate('admin')}
-              className="btn-primary"
-              style={{ marginTop: '20px', width: '100%', padding: '10px', fontSize: '0.825rem', backgroundColor: '#EF4444' }}
+              className="btn-primary profile-btn-admin-full"
             >
               Open Admin Command Center
             </button>
           </div>
 
           {/* Admin Account Security & Controls */}
-          <div className="card" style={{ padding: '24px', borderLeft: '4px solid #38BDF8' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+          <div className="card profile-card-admin-security">
+            <div className="profile-card-title-row">
               <Server size={20} color="#38BDF8" />
-              <h3 style={{ fontSize: '1.15rem', color: 'var(--primary-text)' }}>Security & Session Controls</h3>
+              <h3 className="profile-card-title-text">Security & Session Controls</h3>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.85rem', color: 'var(--secondary-text)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 14px', backgroundColor: 'var(--box-subtle)', borderRadius: '8px' }}>
+            <div className="profile-controls-list">
+              <div className="profile-control-row">
                 <span>Authentication Modes:</span>
-                <strong style={{ color: 'var(--primary-text)' }}>Password & Email OTP</strong>
+                <strong className="var-primary-text">Password & Email OTP</strong>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 14px', backgroundColor: 'var(--box-subtle)', borderRadius: '8px' }}>
+              <div className="profile-control-row">
                 <span>Permission Scope:</span>
-                <strong style={{ color: '#EF4444' }}>Full Platform Administrator</strong>
+                <strong className="profile-control-val-admin">Full Platform Administrator</strong>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 14px', backgroundColor: 'var(--box-subtle)', borderRadius: '8px' }}>
+              <div className="profile-control-row">
                 <span>Account Status:</span>
-                <strong style={{ color: '#10B981' }}>Active & Verified</strong>
+                <strong className="profile-control-val-green">Active & Verified</strong>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 14px', backgroundColor: 'var(--box-subtle)', borderRadius: '8px' }}>
+              <div className="profile-control-row">
                 <span>Listing Moderation:</span>
-                <strong style={{ color: '#C084FC' }}>Enforced & Enabled</strong>
+                <strong className="profile-control-val-purple">Enforced & Enabled</strong>
               </div>
             </div>
           </div>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
+        <div className="profile-cards-grid">
           {/* Academic Education */}
-          <div className="card" style={{ padding: '24px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+          <div className="card profile-card-standard">
+            <div className="profile-card-title-row">
               <GraduationCap size={20} color="#38BDF8" />
-              <h3 style={{ fontSize: '1.15rem', color: 'var(--primary-text)' }}>Education</h3>
+              <h3 className="profile-card-title-text">Education</h3>
             </div>
 
             {user?.education?.degree || user?.education?.institution ? (
-              <div style={{ padding: '16px', backgroundColor: 'var(--box-subtle)', borderRadius: '10px', border: '1px solid var(--box-subtle-border)' }}>
-                <strong style={{ fontSize: '1rem', color: 'var(--primary-text)' }}>
+              <div className="profile-item-box">
+                <strong className="profile-item-title">
                   {user?.education?.degree || 'Degree not specified'}
                 </strong>
                 {user?.education?.institution && (
-                  <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', marginTop: '2px' }}>
+                  <p className="profile-item-subtitle">
                     {user.education.institution}
                   </p>
                 )}
-                <div style={{ display: 'flex', gap: '10px', marginTop: '8px', fontSize: '0.8rem', color: 'var(--secondary-text)' }}>
+                <div className="profile-item-meta">
                   {user?.education?.fieldOfStudy && <span>Major: {user.education.fieldOfStudy}</span>}
                   {user?.education?.fieldOfStudy && user?.education?.endYear && <span>•</span>}
                   {user?.education?.endYear && <span>Class of {user.education.endYear}</span>}
                 </div>
               </div>
             ) : (
-              <div style={{ padding: '20px', backgroundColor: 'var(--box-subtle)', borderRadius: '10px', border: '1px dashed var(--box-subtle-border)', textAlign: 'center', color: 'var(--secondary-text)', fontSize: '0.85rem' }}>
+              <div className="profile-item-empty">
                 No education details added yet. Click &quot;Edit Profile&quot; to add your academic background.
               </div>
             )}
           </div>
 
           {/* Experience & Projects */}
-          <div className="card" style={{ padding: '24px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+          <div className="card profile-card-standard">
+            <div className="profile-card-title-row">
               <Briefcase size={20} color="#F472B6" />
-              <h3 style={{ fontSize: '1.15rem', color: 'var(--primary-text)' }}>Experience & Projects</h3>
+              <h3 className="profile-card-title-text">Experience & Projects</h3>
             </div>
 
             {user?.experience?.role || user?.experience?.organization ? (
-              <div style={{ padding: '16px', backgroundColor: 'var(--box-subtle)', borderRadius: '10px', border: '1px solid var(--box-subtle-border)' }}>
-                <strong style={{ fontSize: '1rem', color: 'var(--primary-text)' }}>
+              <div className="profile-item-box">
+                <strong className="profile-item-title">
                   {user?.experience?.role || 'Role not specified'}
                 </strong>
-                <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', marginTop: '2px' }}>
+                <p className="profile-item-subtitle">
                   {user?.experience?.organization || 'Project / Org'} {user?.experience?.duration ? `(${user.experience.duration})` : ''}
                 </p>
                 {user?.experience?.description && (
-                  <p style={{ fontSize: '0.8rem', color: 'var(--primary-text)', marginTop: '8px' }}>
+                  <p className="profile-bio-text">
                     {user.experience.description}
                   </p>
                 )}
               </div>
             ) : (
-              <div style={{ padding: '20px', backgroundColor: 'var(--box-subtle)', borderRadius: '10px', border: '1px dashed var(--box-subtle-border)', textAlign: 'center', color: 'var(--secondary-text)', fontSize: '0.85rem' }}>
+              <div className="profile-item-empty">
                 No experience or projects added yet. Click &quot;Edit Profile&quot; to record your contributions.
               </div>
             )}
           </div>
 
           {/* Verified Skills */}
-          <div className="card" style={{ padding: '24px', gridColumn: '1 / -1' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div className="card profile-card-full-span">
+            <div className="profile-skills-header-row">
+              <div className="profile-card-title-row">
                 <Sparkles size={20} color="#C084FC" />
-                <h3 style={{ fontSize: '1.15rem', color: 'var(--primary-text)' }}>Verified Candidate Skills</h3>
+                <h3 className="profile-card-title-text">Verified Candidate Skills</h3>
               </div>
-              <button onClick={() => navigate('profile-setup')} className="btn-outline" style={{ padding: '4px 10px', fontSize: '0.75rem' }}>
+              <button onClick={() => navigate('profile-setup')} className="btn-outline profile-skills-btn">
                 Manage Skills
               </button>
             </div>
 
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+            <div className="profile-skills-wrap">
               {(user?.skills && user.skills.length > 0) ? (
                 user.skills.map((skill, idx) => (
                   <span key={skill._id || idx} className="skill-chip skill-chip-matched">
@@ -529,7 +487,7 @@ export default function ProfilePage() {
                   </span>
                 ))
               ) : (
-                <span style={{ fontSize: '0.85rem', color: 'var(--secondary-text)' }}>
+                <span className="profile-empty-skills-msg">
                   No verified skills added yet. Click &quot;Manage Skills&quot; to add your technical abilities.
                 </span>
               )}

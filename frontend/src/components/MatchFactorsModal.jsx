@@ -10,170 +10,113 @@ export default function MatchFactorsModal({ matchData, opportunityTitle, onClose
   const { overallScore, breakdown, matchedSkills = [], missingSkills = [] } = matchData;
 
   const factors = [
-    { key: 'skillMatch', name: 'Skill Match', weight: 40, data: breakdown?.skillMatch, color: '#A855F7' },
-    { key: 'qualification', name: 'Academic Qualification', weight: 20, data: breakdown?.qualification, color: '#10B981' },
-    { key: 'location', name: 'Location & Work Mode', weight: 20, data: breakdown?.location, color: '#06B6D4' },
-    { key: 'interest', name: 'Industry & Domain Interest', weight: 10, data: breakdown?.interest, color: '#EC4899' },
-    { key: 'experience', name: 'Experience & Practical Background', weight: 10, data: breakdown?.experience, color: '#F59E0B' },
+    { key: 'skillMatch', name: 'Skill Match', weight: 40, data: breakdown?.skillMatch, barClass: 'bar-skillMatch' },
+    { key: 'qualification', name: 'Academic Qualification', weight: 20, data: breakdown?.qualification, barClass: 'bar-qualification' },
+    { key: 'location', name: 'Location & Work Mode', weight: 20, data: breakdown?.location, barClass: 'bar-location' },
+    { key: 'interest', name: 'Industry & Domain Interest', weight: 10, data: breakdown?.interest, barClass: 'bar-interest' },
+    { key: 'experience', name: 'Experience & Practical Background', weight: 10, data: breakdown?.experience, barClass: 'bar-experience' },
   ];
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(3, 7, 18, 0.75)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 1000,
-        padding: '16px',
-      }}
-    >
-      <div
-        className="card animate-fade-in"
-        style={{
-          width: '100%',
-          maxWidth: '680px',
-          maxHeight: '90vh',
-          overflowY: 'auto',
-          padding: '28px',
-          position: 'relative',
-          borderRadius: 'var(--radius-lg)',
-          backgroundColor: 'var(--card-bg)',
-          border: '1px solid var(--border-color)',
-          boxShadow: 'var(--shadow-lg), 0 0 35px rgba(124, 58, 237, 0.15)',
-        }}
-      >
+    <div className="candidate-modal-overlay">
+      <div className="card animate-fade-in match-modal-card">
         {/* Close Button */}
         <button
           onClick={onClose}
-          style={{ position: 'absolute', top: '20px', right: '20px', color: 'var(--secondary-text)' }}
+          className="modal-close-btn"
+          aria-label="Close match breakdown"
         >
           <X size={20} />
         </button>
 
         {/* Modal Header */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
+        <div className="match-modal-header">
           <MatchScoreBadge score={overallScore} size={64} strokeWidth={5} showLabel={false} />
           <div>
-            <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--primary-text)' }}>
+            <h3 className="match-modal-title">
               Explainable Match Breakdown
             </h3>
-            <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)' }}>
+            <p className="candidate-bg-desc">
               Computed algorithmically across 5 core dimensions for{' '}
-              <strong style={{ color: 'var(--primary-text)' }}>{opportunityTitle}</strong>
+              <strong>{opportunityTitle}</strong>
             </p>
           </div>
         </div>
 
         {/* Factors Breakdown Bars */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
+        <div className="match-factors-list">
           {factors.map((f) => {
             const score = f.data?.score || 0;
             const contrib = f.data?.contribution || 0;
             const details = f.data?.details || '';
 
             return (
-              <div
-                key={f.key}
-                style={{
-                  padding: '14px 18px',
-                  backgroundColor: 'var(--box-subtle)',
-                  borderRadius: 'var(--radius-md)',
-                  border: '1px solid var(--box-subtle-border)',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <strong style={{ fontSize: '0.9rem', color: 'var(--primary-text)' }}>{f.name}</strong>
-                    <span style={{ fontSize: '0.75rem', color: '#7C3AED', backgroundColor: 'rgba(124, 58, 237, 0.12)', padding: '1px 8px', borderRadius: '9999px', border: '1px solid rgba(124, 58, 237, 0.25)' }}>
+              <div key={f.key} className="match-factor-item">
+                <div className="match-factor-item-header">
+                  <div className="candidate-card-title-row">
+                    <strong className="match-factor-name">{f.name}</strong>
+                    <span className="match-factor-weight-pill">
                       Weight: {f.weight}%
                     </span>
                   </div>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#C026D3' }}>
+                  <span className="match-factor-contrib">
                     +{contrib}% / {f.weight}%
                   </span>
                 </div>
 
-                {/* Progress bar */}
-                <div style={{ height: '7px', backgroundColor: 'var(--border-color)', borderRadius: '4px', overflow: 'hidden', marginBottom: '6px' }}>
+                {/* Progress bar with dynamic percentage width */}
+                <div className="match-factor-track">
                   <div
-                    style={{
-                      height: '100%',
-                      width: `${score}%`,
-                      background: `linear-gradient(90deg, ${f.color} 0%, #EC4899 100%)`,
-                      boxShadow: `0 0 10px ${f.color}88`,
-                      borderRadius: '4px',
-                      transition: 'width 0.8s ease',
-                    }}
+                    className={`match-factor-bar ${f.barClass}`}
+                    style={{ width: `${score}%` }}
                   />
                 </div>
 
-                <p style={{ fontSize: '0.775rem', color: 'var(--secondary-text)' }}>{details}</p>
+                <p className="match-factor-details">{details}</p>
               </div>
             );
           })}
         </div>
 
         {/* Skills Matched vs Missing */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '24px' }}>
-          <div
-            style={{
-              padding: '14px',
-              backgroundColor: 'rgba(16, 185, 129, 0.1)',
-              borderRadius: 'var(--radius-md)',
-              border: '1px solid rgba(16, 185, 129, 0.3)',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#34D399', marginBottom: '8px' }}>
+        <div className="match-skills-grid">
+          <div className="match-skills-box matched">
+            <div className="match-skills-box-header matched">
               <CheckCircle size={16} />
-              <strong style={{ fontSize: '0.85rem' }}>Matched Skills ({matchedSkills.length})</strong>
+              <strong className="match-factor-details">Matched Skills ({matchedSkills.length})</strong>
             </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+            <div className="match-skills-list">
               {matchedSkills.map((s, idx) => (
                 <span key={idx} className="skill-chip skill-chip-matched">
                   {s.name || s}
                 </span>
               ))}
               {matchedSkills.length === 0 && (
-                <span style={{ fontSize: '0.8rem', color: '#6EE7B7' }}>No direct skill overlaps yet</span>
+                <span className="candidate-bg-desc">No direct skill overlaps yet</span>
               )}
             </div>
           </div>
 
-          <div
-            style={{
-              padding: '14px',
-              backgroundColor: 'rgba(244, 63, 94, 0.1)',
-              borderRadius: 'var(--radius-md)',
-              border: '1px solid rgba(244, 63, 94, 0.3)',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#FDA4AF', marginBottom: '8px' }}>
+          <div className="match-skills-box missing">
+            <div className="match-skills-box-header missing">
               <AlertTriangle size={16} />
-              <strong style={{ fontSize: '0.85rem' }}>Missing Skills ({missingSkills.length})</strong>
+              <strong className="match-factor-details">Missing Skills ({missingSkills.length})</strong>
             </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+            <div className="match-skills-list">
               {missingSkills.map((s, idx) => (
                 <span key={idx} className="skill-chip skill-chip-missing">
                   {s.name || s}
                 </span>
               ))}
               {missingSkills.length === 0 && (
-                <span style={{ fontSize: '0.8rem', color: '#FDA4AF' }}>You have 100% of required skills!</span>
+                <span className="candidate-bg-desc">You have 100% of required skills!</span>
               )}
             </div>
           </div>
         </div>
 
         {/* Modal CTAs */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+        <div className="candidate-modal-actions">
           <button onClick={onClose} className="btn-secondary">
             Close
           </button>

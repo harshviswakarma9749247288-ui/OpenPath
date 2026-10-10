@@ -68,10 +68,10 @@ export default function SkillGapPage({ opportunityId }) {
 
   if (!gapData) {
     return (
-      <div style={{ maxWidth: '700px', margin: '60px auto', textAlign: 'center', padding: '40px' }} className="card">
-        <AlertTriangle size={48} color="#F59E0B" style={{ margin: '0 auto 16px auto' }} />
-        <h2 style={{ fontSize: '1.4rem', marginBottom: '8px', color: 'var(--primary-text)' }}>No Opportunity Selected</h2>
-        <p style={{ color: 'var(--secondary-text)', marginBottom: '24px' }}>
+      <div className="card dashboard-empty-state">
+        <AlertTriangle size={48} color="#F59E0B" className="dashboard-empty-icon" />
+        <h2 className="dashboard-empty-title">No Opportunity Selected</h2>
+        <p className="dashboard-empty-sub">
           Please select an opportunity from the dashboard or listings to analyze your personalized skill gap readiness.
         </p>
         <button onClick={() => navigate('opportunities')} className="btn-primary">
@@ -85,7 +85,7 @@ export default function SkillGapPage({ opportunityId }) {
     gapData;
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
+    <div className="dashboard-container">
       <BackButton
         label={isAdmin ? "Back to Admin Command" : "Back to Opportunity"}
         fallbackPage={isAdmin ? "admin" : "details"}
@@ -93,164 +93,106 @@ export default function SkillGapPage({ opportunityId }) {
       />
 
       {/* Header Banner */}
-      <div
-        className="card card-featured"
-        style={{
-          padding: '32px',
-          marginBottom: '28px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '20px',
-        }}
-      >
+      <div className="card card-featured dashboard-header-banner">
         <div>
-          <span
-            style={{
-              fontSize: '0.75rem',
-              fontWeight: 700,
-              color: '#C084FC',
-              textTransform: 'uppercase',
-              backgroundColor: 'rgba(168, 85, 247, 0.15)',
-              border: '1px solid rgba(168, 85, 247, 0.35)',
-              padding: '4px 12px',
-              borderRadius: '9999px',
-              letterSpacing: '0.05em',
-            }}
-          >
+          <span className="header-category-pill">
             SKILL GAP ANALYSIS
           </span>
-          <h1 style={{ fontSize: '2rem', marginTop: '12px', color: 'var(--primary-text)' }}>
+          <h1 className="header-title-main">
             Target Skill Readiness
           </h1>
-          <p style={{ fontSize: '1rem', color: 'var(--secondary-text)', marginTop: '4px' }}>
-            For <strong style={{ color: 'var(--primary-text)' }}>{opportunityTitle}</strong> at {organization}
+          <p className="header-sub-text">
+            For <strong>{opportunityTitle}</strong> at {organization}
           </p>
-          <p style={{ fontSize: '0.9rem', color: 'var(--primary-text)', marginTop: '12px', maxWidth: '540px' }}>
+          <p className="candidate-modal-bio">
             {recommendationNote}
           </p>
         </div>
 
         {/* Readiness Meter with 3D Tilt */}
-        <Tilt3DCard
-          style={{
-            padding: '24px 28px',
-            backgroundColor: 'var(--card-bg)',
-            backdropFilter: 'blur(12px)',
-            borderRadius: 'var(--radius-lg)',
-            border: '1px solid rgba(168, 85, 247, 0.35)',
-            boxShadow: '0 0 20px rgba(124, 58, 237, 0.2)',
-            textAlign: 'center',
-          }}
-        >
-          <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>
+        <Tilt3DCard className="readiness-meter-card">
+          <span className="kpi-label">
             ROLE SKILL READINESS
           </span>
-          <h2 style={{ fontSize: '2.5rem', color: '#C084FC', fontWeight: 800, textShadow: '0 0 20px rgba(192, 132, 252, 0.4)' }}>
+          <h2 className="readiness-percentage-value">
             {readinessPercentage}%
           </h2>
-          <span style={{ fontSize: '0.8rem', color: '#34D399', fontWeight: 600 }}>
+          <span className="readiness-matched-label">
             {matchedSkills.length} of {matchedSkills.length + missingSkills.length} Required Skills
           </span>
         </Tilt3DCard>
       </div>
 
       {/* Matched Skills Section */}
-      <div style={{ marginBottom: '32px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+      <div className="dashboard-section-wrap">
+        <div className="candidate-card-title-row mb-14">
           <CheckCircle2 size={20} color="#34D399" />
-          <h3 style={{ fontSize: '1.25rem', color: 'var(--primary-text)' }}>
+          <h3 className="dashboard-section-title">
             Verified In Your Profile ({matchedSkills.length})
           </h3>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '14px' }}>
+        <div className="skillgap-verified-grid">
           {matchedSkills.map((s, idx) => (
-            <div
-              key={idx}
-              className="card"
-              style={{
-                padding: '16px',
-                borderLeft: '4px solid #10B981',
-                backgroundColor: 'var(--status-green-bg)',
-                border: '1px solid var(--status-green-border)',
-              }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                <strong style={{ fontSize: '1rem', color: 'var(--status-green-text)' }}>{s.name}</strong>
-                <span style={{ fontSize: '0.7rem', color: 'var(--status-green-text)', backgroundColor: 'var(--status-green-bg)', border: '1px solid var(--status-green-border)', padding: '2px 8px', borderRadius: '4px', fontWeight: 600 }}>
+            <div key={idx} className="card skillgap-verified-card">
+              <div className="candidate-card-title-row space-between mb-4">
+                <strong className="skillgap-skill-name">{s.name}</strong>
+                <span className="skillgap-badge-green">
                   {s.category || 'Skill'}
                 </span>
               </div>
-              <p style={{ fontSize: '0.8rem', color: 'var(--secondary-text)' }}>
+              <p className="candidate-bg-desc">
                 Proficiency verified. Contributes to your 40% skill factor.
               </p>
             </div>
           ))}
           {matchedSkills.length === 0 && (
-            <p style={{ color: 'var(--secondary-text)', fontSize: '0.85rem' }}>No skills currently matched.</p>
+            <p className="candidate-bg-desc">No skills currently matched.</p>
           )}
         </div>
       </div>
 
       {/* Missing Skills Section with Direct Action Learning CTAs */}
       <div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+        <div className="candidate-card-title-row mb-14">
           <AlertTriangle size={20} color="#FBBF24" />
-          <h3 style={{ fontSize: '1.25rem', color: 'var(--primary-text)' }}>
+          <h3 className="dashboard-section-title">
             Missing Competencies to Bridge ({missingSkills.length})
           </h3>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
+        <div className="skillgap-missing-grid">
           {missingSkills.map((s, idx) => (
             <Tilt3DCard
               key={idx}
-              className="card"
+              className="card skillgap-missing-card"
               maxTilt={6}
-              style={{
-                padding: '18px',
-                borderLeft: '4px solid #F43F5E',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-              }}
             >
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <strong style={{ fontSize: '1rem', color: 'var(--primary-text)' }}>{s.name}</strong>
+                <div className="candidate-card-title-row space-between mb-8">
+                  <strong className="candidate-card-title">{s.name}</strong>
                   <span
-                    style={{
-                      fontSize: '0.7rem',
-                      fontWeight: 600,
-                      color: s.priority === 'High Priority' ? '#FDA4AF' : '#FDE68A',
-                      backgroundColor: s.priority === 'High Priority' ? 'rgba(244, 63, 94, 0.15)' : 'rgba(245, 158, 11, 0.15)',
-                      border: `1px solid ${s.priority === 'High Priority' ? 'rgba(244, 63, 94, 0.35)' : 'rgba(245, 158, 11, 0.35)'}`,
-                      padding: '2px 8px',
-                      borderRadius: '4px',
-                    }}
+                    className={`skillgap-priority-pill ${s.priority === 'High Priority' ? 'high' : 'medium'}`}
                   >
                     {s.priority}
                   </span>
                 </div>
-                <p style={{ fontSize: '0.825rem', color: 'var(--secondary-text)', marginBottom: '14px' }}>
+                <p className="candidate-bg-desc mb-14">
                   Adding competency in {s.name} directly improves your score and suitability.
                 </p>
               </div>
 
               <button
                 onClick={() => navigate('learning', { skillId: s._id, skillName: s.name })}
-                className="btn-primary"
-                style={{ padding: '8px 14px', fontSize: '0.8rem', width: '100%' }}
+                className="btn-primary skillgap-roadmap-btn"
               >
                 <BookOpen size={14} /> View Learning Roadmap <ArrowRight size={14} />
               </button>
             </Tilt3DCard>
           ))}
           {missingSkills.length === 0 && (
-            <div className="card" style={{ padding: '24px', gridColumn: '1 / -1', backgroundColor: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.35)' }}>
-              <p style={{ color: '#34D399', fontWeight: 600 }}>
+            <div className="card skillgap-all-matched-banner">
+              <p className="text-emerald-semibold">
                 Awesome! You have all the required skills for this position.
               </p>
             </div>

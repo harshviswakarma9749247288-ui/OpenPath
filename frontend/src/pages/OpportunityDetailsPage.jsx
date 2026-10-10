@@ -77,7 +77,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
 
   if (!opp) {
     return (
-      <div style={{ padding: '60px 20px', textAlign: 'center', color: 'var(--secondary-text)' }}>
+      <div className="opp-loading-box">
         <p>Loading opportunity details...</p>
       </div>
     );
@@ -128,98 +128,48 @@ export default function OpportunityDetailsPage({ opportunityId }) {
   };
 
   return (
-    <div style={{ maxWidth: '1080px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
+    <div className="opp-details-wrapper">
       {/* Top back button */}
       <BackButton label={isAdmin ? "Back to Command Center" : "Back to Opportunities"} fallbackPage={isAdmin ? "admin" : "opportunities"} />
 
       {/* 1. MATCH-FIRST HEADER CARD */}
-      <div
-        className="card card-featured"
-        style={{
-          padding: '28px',
-          marginBottom: '24px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-          flexWrap: 'wrap',
-          gap: '20px',
-        }}
-      >
-        <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-          <div
-            style={{
-              width: '64px',
-              height: '64px',
-              borderRadius: '16px',
-              backgroundColor: 'rgba(124, 58, 237, 0.15)',
-              border: '1px solid rgba(168, 85, 247, 0.35)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '1.4rem',
-              fontWeight: 800,
-              color: '#C084FC',
-              boxShadow: '0 0 15px rgba(124, 58, 237, 0.2)',
-            }}
-          >
+      <div className="card card-featured opp-details-card">
+        <div className="opp-header-left">
+          <div className="opp-logo-avatar">
             {orgName.substring(0, 2).toUpperCase()}
           </div>
 
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-              <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--primary-text)', margin: 0 }}>
+            <div className="opp-title-badge-row">
+              <h1 className="opp-title-text">
                 {opp.title}
               </h1>
               <span className="badge badge-internship">{opp.type || 'Full-time'}</span>
             </div>
-            <p style={{ fontSize: '1rem', color: 'var(--secondary-text)', marginTop: '6px', margin: '6px 0 0 0' }}>
+            <p className="opp-company-loc-sub">
               {orgName} • {locString}
             </p>
           </div>
         </div>
 
         {/* Right Match Indicator & Actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+        <div className="opp-header-actions-row">
           {isAdmin ? (
-            <span
-              style={{
-                fontSize: '0.78rem',
-                fontWeight: 700,
-                padding: '8px 14px',
-                borderRadius: '9999px',
-                backgroundColor: opp.status === 'Active' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                color: opp.status === 'Active' ? '#34D399' : '#F87171',
-                border: '1px solid var(--border-color)',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-              }}
-            >
+            <span className={`opp-admin-status-badge ${opp.status === 'Active' ? 'status-active' : 'status-inactive'}`}>
               <ShieldCheck size={14} /> STATUS: {opp.status?.toUpperCase() || 'ACTIVE'}
             </span>
           ) : matchScore !== null && matchScore !== undefined ? (
             <div
               onClick={() => navigate('match', { id: opp._id })}
-              style={{
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                padding: '8px 14px',
-                backgroundColor: 'var(--card-bg)',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-color)',
-                boxShadow: 'var(--shadow-subtle)',
-                backdropFilter: 'blur(8px)',
-              }}
+              className="opp-match-btn-trigger"
               title="Click to view 5-factor mathematical breakdown"
             >
               <MatchScoreBadge score={matchScore} size={46} showLabel={false} />
-              <div style={{ textAlign: 'left' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#7C3AED', display: 'block' }}>
+              <div className="text-left">
+                <span className="opp-match-btn-trigger-title">
                   VIEW BREAKDOWN
                 </span>
-                <span style={{ fontSize: '0.7rem', color: 'var(--secondary-text)' }}>
+                <span className="opp-match-btn-trigger-sub">
                   5-Factor Explainable
                 </span>
               </div>
@@ -230,20 +180,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
           <button
             type="button"
             onClick={handleOpenMentor}
-            style={{
-              padding: '10px 16px',
-              borderRadius: 'var(--radius-md)',
-              border: '1px solid rgba(59, 130, 246, 0.4)',
-              backgroundColor: 'rgba(59, 130, 246, 0.12)',
-              color: '#60A5FA',
-              fontWeight: 600,
-              fontSize: '0.85rem',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-            }}
+            className="opp-mentor-btn"
           >
             <Bot size={18} /> Ask AI Mentor
           </button>
@@ -251,15 +188,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
           {!isAdmin && (
             <button
               onClick={() => toggleSaveOpportunity(opp._id)}
-              style={{
-                padding: '10px',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-color)',
-                color: isSaved ? '#EC4899' : 'var(--secondary-text)',
-                backgroundColor: 'var(--chip-bg)',
-                backdropFilter: 'blur(8px)',
-                cursor: 'pointer',
-              }}
+              className={`opp-save-btn ${isSaved ? 'is-saved' : ''}`}
               title="Save Opportunity"
             >
               <Bookmark size={20} fill={isSaved ? 'currentColor' : 'none'} />
@@ -269,41 +198,18 @@ export default function OpportunityDetailsPage({ opportunityId }) {
           {isAdmin ? (
             <button
               onClick={() => navigate('admin')}
-              className="btn-primary"
-              style={{
-                padding: '10px 20px',
-                fontSize: '0.88rem',
-                background: 'linear-gradient(135deg, #EF4444 0%, #A855F7 100%)',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-              }}
+              className="btn-primary opp-admin-btn"
             >
               <ShieldCheck size={16} /> Admin Command Center
             </button>
           ) : isApplied ? (
-            <button
-              disabled
-              style={{
-                backgroundColor: 'rgba(16, 185, 129, 0.15)',
-                color: '#34D399',
-                border: '1px solid rgba(16, 185, 129, 0.35)',
-                padding: '10px 22px',
-                borderRadius: 'var(--radius-full)',
-                fontSize: '0.9rem',
-                fontWeight: 600,
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-              }}
-            >
+            <button disabled className="opp-applied-pill">
               <Check size={16} /> Applied
             </button>
           ) : (
             <button
               onClick={() => setShowApplyModal(true)}
-              className="btn-primary"
-              style={{ padding: '10px 24px', fontSize: '0.9rem' }}
+              className="btn-primary opp-apply-btn"
             >
               Apply Now
             </button>
@@ -312,49 +218,42 @@ export default function OpportunityDetailsPage({ opportunityId }) {
       </div>
 
       {/* 2. Key Highlights Strip */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '14px',
-          marginBottom: '28px',
-        }}
-      >
-        <div className="card" style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+      <div className="opp-highlights-grid">
+        <div className="card opp-highlight-card">
           <IndianRupee size={22} color="#06B6D4" />
           <div>
-            <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>STIPEND / SALARY</span>
-            <strong style={{ fontSize: '0.95rem', display: 'block', color: 'var(--primary-text)' }}>
+            <span className="opp-highlight-label">STIPEND / SALARY</span>
+            <strong className="opp-highlight-val">
               {opp.salary?.amount ? `${opp.salary.amount} / ${opp.salary.period || 'month'}` : 'Competitive'}
             </strong>
           </div>
         </div>
 
-        <div className="card" style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div className="card opp-highlight-card">
           <Calendar size={22} color="#7C3AED" />
           <div>
-            <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>APPLICATION DEADLINE</span>
-            <strong style={{ fontSize: '0.95rem', display: 'block', color: 'var(--primary-text)' }}>
+            <span className="opp-highlight-label">APPLICATION DEADLINE</span>
+            <strong className="opp-highlight-val">
               {opp.deadline ? new Date(opp.deadline).toLocaleDateString() : 'Rolling Application'}
             </strong>
           </div>
         </div>
 
-        <div className="card" style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div className="card opp-highlight-card">
           <GraduationCap size={22} color="#EC4899" />
           <div>
-            <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>ELIGIBILITY</span>
-            <strong style={{ fontSize: '0.95rem', display: 'block', color: 'var(--primary-text)' }}>
+            <span className="opp-highlight-label">ELIGIBILITY</span>
+            <strong className="opp-highlight-val">
               {opp.qualification?.degree || 'Open to All Degrees'}
             </strong>
           </div>
         </div>
 
-        <div className="card" style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div className="card opp-highlight-card">
           <Briefcase size={22} color="#10B981" />
           <div>
-            <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>EXPERIENCE</span>
-            <strong style={{ fontSize: '0.95rem', display: 'block', color: 'var(--primary-text)' }}>
+            <span className="opp-highlight-label">EXPERIENCE</span>
+            <strong className="opp-highlight-val">
               {opp.experienceRequired?.level || 'Fresher Friendly'}
             </strong>
           </div>
@@ -362,34 +261,18 @@ export default function OpportunityDetailsPage({ opportunityId }) {
       </div>
 
       {/* 3. Skill Alignment Banner */}
-      <div
-        className="card"
-        style={{
-          padding: '22px',
-          marginBottom: '28px',
-          borderLeft: '4px solid #7C3AED',
-        }}
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '10px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <div className="card opp-skills-alignment-card">
+        <div className="opp-skills-alignment-header">
+          <div className="opp-skills-alignment-title-row">
             <Sparkles size={18} color="#7C3AED" />
-            <h3 style={{ fontSize: '1.1rem', color: 'var(--primary-text)', margin: 0 }}>
+            <h3 className="opp-skills-alignment-title">
               {isAdmin ? `Required Technical Competencies (${allRequiredSkills.length})` : 'Candidate Skill Alignment'}
             </h3>
           </div>
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <div className="opp-skills-actions-group">
             <button
               onClick={handleOpenMentor}
-              className="btn-secondary"
-              style={{
-                padding: '6px 14px',
-                fontSize: '0.775rem',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                color: '#60A5FA',
-                borderColor: 'rgba(59, 130, 246, 0.4)',
-              }}
+              className="btn-secondary opp-skills-mentor-btn"
             >
               <Sparkles size={13} /> AI Mentor Analysis
             </button>
@@ -397,15 +280,13 @@ export default function OpportunityDetailsPage({ opportunityId }) {
               <>
                 <button
                   onClick={() => navigate('match', { id: opp._id })}
-                  className="btn-secondary"
-                  style={{ padding: '6px 14px', fontSize: '0.775rem' }}
+                  className="btn-secondary opp-skills-btn-sm"
                 >
                   5-Factor Math
                 </button>
                 <button
                   onClick={() => navigate('skill-gap', { id: opp._id })}
-                  className="btn-primary"
-                  style={{ padding: '6px 16px', fontSize: '0.775rem' }}
+                  className="btn-primary opp-skills-btn-primary-sm"
                 >
                   Bridge Skill Gap <ArrowRight size={14} />
                 </button>
@@ -414,35 +295,35 @@ export default function OpportunityDetailsPage({ opportunityId }) {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
+        <div className="opp-skills-compare-grid">
           <div>
-            <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#34D399', display: 'block', marginBottom: '8px' }}>
+            <span className="opp-skills-matched-heading">
               Matched Skills ({matchedSkills.length})
             </span>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+            <div className="opp-skills-chips-row">
               {matchedSkills.map((s, idx) => (
                 <span key={idx} className="skill-chip skill-chip-matched">
                   {formatSkill(s)}
                 </span>
               ))}
               {matchedSkills.length === 0 && (
-                <span style={{ fontSize: '0.8rem', color: '#94A3B8' }}>No direct skill overlaps</span>
+                <span className="opp-skills-empty-matched">No direct skill overlaps</span>
               )}
             </div>
           </div>
 
           <div>
-            <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#F87171', display: 'block', marginBottom: '8px' }}>
+            <span className="opp-skills-missing-heading">
               Missing Skills to Learn ({missingSkills.length})
             </span>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+            <div className="opp-skills-chips-row">
               {missingSkills.map((s, idx) => (
                 <span key={idx} className="skill-chip skill-chip-missing">
                   {formatSkill(s)}
                 </span>
               ))}
               {missingSkills.length === 0 && (
-                <span style={{ fontSize: '0.8rem', color: '#34D399' }}>All required skills matched!</span>
+                <span className="opp-skills-all-matched">All required skills matched!</span>
               )}
             </div>
           </div>
@@ -450,20 +331,20 @@ export default function OpportunityDetailsPage({ opportunityId }) {
       </div>
 
       {/* 4. Description, Responsibilities & Requirements */}
-      <div className="card" style={{ padding: '32px', marginBottom: '32px' }}>
-        <h3 style={{ fontSize: '1.25rem', marginBottom: '12px', color: 'var(--secondary-navy)' }}>
+      <div className="card opp-content-card">
+        <h3 className="opp-section-title-navy">
           About the Opportunity
         </h3>
-        <p style={{ fontSize: '0.95rem', color: 'var(--primary-text)', lineHeight: '1.7', marginBottom: '28px' }}>
+        <p className="opp-desc-body">
           {opp.description}
         </p>
 
         {opp.responsibilities && opp.responsibilities.length > 0 && (
-          <div style={{ marginBottom: '28px' }}>
-            <h4 style={{ fontSize: '1.05rem', marginBottom: '12px', color: 'var(--primary-text)' }}>
+          <div className="opp-block-margin">
+            <h4 className="opp-block-title">
               Core Responsibilities
             </h4>
-            <ul style={{ paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
+            <ul className="opp-bullet-list">
               {opp.responsibilities.map((resp, idx) => (
                 <li key={idx}>{resp}</li>
               ))}
@@ -473,10 +354,10 @@ export default function OpportunityDetailsPage({ opportunityId }) {
 
         {opp.requirements && opp.requirements.length > 0 && (
           <div>
-            <h4 style={{ fontSize: '1.05rem', marginBottom: '12px', color: 'var(--primary-text)' }}>
+            <h4 className="opp-block-title">
               Candidate Requirements
             </h4>
-            <ul style={{ paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
+            <ul className="opp-bullet-list">
               {opp.requirements.map((req, idx) => (
                 <li key={idx}>{req}</li>
               ))}
@@ -487,26 +368,14 @@ export default function OpportunityDetailsPage({ opportunityId }) {
 
       {/* APPLY MODAL */}
       {showApplyModal && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(7, 10, 19, 0.85)',
-            backdropFilter: 'blur(12px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-            padding: '16px',
-          }}
-        >
-          <div className="card card-featured animate-fade-in" style={{ maxWidth: '540px', width: '100%', padding: '28px', backgroundColor: 'var(--card-bg)' }}>
-            <h3 style={{ fontSize: '1.3rem', marginBottom: '8px', color: 'var(--primary-text)' }}>Submit Your Application</h3>
-            <p style={{ fontSize: '0.875rem', color: 'var(--secondary-text)', marginBottom: '18px' }}>
+        <div className="opp-modal-overlay">
+          <div className="card card-featured animate-fade-in opp-apply-modal-card">
+            <h3 className="opp-apply-modal-title">Submit Your Application</h3>
+            <p className="opp-apply-modal-sub">
               Your profile details and verified skills will be automatically shared with {orgName}.
             </p>
 
-            <div style={{ padding: '14px', backgroundColor: 'var(--box-subtle)', border: '1px solid var(--box-subtle-border)', borderRadius: '10px', marginBottom: '16px', fontSize: '0.85rem', color: 'var(--primary-text)' }}>
+            <div className="opp-apply-summary-box">
               <strong>Applicant: </strong> {user?.name || 'Applicant'} ({user?.email || 'No email specified'})<br />
               <strong>Education: </strong> {user?.education?.degree ? `${user.education.degree}${user.education.fieldOfStudy ? ` in ${user.education.fieldOfStudy}` : ''}` : 'Education not specified'} • {user?.location?.city || 'Location not specified'}
             </div>
@@ -522,7 +391,7 @@ export default function OpportunityDetailsPage({ opportunityId }) {
               />
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+            <div className="opp-modal-btn-row">
               <button onClick={() => setShowApplyModal(false)} className="btn-secondary">
                 Cancel
               </button>
@@ -530,7 +399,6 @@ export default function OpportunityDetailsPage({ opportunityId }) {
                 disabled={isApplying}
                 onClick={handleConfirmApply}
                 className="btn-primary"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
               >
                 <Send size={16} /> {isApplying ? 'Submitting...' : 'Confirm Application'}
               </button>
@@ -541,59 +409,23 @@ export default function OpportunityDetailsPage({ opportunityId }) {
 
       {/* APPLICATION SUCCESS MODAL */}
       {showSuccessModal && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(7, 10, 19, 0.7)',
-            backdropFilter: 'blur(12px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-            padding: '16px',
-          }}
-        >
-          <div
-            className="card card-featured animate-fade-in"
-            style={{
-              maxWidth: '480px',
-              width: '100%',
-              padding: '36px',
-              textAlign: 'center',
-              borderRadius: 'var(--radius-lg)',
-              backgroundColor: 'var(--card-bg)',
-            }}
-          >
-            <div
-              style={{
-                width: '64px',
-                height: '64px',
-                borderRadius: '50%',
-                backgroundColor: 'rgba(16, 185, 129, 0.15)',
-                border: '1px solid rgba(16, 185, 129, 0.35)',
-                color: '#10B981',
-                boxShadow: '0 0 25px rgba(16, 185, 129, 0.2)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto 18px auto',
-              }}
-            >
+        <div className="opp-modal-overlay">
+          <div className="card card-featured animate-fade-in opp-success-modal-card">
+            <div className="opp-success-icon-wrap">
               <CheckCircle2 size={36} />
             </div>
 
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '8px', color: 'var(--primary-text)' }}>
+            <h3 className="opp-success-title">
               Application Submitted!
             </h3>
-            <p style={{ fontSize: '0.9rem', color: 'var(--secondary-text)', marginBottom: '24px', lineHeight: '1.6' }}>
-              Your application for <strong style={{ color: 'var(--primary-text)' }}>{opp.title}</strong> has been logged with ID{' '}
-              <code style={{ background: 'rgba(6, 182, 212, 0.15)', color: '#0891B2', padding: '2px 8px', borderRadius: '4px', border: '1px solid rgba(6, 182, 212, 0.3)' }}>
+            <p className="opp-success-body">
+              Your application for <strong className="var-primary-text">{opp.title}</strong> has been logged with ID{' '}
+              <code className="opp-success-code">
                 #OP-{submittedAppId ? submittedAppId.slice(-6).toUpperCase() : 'CONFIRMED'}
               </code>. The employer has been notified.
             </p>
 
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '12px' }}>
+            <div className="opp-success-btn-row">
               <button
                 onClick={() => {
                   setShowSuccessModal(false);

@@ -150,43 +150,31 @@ export default function ProfileSetupPage() {
   };
 
   return (
-    <div style={{ maxWidth: '800px', margin: '40px auto', padding: '0 20px 80px 20px' }}>
-      <BackButton label="Back to Dashboard" fallbackPage="dashboard" style={{ marginBottom: '24px' }} />
+    <div className="profile-setup-wrapper">
+      <BackButton label="Back to Dashboard" fallbackPage="dashboard" className="profile-setup-back-btn" />
 
       {/* Onboarding Header */}
-      <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-        <span
-          style={{
-            fontSize: '0.8rem',
-            fontWeight: 700,
-            color: '#C084FC',
-            textTransform: 'uppercase',
-            backgroundColor: 'rgba(168, 85, 247, 0.15)',
-            padding: '4px 14px',
-            borderRadius: '9999px',
-            border: '1px solid rgba(168, 85, 247, 0.35)',
-            letterSpacing: '0.05em',
-          }}
-        >
+      <div className="profile-setup-header">
+        <span className="profile-setup-step-badge">
           STEP 2 OF 2: PROFILE SETUP
         </span>
-        <h1 style={{ fontSize: '2.2rem', marginTop: '12px', color: 'var(--primary-text)' }}>
+        <h1 className="profile-setup-title">
           Build Your Candidate Profile
         </h1>
-        <p style={{ color: 'var(--secondary-text)', fontSize: '0.95rem', marginTop: '6px' }}>
+        <p className="profile-setup-subtitle">
           OpenPath calculates your 5-factor match score based on your skills, education, and preferences.
         </p>
       </div>
 
-      <form onSubmit={handleSave} className="card card-featured" style={{ padding: '32px' }}>
+      <form onSubmit={handleSave} className="card card-featured profile-setup-form">
         {/* Education Section */}
-        <div style={{ marginBottom: '28px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+        <div className="profile-setup-section">
+          <div className="profile-setup-section-title-row">
             <GraduationCap size={20} color="#38BDF8" />
-            <h3 style={{ fontSize: '1.15rem', color: 'var(--primary-text)' }}>1. Academic Background</h3>
+            <h3 className="profile-setup-section-title">1. Academic Background</h3>
           </div>
 
-          <div className="form-grid-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div className="form-grid-2col">
             <div className="form-group">
               <label className="form-label">Degree</label>
               <input
@@ -211,7 +199,7 @@ export default function ProfileSetupPage() {
             </div>
           </div>
 
-          <div className="form-grid-2col" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px' }}>
+          <div className="form-grid-2-1">
             <div className="form-group">
               <label className="form-label">Field of Study / Major</label>
               <input
@@ -237,44 +225,44 @@ export default function ProfileSetupPage() {
           </div>
         </div>
 
-        <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)', margin: '24px 0' }} />
+        <hr className="profile-setup-hr" />
 
         {/* Skills Section (40% Match Weight) */}
-        <div style={{ marginBottom: '28px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div className="profile-setup-section">
+          <div className="profile-setup-skills-header">
+            <div className="profile-setup-section-title-row">
               <Sparkles size={20} color="#C084FC" />
-              <h3 style={{ fontSize: '1.15rem', color: 'var(--primary-text)' }}>2. Technical Skills</h3>
+              <h3 className="profile-setup-section-title">2. Technical Skills</h3>
             </div>
-            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#C084FC', backgroundColor: 'rgba(168, 85, 247, 0.15)', border: '1px solid rgba(168, 85, 247, 0.3)', padding: '3px 10px', borderRadius: '4px' }}>
+            <span className="profile-setup-weight-badge">
               Carries 40% Weight in Matching
             </span>
           </div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', marginBottom: '14px' }}>
+          <p className="profile-setup-skills-hint">
             Add at least 3 skills to unlock high compatibility recommendations.
           </p>
 
           {/* Current selected chips */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px', minHeight: '40px', padding: '12px', backgroundColor: 'var(--box-subtle)', borderRadius: '10px', border: '1px dashed var(--box-subtle-border)' }}>
+          <div className="profile-setup-selected-box">
             {selectedSkills.map((s) => (
               <span key={s._id || s.name} className="skill-chip skill-chip-matched">
                 {s.name}
-                <button type="button" onClick={() => handleRemoveSkill(s._id)} style={{ color: '#6EE7B7' }}>
+                <button type="button" onClick={() => handleRemoveSkill(s._id)} className="profile-setup-remove-btn">
                   <X size={14} />
                 </button>
               </span>
             ))}
             {selectedSkills.length === 0 && (
-              <span style={{ fontSize: '0.825rem', color: 'var(--secondary-text)' }}>Select skills from suggestions below or type a custom skill</span>
+              <span className="profile-setup-empty-hint">Select skills from suggestions below or type a custom skill</span>
             )}
           </div>
 
           {/* Suggestion tags */}
-          <div style={{ marginBottom: '12px' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)', display: 'block', marginBottom: '6px' }}>
+          <div className="landing-hero-announcement-margin">
+            <span className="profile-setup-suggestions-header">
               SUGGESTED FOR SOFTWARE & TECH:
             </span>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+            <div className="profile-setup-suggestions-wrap">
               {availableSkills.slice(0, 10).map((skill) => {
                 const isSelected = selectedSkills.some((s) => (s._id || s) === skill._id);
                 return (
@@ -283,18 +271,7 @@ export default function ProfileSetupPage() {
                     type="button"
                     onClick={() => handleAddSkill(skill)}
                     disabled={isSelected}
-                    style={{
-                      fontSize: '0.775rem',
-                      padding: '5px 12px',
-                      borderRadius: '6px',
-                      border: isSelected ? '1px solid rgba(16, 185, 129, 0.35)' : '1px solid var(--border-color)',
-                      backgroundColor: isSelected ? 'rgba(16, 185, 129, 0.15)' : 'var(--chip-bg)',
-                      color: isSelected ? '#34D399' : 'var(--chip-text)',
-                      cursor: isSelected ? 'default' : 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                    }}
+                    className={`profile-setup-tag-btn ${isSelected ? 'selected' : ''}`}
                   >
                     {isSelected ? <CheckCircle2 size={12} /> : <Plus size={12} />} {skill.name}
                   </button>
@@ -304,16 +281,16 @@ export default function ProfileSetupPage() {
           </div>
         </div>
 
-        <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)', margin: '24px 0' }} />
+        <hr className="profile-setup-hr" />
 
         {/* Career Interests & Location */}
-        <div style={{ marginBottom: '28px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+        <div className="profile-setup-section">
+          <div className="profile-setup-section-title-row">
             <MapPin size={20} color="#F472B6" />
-            <h3 style={{ fontSize: '1.15rem', color: 'var(--primary-text)' }}>3. Location & Preferences</h3>
+            <h3 className="profile-setup-section-title">3. Location & Preferences</h3>
           </div>
 
-          <div className="form-grid-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div className="form-grid-2col">
             <div className="form-group">
               <label className="form-label">Current City</label>
               <input
@@ -353,16 +330,15 @@ export default function ProfileSetupPage() {
         </div>
 
         {/* Bottom Actions */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '20px' }}>
+        <div className="profile-setup-footer">
           <button
             type="button"
             onClick={() => navigate('dashboard')}
-            className="btn-ghost"
-            style={{ fontSize: '0.875rem' }}
+            className="btn-ghost profile-setup-btn-skip"
           >
             Skip for now →
           </button>
-          <button type="submit" className="btn-primary" style={{ padding: '12px 28px' }}>
+          <button type="submit" className="btn-primary profile-setup-btn-save">
             Save & Explore Dashboard <ArrowRight size={18} />
           </button>
         </div>

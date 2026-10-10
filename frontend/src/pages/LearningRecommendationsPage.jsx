@@ -107,42 +107,19 @@ export default function LearningRecommendationsPage({ skillId, skillName }) {
   }
 
   return (
-    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
+    <div className="dashboard-container">
       <BackButton label={isAdmin ? "Back to Command Center" : "Back to Dashboard"} fallbackPage={isAdmin ? "admin" : "dashboard"} />
 
       {/* Header Banner */}
-      <div
-        className="card card-featured"
-        style={{
-          padding: '32px',
-          marginBottom: '28px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '24px',
-        }}
-      >
+      <div className="card card-featured dashboard-header-banner">
         <div>
-          <span
-            style={{
-              fontSize: '0.75rem',
-              fontWeight: 700,
-              color: '#C084FC',
-              textTransform: 'uppercase',
-              backgroundColor: 'rgba(168, 85, 247, 0.15)',
-              border: '1px solid rgba(168, 85, 247, 0.35)',
-              padding: '4px 12px',
-              borderRadius: '9999px',
-              letterSpacing: '0.05em',
-            }}
-          >
+          <span className="header-category-pill">
             {isAdmin ? 'ADMIN CURRICULUM INSPECTION' : 'ACTIONABLE CAREER PATHWAY'}
           </span>
-          <h1 style={{ fontSize: '2rem', marginTop: '12px', color: 'var(--primary-text)' }}>
+          <h1 className="header-title-main">
             {skillName ? `Curated Roadmap for ${skillName}` : 'Personalized Learning Roadmap'}
           </h1>
-          <p style={{ fontSize: '0.95rem', color: 'var(--secondary-text)', marginTop: '4px', maxWidth: '560px' }}>
+          <p className="header-sub-text">
             {isAdmin
               ? 'Administrator governance mode: Review curated learning roadmaps and canonical skill competency modules.'
               : 'Follow the 5-stage progression (Skill Gap → Beginner → Practice → Project → Ready) to convert missing competencies into hiring strengths.'}
@@ -150,39 +127,28 @@ export default function LearningRecommendationsPage({ skillId, skillName }) {
         </div>
 
         {/* Learning Progress Meter with 3D Tilt */}
-        <Tilt3DCard
-          style={{
-            padding: '24px 28px',
-            backgroundColor: 'var(--card-bg)',
-            backdropFilter: 'blur(12px)',
-            borderRadius: 'var(--radius-lg)',
-            border: '1px solid rgba(168, 85, 247, 0.35)',
-            boxShadow: '0 0 20px rgba(124, 58, 237, 0.2)',
-            textAlign: 'center',
-            minWidth: '180px',
-          }}
-        >
+        <Tilt3DCard className="readiness-meter-card">
           {isAdmin ? (
             <>
-              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>
+              <span className="kpi-label">
                 CURRICULUM NODES
               </span>
-              <h2 style={{ fontSize: '2.4rem', color: '#C084FC', fontWeight: 800 }}>
+              <h2 className="readiness-percentage-value">
                 {totalCount}
               </h2>
-              <span style={{ fontSize: '0.8rem', color: '#38BDF8', fontWeight: 600 }}>
+              <span className="kpi-badge-cyan">
                 Admin Inspection View
               </span>
             </>
           ) : (
             <>
-              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>
+              <span className="kpi-label">
                 CURRICULUM PROGRESS
               </span>
-              <h2 style={{ fontSize: '2.4rem', color: '#C084FC', fontWeight: 800, textShadow: '0 0 20px rgba(192, 132, 252, 0.4)' }}>
+              <h2 className="readiness-percentage-value">
                 {progressPct}%
               </h2>
-              <span style={{ fontSize: '0.8rem', color: '#34D399', fontWeight: 600 }}>
+              <span className="readiness-matched-label">
                 {completedCount} of {totalCount} Completed
               </span>
             </>
@@ -191,41 +157,17 @@ export default function LearningRecommendationsPage({ skillId, skillName }) {
       </div>
 
       {/* 5-Step Visual Roadmap Tabs (Desktop Horizontal, Mobile Responsive) */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-          gap: '10px',
-          marginBottom: '28px',
-        }}
-      >
+      <div className="roadmap-tabs-grid">
         {stages.map((stage) => {
           const isActive = activeStage === stage.id;
           return (
             <button
               key={stage.id}
               onClick={() => setActiveStage(stage.id)}
-              style={{
-                padding: '14px 16px',
-                borderRadius: 'var(--radius-md)',
-                background: isActive ? 'var(--primary-gradient)' : 'var(--card-bg)',
-                color: isActive ? '#FFFFFF' : 'var(--primary-text)',
-                border: isActive ? '1px solid rgba(255, 255, 255, 0.3)' : '1px solid var(--border-color)',
-                textAlign: 'left',
-                boxShadow: isActive ? '0 0 15px rgba(168, 85, 247, 0.4)' : 'var(--shadow-subtle)',
-                backdropFilter: 'blur(12px)',
-                transition: 'var(--transition-normal)',
-              }}
+              className={`roadmap-stage-btn ${isActive ? 'active' : 'inactive'}`}
             >
-              <strong style={{ fontSize: '0.85rem', display: 'block' }}>{stage.title}</strong>
-              <span
-                style={{
-                  fontSize: '0.75rem',
-                  color: isActive ? 'rgba(255, 255, 255, 0.85)' : 'var(--secondary-text)',
-                  display: 'block',
-                  marginTop: '2px',
-                }}
-              >
+              <strong className="roadmap-tab-title">{stage.title}</strong>
+              <span className={`roadmap-tab-desc ${isActive ? 'active' : 'inactive'}`}>
                 {stage.desc}
               </span>
             </button>
@@ -234,13 +176,7 @@ export default function LearningRecommendationsPage({ skillId, skillName }) {
       </div>
 
       {/* Resource Cards Grid */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-          gap: '20px',
-        }}
-      >
+      <div className="learning-resources-grid">
         {filteredResources.map((res) => (
           <LearningCard
             key={res._id}
@@ -252,7 +188,7 @@ export default function LearningRecommendationsPage({ skillId, skillName }) {
       </div>
 
       {filteredResources.length === 0 && !isLoading && (
-        <div className="card" style={{ padding: '40px', textAlign: 'center', color: 'var(--secondary-text)' }}>
+        <div className="card dashboard-empty-state">
           <p>No resources found for this roadmap stage.</p>
         </div>
       )}

@@ -57,108 +57,31 @@ export default function EditSkillModal({ isOpen, onClose, skill, onSave, isLoadi
   };
 
   return (
-    <div
-      onClick={onClose}
-      style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 9999,
-        backgroundColor: 'rgba(3, 7, 18, 0.8)',
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '20px',
-        animation: 'fadeIn 0.2s ease-out',
-      }}
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className="card anim-float-subtle admin-action-center-modal"
-        style={{
-          maxWidth: '480px',
-          width: '100%',
-          padding: '28px',
-          backgroundColor: 'var(--card-bg)',
-          borderRadius: '22px',
-          border: '1px solid var(--border-color)',
-          boxShadow: '0 24px 60px rgba(0, 0, 0, 0.55), 0 0 30px rgba(16, 185, 129, 0.18)',
-          position: 'relative',
-        }}
-      >
+    <div onClick={onClose} className="admin-modal-overlay">
+      <div onClick={(e) => e.stopPropagation()} className="card anim-float-subtle admin-action-center-modal modal-width-480">
         {/* Close Button */}
-        <button
-          onClick={onClose}
-          style={{
-            position: 'absolute',
-            top: '18px',
-            right: '18px',
-            color: 'var(--secondary-text)',
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            padding: '6px',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            transition: 'color 0.2s',
-          }}
-          title="Cancel"
-        >
+        <button onClick={onClose} className="admin-modal-close-btn" title="Cancel">
           <X size={18} />
         </button>
 
         {/* Glowing Badge Icon */}
-        <div
-          style={{
-            width: '60px',
-            height: '60px',
-            borderRadius: '50%',
-            margin: '0 auto 16px auto',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'radial-gradient(circle, rgba(16, 185, 129, 0.25) 0%, rgba(5, 150, 105, 0.08) 70%)',
-            border: '1px solid rgba(16, 185, 129, 0.4)',
-            boxShadow: '0 0 24px rgba(16, 185, 129, 0.3)',
-            color: '#34D399',
-          }}
-        >
+        <div className="admin-modal-icon-badge badge-green">
           {isEditing ? <Edit3 size={28} /> : <PlusCircle size={28} />}
         </div>
 
-        <h3
-          style={{
-            fontSize: '1.35rem',
-            fontWeight: 800,
-            color: 'var(--primary-text)',
-            textAlign: 'center',
-            marginBottom: '6px',
-            letterSpacing: '-0.3px',
-          }}
-        >
+        <h3 className="admin-modal-title">
           {isEditing ? 'Edit Canonical Skill' : 'Add Canonical Skill'}
         </h3>
 
-        <p
-          style={{
-            fontSize: '0.86rem',
-            color: 'var(--secondary-text)',
-            textAlign: 'center',
-            lineHeight: '1.5',
-            marginBottom: '20px',
-          }}
-        >
+        <p className="admin-modal-subtitle">
           {isEditing
             ? 'Update skill properties in the platform competency graph.'
             : 'Register a recognized technical competency into the matching ontology.'}
         </p>
 
         <form onSubmit={handleSubmit}>
-          <div className="form-group" style={{ marginBottom: '14px' }}>
-            <label className="form-label" style={{ fontSize: '0.8rem' }}>
+          <div className="form-group auth-mb-14">
+            <label className="form-label auth-modal-field-label">
               Skill Name *
             </label>
             <input
@@ -168,19 +91,17 @@ export default function EditSkillModal({ isOpen, onClose, skill, onSave, isLoadi
               placeholder="e.g. Next.js, Kubernetes, Tailwind CSS"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              style={{ fontSize: '0.88rem' }}
             />
           </div>
 
-          <div className="form-group" style={{ marginBottom: '14px' }}>
-            <label className="form-label" style={{ fontSize: '0.8rem' }}>
+          <div className="form-group auth-mb-14">
+            <label className="form-label auth-modal-field-label">
               Category *
             </label>
             <select
               className="form-input"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              style={{ fontSize: '0.88rem' }}
             >
               {categories.map((c) => (
                 <option key={c} value={c}>
@@ -190,33 +111,25 @@ export default function EditSkillModal({ isOpen, onClose, skill, onSave, isLoadi
             </select>
           </div>
 
-          <div className="form-group" style={{ marginBottom: '22px' }}>
-            <label className="form-label" style={{ fontSize: '0.8rem' }}>
+          <div className="form-group admin-mb-22">
+            <label className="form-label auth-modal-field-label">
               Competency Summary / Description
             </label>
             <textarea
-              className="form-input"
+              className="form-input admin-textarea-compact"
               rows={3}
               placeholder="Brief definition or industry usage of this competency..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              style={{ fontSize: '0.85rem' }}
             />
           </div>
 
-          <div className="modal-action-buttons" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div className="modal-action-buttons">
             <button
               type="button"
               onClick={onClose}
               disabled={isLoading}
-              className="btn-secondary"
-              style={{
-                padding: '11px 18px',
-                fontSize: '0.9rem',
-                fontWeight: 600,
-                borderRadius: '12px',
-                cursor: 'pointer',
-              }}
+              className="btn-secondary admin-modal-btn-cancel"
             >
               Cancel
             </button>
@@ -224,19 +137,7 @@ export default function EditSkillModal({ isOpen, onClose, skill, onSave, isLoadi
             <button
               type="submit"
               disabled={!name.trim() || isLoading}
-              className="btn-primary"
-              style={{
-                padding: '11px 18px',
-                fontSize: '0.9rem',
-                fontWeight: 700,
-                borderRadius: '12px',
-                border: 'none',
-                cursor: !name.trim() || isLoading ? 'not-allowed' : 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-              }}
+              className="btn-primary admin-modal-btn-confirm confirm-success"
             >
               {isLoading ? (
                 'Saving...'

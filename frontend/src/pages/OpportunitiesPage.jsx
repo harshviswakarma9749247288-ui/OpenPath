@@ -183,28 +183,22 @@ export default function OpportunitiesPage() {
   });
 
   return (
-    <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
-      <BackButton label="Back to Dashboard" fallbackPage="dashboard" style={{ marginBottom: '20px' }} />
+    <div className="opportunities-page-container">
+      <BackButton label="Back to Dashboard" fallbackPage="dashboard" className="profile-back-btn" />
 
       {/* Live Search & Filter Bar */}
-      <div style={{ marginBottom: '24px' }}>
-        <div ref={searchBoxRef} style={{ position: 'relative' }}>
-          <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+      <div className="opp-search-section">
+        <div ref={searchBoxRef} className="opp-search-box-wrap">
+          <div className="opp-search-input-wrap">
             <Search
               size={18}
               color="#A855F7"
-              style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', zIndex: 2 }}
+              className="opp-search-icon"
             />
             <input
               type="text"
               placeholder="Live search by role title, skills (React, Node.js, Python), city, or company..."
-              className="form-input"
-              style={{
-                paddingLeft: '44px',
-                paddingRight: searchQuery ? '140px' : '115px',
-                height: '50px',
-                fontSize: '0.95rem',
-              }}
+              className={`form-input opp-search-input ${searchQuery ? 'has-query' : ''}`}
               value={searchQuery}
               onFocus={() => setShowLiveDropdown(true)}
               onChange={(e) => {
@@ -216,17 +210,7 @@ export default function OpportunitiesPage() {
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                style={{
-                  position: 'absolute',
-                  right: '16px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  background: 'none',
-                  border: 'none',
-                  color: 'var(--secondary-text)',
-                  cursor: 'pointer',
-                  zIndex: 2,
-                }}
+                className="opp-search-clear-btn"
               >
                 <X size={16} />
               </button>
@@ -235,21 +219,12 @@ export default function OpportunitiesPage() {
         </div>
 
         {/* Quick Filter Chips */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '12px' }}>
+        <div className="opp-quick-chips-row">
           {['all', 'Internship', 'Apprenticeship', 'Entry-level Job'].map((t) => (
             <button
               key={t}
               onClick={() => setSelectedType(t)}
-              style={{
-                fontSize: '0.8rem',
-                padding: '6px 14px',
-                borderRadius: '9999px',
-                background: selectedType === t ? 'var(--primary-gradient)' : 'var(--chip-bg)',
-                color: selectedType === t ? '#FFFFFF' : 'var(--secondary-text)',
-                border: selectedType === t ? '1px solid transparent' : '1px solid var(--chip-border)',
-                fontWeight: 600,
-                cursor: 'pointer',
-              }}
+              className={`opp-filter-chip ${selectedType === t ? 'active' : ''}`}
             >
               {t === 'all' ? 'All Roles' : t}
             </button>
@@ -258,16 +233,7 @@ export default function OpportunitiesPage() {
             <button
               key={loc}
               onClick={() => setSelectedLocation(loc)}
-              style={{
-                fontSize: '0.8rem',
-                padding: '6px 14px',
-                borderRadius: '9999px',
-                background: selectedLocation === loc ? 'linear-gradient(135deg, #06B6D4, #3B82F6)' : 'var(--chip-bg)',
-                color: selectedLocation === loc ? '#FFFFFF' : 'var(--secondary-text)',
-                border: selectedLocation === loc ? '1px solid transparent' : '1px solid var(--chip-border)',
-                fontWeight: 600,
-                cursor: 'pointer',
-              }}
+              className={`opp-loc-chip ${selectedLocation === loc ? 'active' : ''}`}
             >
               {loc === 'all' ? 'Any Mode' : loc}
             </button>
@@ -276,28 +242,27 @@ export default function OpportunitiesPage() {
       </div>
 
       {/* Main Browse Layout */}
-      <div className="opportunities-browse-layout" style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: '24px' }}>
+      <div className="opportunities-browse-layout">
         {/* Left Filter Panel */}
-        <div className="card filter-panel-sidebar" style={{ padding: '20px', height: 'fit-content', position: 'sticky', top: '88px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-            <strong style={{ fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <div className="card filter-panel-sidebar">
+          <div className="filter-header-row">
+            <strong className="filter-section-title">
               <SlidersHorizontal size={16} /> Filters
             </strong>
             <button
               onClick={handleResetFilters}
-              style={{ fontSize: '0.75rem', color: '#A78BFA', display: 'flex', alignItems: 'center', gap: '3px', background: 'none', border: 'none', cursor: 'pointer' }}
+              className="filter-reset-link"
             >
               <RotateCcw size={12} /> Reset
             </button>
           </div>
 
           <div className="form-group">
-            <label className="form-label" style={{ fontSize: '0.8rem' }}>Sort Listings By</label>
+            <label className="form-label">Sort Listings By</label>
             <select
               className="form-select"
               value={selectedSort}
               onChange={(e) => setSelectedSort(e.target.value)}
-              style={{ fontSize: '0.85rem', padding: '8px' }}
             >
               <option value="latest">Latest First</option>
               <option value="match">Highest Match Score</option>
@@ -306,9 +271,9 @@ export default function OpportunitiesPage() {
           </div>
 
           <div className="form-group">
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: '4px' }}>
-              <label className="form-label" style={{ margin: 0 }}>Min Match Score</label>
-              <strong style={{ color: '#A78BFA' }}>{minMatch}%</strong>
+            <div className="filter-score-row">
+              <label className="form-label">Min Match Score</label>
+              <strong className="filter-score-val">{minMatch}%</strong>
             </div>
             <input
               type="range"
@@ -317,27 +282,21 @@ export default function OpportunitiesPage() {
               step="10"
               value={minMatch}
               onChange={(e) => setMinMatch(Number(e.target.value))}
-              style={{ width: '100%', accentColor: 'var(--aurora-violet)' }}
+              className="filter-range-input"
             />
           </div>
         </div>
 
         {/* Right Listings Content */}
         <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
-            <span style={{ fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
-              Showing <strong style={{ color: 'var(--primary-text)' }}>{filteredOpportunities.length}</strong> available opportunities
+          <div className="opp-results-header">
+            <span>
+              Showing <strong className="var-primary-text">{filteredOpportunities.length}</strong> available opportunities
             </span>
           </div>
 
           {/* Cards Grid */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: viewMode === 'grid' ? 'repeat(auto-fill, minmax(320px, 1fr))' : '1fr',
-              gap: '18px',
-            }}
-          >
+          <div className="opp-cards-grid">
             {filteredOpportunities.map((opp) => {
               const displayCompany = formatOrganization(opp.organization, opp.company);
               const displayLocation = formatLocation(opp.location);
@@ -349,44 +308,20 @@ export default function OpportunitiesPage() {
               return (
                 <div
                   key={opp._id}
-                  className="card card-hover"
+                  className="card card-hover opp-item-card"
                   onClick={() => navigate('details', { id: opp._id })}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    padding: '20px',
-                    cursor: 'pointer',
-                    borderRadius: '16px',
-                    backgroundColor: 'var(--card-bg)',
-                    border: '1px solid var(--border-color)',
-                  }}
                 >
                   <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '14px' }}>
-                      <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                        <div
-                          style={{
-                            width: '42px',
-                            height: '42px',
-                            borderRadius: '10px',
-                            backgroundColor: 'rgba(168, 85, 247, 0.15)',
-                            border: '1px solid rgba(168, 85, 247, 0.3)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            color: '#C084FC',
-                            fontWeight: 700,
-                            fontSize: '1rem',
-                          }}
-                        >
+                    <div className="opp-item-header">
+                      <div className="opp-company-block">
+                        <div className="opp-company-logo">
                           {displayCompany.substring(0, 2).toUpperCase()}
                         </div>
                         <div>
-                          <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--primary-text)', margin: '0 0 2px 0' }}>
+                          <h3 className="opp-item-title">
                             {opp.title}
                           </h3>
-                          <span style={{ fontSize: '0.82rem', color: 'var(--secondary-text)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <span className="opp-item-company-name">
                             <Building2 size={13} /> {displayCompany}
                           </span>
                         </div>
@@ -399,84 +334,35 @@ export default function OpportunitiesPage() {
                             e.stopPropagation();
                             if (toggleSaveOpportunity) toggleSaveOpportunity(opp._id);
                           }}
-                          style={{
-                            background: 'transparent',
-                            border: 'none',
-                            cursor: 'pointer',
-                            color: isSaved ? '#EC4899' : 'var(--secondary-text)',
-                            padding: '4px',
-                          }}
+                          className={`opp-item-bookmark-btn ${isSaved ? 'saved' : ''}`}
                         >
                           <Bookmark size={18} fill={isSaved ? 'currentColor' : 'none'} />
                         </button>
                       )}
                     </div>
 
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' }}>
-                      <span
-                        style={{
-                          fontSize: '0.72rem',
-                          fontWeight: 700,
-                          padding: '3px 9px',
-                          borderRadius: '9999px',
-                          backgroundColor: 'rgba(16, 185, 129, 0.14)',
-                          color: '#34D399',
-                          border: '1px solid rgba(16, 185, 129, 0.3)',
-                        }}
-                      >
+                    <div className="opp-item-badges-row">
+                      <span className="opp-item-role-badge">
                         {opp.type || 'Internship'}
                       </span>
 
-                      <span
-                        style={{
-                          fontSize: '0.72rem',
-                          fontWeight: 600,
-                          padding: '3px 9px',
-                          borderRadius: '9999px',
-                          backgroundColor: 'rgba(6, 182, 212, 0.12)',
-                          color: '#38BDF8',
-                          border: '1px solid rgba(6, 182, 212, 0.25)',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '4px',
-                        }}
-                      >
+                      <span className="opp-item-loc-badge">
                         <MapPin size={11} /> {displayLocation}
                       </span>
 
                       {opp.salary?.amount && (
-                        <span
-                          style={{
-                            fontSize: '0.72rem',
-                            fontWeight: 600,
-                            padding: '3px 9px',
-                            borderRadius: '9999px',
-                            backgroundColor: 'var(--box-subtle)',
-                            color: 'var(--primary-text)',
-                            border: '1px solid var(--border-color)',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '3px',
-                          }}
-                        >
+                        <span className="opp-item-salary-badge">
                           <IndianRupee size={11} /> {opp.salary.amount} / {opp.salary.period || 'mo'}
                         </span>
                       )}
                     </div>
 
                     {/* Required Skills Chips */}
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '16px' }}>
+                    <div className="opp-item-skills-row">
                       {safeSkills.slice(0, 4).map((skillItem, idx) => (
                         <span
                           key={idx}
-                          style={{
-                            fontSize: '0.74rem',
-                            padding: '3px 8px',
-                            borderRadius: '6px',
-                            backgroundColor: 'var(--box-subtle)',
-                            color: 'var(--secondary-text)',
-                            border: '1px solid var(--border-color)',
-                          }}
+                          className="opp-item-skill-chip"
                         >
                           {formatSkill(skillItem)}
                         </span>
@@ -485,17 +371,7 @@ export default function OpportunitiesPage() {
                   </div>
 
                   {/* Card Footer: AI Gap Analysis + Details + Apply */}
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      paddingTop: '14px',
-                      borderTop: '1px solid var(--border-color)',
-                      gap: '8px',
-                      flexWrap: 'wrap',
-                    }}
-                  >
+                  <div className="opp-item-footer">
                     <button
                       type="button"
                       onClick={(e) => {
@@ -508,33 +384,20 @@ export default function OpportunitiesPage() {
                           matchScore: matchScore ?? 75,
                         });
                       }}
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        fontSize: '0.78rem',
-                        padding: '7px 11px',
-                        borderRadius: '8px',
-                        backgroundColor: 'rgba(37, 99, 235, 0.12)',
-                        border: '1px solid rgba(37, 99, 235, 0.35)',
-                        color: '#60a5fa',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                      }}
+                      className="opp-item-mentor-btn"
                     >
                       <Sparkles size={13} color="#60a5fa" />
                       <span>AI Gap Analysis</span>
                     </button>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div className="opp-item-actions-row">
                       <button
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           navigate('details', { id: opp._id });
                         }}
-                        className="btn-secondary"
-                        style={{ fontSize: '0.78rem', padding: '6px 12px', display: 'inline-flex', alignItems: 'center', gap: '2px' }}
+                        className="btn-secondary opp-item-details-btn"
                       >
                         Details <ChevronRight size={13} />
                       </button>
@@ -546,27 +409,12 @@ export default function OpportunitiesPage() {
                             e.stopPropagation();
                             navigate('admin');
                           }}
-                          className="btn-primary"
-                          style={{
-                            fontSize: '0.78rem',
-                            padding: '6px 14px',
-                            background: 'linear-gradient(135deg, #EF4444 0%, #A855F7 100%)',
-                          }}
+                          className="btn-primary opp-item-admin-btn"
                         >
                           Moderate
                         </button>
                       ) : isApplied ? (
-                        <span
-                          style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '4px',
-                            fontSize: '0.78rem',
-                            color: '#10b981',
-                            fontWeight: 600,
-                            padding: '6px 10px',
-                          }}
-                        >
+                        <span className="opp-item-applied-badge">
                           <CheckCircle2 size={14} /> Applied
                         </span>
                       ) : (
@@ -576,8 +424,7 @@ export default function OpportunitiesPage() {
                             e.stopPropagation();
                             handleApply(opp);
                           }}
-                          className="btn-primary"
-                          style={{ fontSize: '0.78rem', padding: '6px 14px' }}
+                          className="btn-primary opp-item-apply-btn"
                         >
                           Apply
                         </button>

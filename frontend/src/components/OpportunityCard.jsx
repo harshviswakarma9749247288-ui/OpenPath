@@ -32,44 +32,20 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
 
   return (
     <Tilt3DCard
-      className="card"
+      className="card card-opp-tilt"
       maxTilt={6}
       scale={1.015}
-      style={{
-        padding: '22px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        position: 'relative',
-        height: '100%',
-      }}
     >
       <div>
         {/* Top Header: Logo, Company/Title, Match Badge & Bookmark */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', marginBottom: '14px' }}>
-          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-            <div
-              style={{
-                width: '46px',
-                height: '46px',
-                borderRadius: '12px',
-                backgroundColor: 'rgba(124, 58, 237, 0.15)',
-                border: '1px solid rgba(168, 85, 247, 0.3)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 800,
-                color: '#C084FC',
-                overflow: 'hidden',
-                flexShrink: 0,
-                boxShadow: '0 0 12px rgba(124, 58, 237, 0.2)',
-              }}
-            >
+        <div className="card-opp-header">
+          <div className="profile-header-user">
+            <div className="card-opp-company-logo">
               {opportunity.organizationLogo ? (
                 <img
                   src={opportunity.organizationLogo}
                   alt={opportunity.organization}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  className="card-opp-logo-img"
                 />
               ) : (
                 (opportunity.organization || 'OP').substring(0, 2).toUpperCase()
@@ -77,36 +53,25 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
             </div>
             <div>
               <h3
-                style={{
-                  fontSize: '1.05rem',
-                  fontWeight: 700,
-                  color: 'var(--primary-text)',
-                  cursor: 'pointer',
-                  lineHeight: '1.3',
-                }}
+                className="card-opp-title"
                 onClick={() => navigate('details', { id: opportunity._id })}
               >
                 {opportunity.title}
               </h3>
-              <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', fontWeight: 500 }}>
+              <p className="card-opp-org">
                 {opportunity.organization}
               </p>
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div className="card-opp-header-right">
             {opportunity.matchScore !== null && opportunity.matchScore !== undefined && (
               <MatchScoreBadge score={opportunity.matchScore} size={42} showLabel={false} />
             )}
             <button
               onClick={() => toggleSaveOpportunity(opportunity._id)}
               title={isSaved ? 'Remove Bookmark' : 'Save Opportunity'}
-              style={{
-                color: isSaved ? '#EC4899' : 'var(--secondary-text)',
-                padding: '6px',
-                borderRadius: '8px',
-                transition: 'var(--transition-normal)',
-              }}
+              className={`card-opp-bookmark-btn ${isSaved ? 'saved' : ''}`}
             >
               <Bookmark size={20} fill={isSaved ? 'currentColor' : 'none'} />
             </button>
@@ -114,7 +79,7 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
         </div>
 
         {/* Badges: Type & Location */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '14px' }}>
+        <div className="card-opp-badges-row">
           <span className={`badge ${typeClass}`}>
             <Briefcase size={12} /> {opportunity.type}
           </span>
@@ -122,60 +87,29 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
             <MapPin size={12} /> {opportunity.location?.type} {opportunity.location?.city ? `• ${opportunity.location.city}` : ''}
           </span>
           {opportunity.salary && (
-            <span
-              style={{
-                backgroundColor: 'var(--chip-bg)',
-                border: '1px solid var(--chip-border)',
-                padding: '3px 10px',
-                borderRadius: '9999px',
-                fontSize: '0.75rem',
-                color: 'var(--primary-text)',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '4px',
-                fontWeight: 600,
-              }}
-            >
+            <span className="card-opp-salary-badge">
               <IndianRupee size={12} /> {opportunity.salary.amount} / {opportunity.salary.period}
             </span>
           )}
         </div>
 
         {/* Description brief */}
-        <p
-          style={{
-            fontSize: '0.85rem',
-            color: 'var(--secondary-text)',
-            marginBottom: '14px',
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-          }}
-        >
+        <p className="card-opp-desc">
           {opportunity.description}
         </p>
 
         {/* Skills required tags */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '16px' }}>
+        <div className="card-opp-skills-row">
           {(opportunity.requiredSkills || []).slice(0, 4).map((skill, idx) => (
             <span
               key={idx}
-              style={{
-                fontSize: '0.75rem',
-                padding: '3px 9px',
-                backgroundColor: 'var(--chip-bg)',
-                border: '1px solid var(--chip-border)',
-                borderRadius: '9999px',
-                color: 'var(--chip-text)',
-                fontWeight: 500,
-              }}
+              className="card-opp-skill-chip"
             >
               {skill.name || skill}
             </span>
           ))}
           {(opportunity.requiredSkills || []).length > 4 && (
-            <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)', alignSelf: 'center' }}>
+            <span className="card-opp-more-skills">
               +{opportunity.requiredSkills.length - 4} more
             </span>
           )}
@@ -183,50 +117,29 @@ export default function OpportunityCard({ opportunity, onApply, isApplied = fals
       </div>
 
       {/* Card Footer: Deadline & Action Buttons */}
-      <div
-        style={{
-          borderTop: '1px solid var(--border-color)',
-          paddingTop: '14px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
-        <span style={{ fontSize: '0.775rem', color: 'var(--secondary-text)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+      <div className="card-opp-footer">
+        <span className="card-opp-deadline">
           <Calendar size={13} /> {deadlineText}
         </span>
 
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div className="card-opp-btn-group">
           <button
             onClick={() => navigate('details', { id: opportunity._id })}
-            className="btn-secondary"
-            style={{ padding: '6px 14px', fontSize: '0.8rem' }}
+            className="btn-secondary card-opp-btn-details"
           >
             Details <ChevronRight size={14} />
           </button>
           {isApplied ? (
             <button
               disabled
-              style={{
-                backgroundColor: 'var(--status-green-bg)',
-                color: 'var(--status-green)',
-                border: '1px solid rgba(16, 185, 129, 0.35)',
-                padding: '6px 14px',
-                borderRadius: '9999px',
-                fontSize: '0.8rem',
-                fontWeight: 700,
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '4px',
-              }}
+              className="card-opp-applied-btn"
             >
               <Check size={14} /> Applied
             </button>
           ) : (
             <button
               onClick={() => onApply ? onApply(opportunity) : navigate('details', { id: opportunity._id })}
-              className="btn-primary"
-              style={{ padding: '6px 16px', fontSize: '0.8rem' }}
+              className="btn-primary card-opp-btn-apply"
             >
               Apply <ChevronRight size={14} />
             </button>

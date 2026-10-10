@@ -43,64 +43,46 @@ export default function ApplicationsPage() {
   const kanbanStages = ['Applied', 'Reviewing', 'Shortlisted', 'Interview', 'Selected'];
 
   return (
-    <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
-      <BackButton label="Back to Dashboard" fallbackPage="dashboard" style={{ marginBottom: '20px' }} />
+    <div className="dashboard-container">
+      <BackButton label="Back to Dashboard" fallbackPage="dashboard" />
 
       {/* 1. Header & Summary Metric Dashboard */}
-      <div style={{ marginBottom: '28px' }}>
-        <h1 style={{ fontSize: '2rem', color: 'var(--primary-text)', marginBottom: '6px' }}>
+      <div className="dashboard-section-wrap">
+        <h1 className="header-title-main">
           My Applications
         </h1>
-        <p style={{ color: 'var(--secondary-text)', fontSize: '0.95rem' }}>
+        <p className="header-sub-text">
           Track your real-time recruitment progression, hiring feedback, and interview schedules.
         </p>
 
         {/* Metrics Bar */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-            gap: '14px',
-            marginTop: '20px',
-          }}
-        >
-          <div className="card" style={{ padding: '16px', borderLeft: '4px solid #8B5CF6' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>TOTAL SUBMITTED</span>
-            <h3 style={{ fontSize: '1.8rem', color: '#C084FC', marginTop: '2px' }}>{total}</h3>
+        <div className="kpi-grid">
+          <div className="card kpi-card kpi-purple">
+            <span className="kpi-label">TOTAL SUBMITTED</span>
+            <h3 className="kpi-value purple">{total}</h3>
           </div>
-          <div className="card" style={{ padding: '16px', borderLeft: '4px solid #F59E0B' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>UNDER REVIEW</span>
-            <h3 style={{ fontSize: '1.8rem', color: '#FBBF24', marginTop: '2px' }}>{reviewing}</h3>
+          <div className="card kpi-card kpi-amber">
+            <span className="kpi-label">UNDER REVIEW</span>
+            <h3 className="kpi-value amber">{reviewing}</h3>
           </div>
-          <div className="card" style={{ padding: '16px', borderLeft: '4px solid #C026D3' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>SHORTLISTED</span>
-            <h3 style={{ fontSize: '1.8rem', color: '#F472B6', marginTop: '2px' }}>{shortlisted}</h3>
+          <div className="card kpi-card kpi-pink">
+            <span className="kpi-label">SHORTLISTED</span>
+            <h3 className="kpi-value pink">{shortlisted}</h3>
           </div>
-          <div className="card" style={{ padding: '16px', borderLeft: '4px solid #06B6D4' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>INTERVIEW CALLS</span>
-            <h3 style={{ fontSize: '1.8rem', color: '#38BDF8', marginTop: '2px' }}>{interviews}</h3>
+          <div className="card kpi-card kpi-cyan">
+            <span className="kpi-label">INTERVIEW CALLS</span>
+            <h3 className="kpi-value cyan">{interviews}</h3>
           </div>
-          <div className="card" style={{ padding: '16px', borderLeft: '4px solid #10B981' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--secondary-text)' }}>OFFERS / SELECTED</span>
-            <h3 style={{ fontSize: '1.8rem', color: '#34D399', marginTop: '2px' }}>{selected}</h3>
+          <div className="card kpi-card kpi-emerald">
+            <span className="kpi-label">OFFERS / SELECTED</span>
+            <h3 className="kpi-value emerald">{selected}</h3>
           </div>
         </div>
       </div>
 
       {/* 2. Controls: Filter tabs & Kanban toggle */}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '12px',
-          marginBottom: '24px',
-          borderBottom: '1px solid var(--border-color)',
-          paddingBottom: '12px',
-        }}
-      >
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+      <div className="app-controls-row">
+        <div className="app-filter-tabs-container">
           {[
             { id: 'all', label: `All (${total})` },
             { id: 'applied', label: 'Applied' },
@@ -112,16 +94,7 @@ export default function ApplicationsPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              style={{
-                padding: '6px 14px',
-                borderRadius: 'var(--radius-md)',
-                fontSize: '0.85rem',
-                fontWeight: activeTab === tab.id ? 600 : 500,
-                backgroundColor: activeTab === tab.id ? 'rgba(124, 58, 237, 0.15)' : 'var(--chip-bg)',
-                color: activeTab === tab.id ? '#7C3AED' : 'var(--secondary-text)',
-                border: activeTab === tab.id ? '1px solid rgba(124, 58, 237, 0.4)' : '1px solid var(--chip-border)',
-                backdropFilter: 'blur(8px)',
-              }}
+              className={`filter-tab-btn ${activeTab === tab.id ? 'active' : 'inactive'}`}
             >
               {tab.label}
             </button>
@@ -129,38 +102,16 @@ export default function ApplicationsPage() {
         </div>
 
         {/* View toggle */}
-        <div style={{ display: 'flex', gap: '4px', backgroundColor: 'var(--box-subtle)', border: '1px solid var(--border-color)', padding: '3px', borderRadius: '8px' }}>
+        <div className="mode-toggle-group">
           <button
             onClick={() => setViewMode('cards')}
-            style={{
-              padding: '6px 12px',
-              borderRadius: '6px',
-              fontSize: '0.8rem',
-              fontWeight: 500,
-              backgroundColor: viewMode === 'cards' ? 'var(--card-bg)' : 'transparent',
-              color: viewMode === 'cards' ? '#7C3AED' : 'var(--secondary-text)',
-              boxShadow: viewMode === 'cards' ? 'var(--shadow-subtle)' : 'none',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}
+            className={`mode-toggle-btn ${viewMode === 'cards' ? 'active' : ''}`}
           >
             <List size={14} /> Timeline View
           </button>
           <button
             onClick={() => setViewMode('kanban')}
-            style={{
-              padding: '6px 12px',
-              borderRadius: '6px',
-              fontSize: '0.8rem',
-              fontWeight: 500,
-              backgroundColor: viewMode === 'kanban' ? 'var(--card-bg)' : 'transparent',
-              color: viewMode === 'kanban' ? '#7C3AED' : 'var(--secondary-text)',
-              boxShadow: viewMode === 'kanban' ? 'var(--shadow-subtle)' : 'none',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}
+            className={`mode-toggle-btn ${viewMode === 'kanban' ? 'active' : ''}`}
           >
             <LayoutGrid size={14} /> Kanban Board
           </button>
@@ -170,23 +121,23 @@ export default function ApplicationsPage() {
       {/* 3. View Mode Rendering */}
       {viewMode === 'cards' ? (
         /* Detailed Timeline Cards View */
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div className="app-cards-view-wrap">
           {filtered.map((app) => {
             const opp = app.opportunity || {};
             return (
-              <div key={app._id} className="card" style={{ padding: '24px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '14px', marginBottom: '16px' }}>
+              <div key={app._id} className="card app-item-card">
+                <div className="app-item-header-row">
                   <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div className="candidate-card-title-row">
                       <h3
-                        style={{ fontSize: '1.2rem', color: 'var(--primary-text)', cursor: 'pointer' }}
+                        className="candidate-card-title clickable"
                         onClick={() => navigate('details', { id: opp._id })}
                       >
                         {opp.title || 'Opportunity'}
                       </h3>
                       <ApplicationStatusBadge status={app.status} />
                     </div>
-                    <p style={{ fontSize: '0.9rem', color: 'var(--secondary-text)', marginTop: '2px' }}>
+                    <p className="candidate-bg-desc">
                       {opp.organization} • Applied on{' '}
                       {new Date(app.appliedAt).toLocaleDateString('en-US', {
                         month: 'short',
@@ -199,7 +150,6 @@ export default function ApplicationsPage() {
                   <button
                     onClick={() => navigate('details', { id: opp._id })}
                     className="btn-outline"
-                    style={{ padding: '6px 12px', fontSize: '0.8rem' }}
                   >
                     View Listing <ExternalLink size={14} />
                   </button>
@@ -212,12 +162,12 @@ export default function ApplicationsPage() {
           })}
 
           {filtered.length === 0 && !isLoading && (
-            <div className="card" style={{ padding: '48px', textAlign: 'center', color: 'var(--secondary-text)' }}>
-              <FileText size={36} color="#CBD5E1" style={{ margin: '0 auto 12px auto' }} />
-              <h3 style={{ fontSize: '1.15rem', color: 'var(--primary-text)', marginBottom: '6px' }}>
+            <div className="card dashboard-empty-state">
+              <FileText size={36} color="#CBD5E1" className="dashboard-empty-icon" />
+              <h3 className="dashboard-empty-title">
                 No applications in this category
               </h3>
-              <p style={{ fontSize: '0.85rem', marginBottom: '16px' }}>
+              <p className="dashboard-empty-sub">
                 Explore open roles and apply with 1-click matching!
               </p>
               <button onClick={() => navigate('opportunities')} className="btn-primary">
@@ -227,68 +177,39 @@ export default function ApplicationsPage() {
           )}
         </div>
       ) : (
-        /* KANBAN BOARD VIEW (Per UI/UX Brief optional Kanban specification) */
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(5, minmax(220px, 1fr))',
-            gap: '14px',
-            overflowX: 'auto',
-            paddingBottom: '20px',
-          }}
-        >
+        /* KANBAN BOARD VIEW */
+        <div className="kanban-board-wrapper">
           {kanbanStages.map((stage) => {
             const stageApps = applications.filter((a) => a.status === stage);
             return (
-              <div
-                key={stage}
-                style={{
-                  backgroundColor: 'var(--box-subtle)',
-                  backdropFilter: 'blur(12px)',
-                  borderRadius: 'var(--radius-lg)',
-                  padding: '16px',
-                  border: '1px solid var(--box-subtle-border)',
-                  minHeight: '400px',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                  <strong style={{ fontSize: '0.85rem', color: 'var(--primary-text)' }}>{stage}</strong>
-                  <span
-                    style={{
-                      fontSize: '0.75rem',
-                      fontWeight: 700,
-                      backgroundColor: 'var(--card-bg)',
-                      color: '#7C3AED',
-                      padding: '2px 8px',
-                      borderRadius: '10px',
-                      border: '1px solid var(--border-color)',
-                    }}
-                  >
+              <div key={stage} className="kanban-col">
+                <div className="kanban-col-header">
+                  <strong className="kanban-col-title">{stage}</strong>
+                  <span className="kanban-col-count">
                     {stageApps.length}
                   </span>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div className="kanban-col-cards">
                   {stageApps.map((app) => (
                     <div
                       key={app._id}
-                      className="card"
-                      style={{ padding: '12px', cursor: 'pointer' }}
+                      className="card kanban-card"
                       onClick={() => navigate('details', { id: app.opportunity?._id || app.opportunity })}
                     >
-                      <h4 style={{ fontSize: '0.85rem', color: 'var(--primary-text)', marginBottom: '4px' }}>
+                      <h4 className="kanban-card-title">
                         {app.opportunity?.title || 'Role'}
                       </h4>
-                      <p style={{ fontSize: '0.75rem', color: 'var(--secondary-text)', marginBottom: '8px' }}>
+                      <p className="kanban-card-org">
                         {app.opportunity?.organization}
                       </p>
-                      <span style={{ fontSize: '0.7rem', color: 'var(--secondary-text)' }}>
+                      <span className="kanban-card-date">
                         {new Date(app.appliedAt).toLocaleDateString()}
                       </span>
                     </div>
                   ))}
                   {stageApps.length === 0 && (
-                    <div style={{ padding: '20px 10px', textAlign: 'center', color: 'var(--secondary-text)', fontSize: '0.75rem' }}>
+                    <div className="kanban-empty-state">
                       Empty stage
                     </div>
                   )}

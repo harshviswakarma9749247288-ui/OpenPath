@@ -52,144 +52,48 @@ export default function UserDetailsModal({
   };
 
   return (
-    <div
-      onClick={onClose}
-      style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 9999,
-        backgroundColor: 'rgba(3, 7, 18, 0.8)',
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '20px',
-        animation: 'fadeIn 0.2s ease-out',
-      }}
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className="card anim-float-subtle admin-action-center-modal"
-        style={{
-          maxWidth: '680px',
-          width: '100%',
-          maxHeight: '88vh',
-          overflowY: 'auto',
-          padding: '28px',
-          backgroundColor: 'var(--card-bg)',
-          borderRadius: '24px',
-          border: '1px solid var(--border-color)',
-          boxShadow: '0 24px 60px rgba(0, 0, 0, 0.6), 0 0 35px rgba(124, 58, 237, 0.15)',
-          position: 'relative',
-        }}
-      >
+    <div onClick={onClose} className="admin-modal-overlay">
+      <div onClick={(e) => e.stopPropagation()} className="card anim-float-subtle admin-action-center-modal modal-width-680 admin-modal-scrollable">
         {/* Close Button */}
-        <button
-          onClick={onClose}
-          style={{
-            position: 'absolute',
-            top: '20px',
-            right: '20px',
-            color: 'var(--secondary-text)',
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            padding: '6px',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            transition: 'color 0.2s',
-          }}
-          title="Close details"
-        >
+        <button onClick={onClose} className="admin-modal-close-btn" title="Close details">
           <X size={20} />
         </button>
 
         {/* 1. Header Identity Profile */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '22px' }}>
+        <div className="admin-details-header">
           <img
             src={
               user.avatar ||
               'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120'
             }
             alt={user.name}
-            style={{
-              width: '64px',
-              height: '64px',
-              borderRadius: '50%',
-              objectFit: 'cover',
-              border: '2px solid var(--border-color)',
-              boxShadow: '0 4px 15px rgba(0, 0, 0, 0.3)',
-            }}
+            className="admin-avatar-lg"
           />
 
-          <div style={{ flex: 1, paddingRight: '28px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-              <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary-text)', margin: 0 }}>
+          <div className="admin-details-info">
+            <div className="admin-details-name-row">
+              <h2 className="admin-details-name">
                 {user.name}
               </h2>
 
-              <span
-                style={{
-                  fontSize: '0.72rem',
-                  fontWeight: 800,
-                  padding: '2px 9px',
-                  borderRadius: '9999px',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.04em',
-                  backgroundColor:
-                    user.role === 'admin'
-                      ? 'rgba(239, 68, 68, 0.18)'
-                      : user.role === 'employer'
-                      ? 'rgba(236, 72, 153, 0.18)'
-                      : 'rgba(124, 58, 237, 0.18)',
-                  color:
-                    user.role === 'admin' ? '#F87171' : user.role === 'employer' ? '#F472B6' : '#C084FC',
-                  border: '1px solid var(--border-color)',
-                }}
-              >
+              <span className={`auth-portal-badge role-${user.role}`}>
                 {user.role}
               </span>
 
-              <span
-                style={{
-                  fontSize: '0.72rem',
-                  fontWeight: 700,
-                  padding: '2px 9px',
-                  borderRadius: '9999px',
-                  backgroundColor: isSuspended ? 'rgba(239, 68, 68, 0.15)' : 'rgba(16, 185, 129, 0.15)',
-                  color: isSuspended ? '#F87171' : '#34D399',
-                  border: '1px solid var(--border-color)',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                }}
-              >
+              <span className={`admin-status-pill ${isSuspended ? 'suspended' : 'active'}`}>
                 {isSuspended ? <UserX size={11} /> : <UserCheck size={11} />}
                 {user.status?.toUpperCase() || 'ACTIVE'}
               </span>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginTop: '6px', flexWrap: 'wrap', fontSize: '0.8rem', color: 'var(--secondary-text)' }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <div className="admin-details-meta-row">
+              <span className="admin-details-meta-item">
                 <Mail size={13} /> {user.email}
               </span>
               <button
                 type="button"
                 onClick={handleCopyId}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: copiedId ? '#34D399' : 'var(--secondary-text)',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  fontSize: '0.75rem',
-                  fontFamily: 'monospace',
-                }}
+                className={`admin-modal-copy-btn ${copiedId ? 'copied' : ''}`}
               >
                 {copiedId ? <Check size={12} /> : <Copy size={12} />} #{user._id}
               </button>
@@ -199,25 +103,17 @@ export default function UserDetailsModal({
 
         {/* Ban Details Alert (if suspended/banned) */}
         {isSuspended && (
-          <div
-            style={{
-              padding: '12px 16px',
-              borderRadius: '12px',
-              backgroundColor: 'rgba(239, 68, 68, 0.12)',
-              border: '1px solid rgba(239, 68, 68, 0.35)',
-              marginBottom: '20px',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#F87171', fontWeight: 700, fontSize: '0.85rem' }}>
+          <div className="admin-warning-callout admin-warning-callout-col">
+            <div className="admin-warning-header-row">
               <ShieldAlert size={16} /> Account Restricted
             </div>
             {user.banReason && (
-              <p style={{ fontSize: '0.8rem', color: '#FCA5A5', margin: '4px 0 0 0' }}>
+              <p className="admin-warning-reason">
                 <strong>Reason:</strong> {user.banReason}
               </p>
             )}
             {user.bannedAt && (
-              <p style={{ fontSize: '0.72rem', color: '#F87171', margin: '2px 0 0 0', opacity: 0.8 }}>
+              <p className="admin-warning-timestamp">
                 Recorded on {new Date(user.bannedAt).toLocaleString()}
               </p>
             )}
@@ -225,49 +121,42 @@ export default function UserDetailsModal({
         )}
 
         {/* 2. Platform Telemetry Metrics */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
-            gap: '10px',
-            marginBottom: '22px',
-          }}
-        >
-          <div style={{ padding: '10px 14px', borderRadius: '10px', backgroundColor: 'var(--chip-bg)', border: '1px solid var(--border-color)' }}>
-            <span style={{ fontSize: '0.7rem', color: 'var(--secondary-text)', fontWeight: 600 }}>APPLICATIONS</span>
-            <p style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--primary-text)', margin: '2px 0 0 0' }}>
+        <div className="admin-details-kpis-grid">
+          <div className="admin-details-kpi-box">
+            <span className="admin-details-kpi-label">APPLICATIONS</span>
+            <p className="admin-details-kpi-value">
               {user.submittedApplicationsCount ?? 0}
             </p>
           </div>
-          <div style={{ padding: '10px 14px', borderRadius: '10px', backgroundColor: 'var(--chip-bg)', border: '1px solid var(--border-color)' }}>
-            <span style={{ fontSize: '0.7rem', color: 'var(--secondary-text)', fontWeight: 600 }}>LISTINGS POSTED</span>
-            <p style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--primary-text)', margin: '2px 0 0 0' }}>
+          <div className="admin-details-kpi-box">
+            <span className="admin-details-kpi-label">LISTINGS POSTED</span>
+            <p className="admin-details-kpi-value">
               {user.postedOpportunitiesCount ?? 0}
             </p>
           </div>
-          <div style={{ padding: '10px 14px', borderRadius: '10px', backgroundColor: 'var(--chip-bg)', border: '1px solid var(--border-color)' }}>
-            <span style={{ fontSize: '0.7rem', color: 'var(--secondary-text)', fontWeight: 600 }}>MEMBER SINCE</span>
-            <p style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--primary-text)', margin: '4px 0 0 0' }}>
+          <div className="admin-details-kpi-box">
+            <span className="admin-details-kpi-label">MEMBER SINCE</span>
+            <p className="admin-details-kpi-subval">
               {new Date(user.createdAt).toLocaleDateString()}
             </p>
           </div>
-          <div style={{ padding: '10px 14px', borderRadius: '10px', backgroundColor: 'var(--chip-bg)', border: '1px solid var(--border-color)' }}>
-            <span style={{ fontSize: '0.7rem', color: 'var(--secondary-text)', fontWeight: 600 }}>PROFILE STATUS</span>
-            <p style={{ fontSize: '0.85rem', fontWeight: 700, color: user.profileCompleted ? '#34D399' : '#FBBF24', margin: '4px 0 0 0' }}>
+          <div className="admin-details-kpi-box">
+            <span className="admin-details-kpi-label">PROFILE STATUS</span>
+            <p className={`admin-details-kpi-subval ${user.profileCompleted ? 'complete' : 'incomplete'}`}>
               {user.profileCompleted ? 'Complete' : 'Incomplete'}
             </p>
           </div>
         </div>
 
         {/* 3. Detailed Profile Sections */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
+        <div className="admin-details-sections-list">
           {/* Bio */}
           {user.bio && (
-            <div style={{ padding: '12px 16px', borderRadius: '12px', backgroundColor: 'var(--box-subtle)', border: '1px solid var(--border-color)' }}>
-              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--secondary-text)', display: 'block', marginBottom: '4px' }}>
+            <div className="admin-details-section-card">
+              <span className="admin-details-subhead">
                 ABOUT / BIO
               </span>
-              <p style={{ fontSize: '0.85rem', color: 'var(--primary-text)', margin: 0, lineHeight: '1.5' }}>
+              <p className="admin-details-body-text">
                 {user.bio}
               </p>
             </div>
@@ -275,14 +164,14 @@ export default function UserDetailsModal({
 
           {/* Education Details */}
           {user.education?.degree && (
-            <div style={{ padding: '14px 16px', borderRadius: '12px', backgroundColor: 'var(--box-subtle)', border: '1px solid var(--border-color)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px', color: '#A855F7', fontWeight: 700, fontSize: '0.8rem' }}>
+            <div className="admin-details-section-card">
+              <div className="admin-details-section-header admin-text-purple">
                 <GraduationCap size={16} /> ACADEMIC BACKGROUND
               </div>
-              <p style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--primary-text)', margin: 0 }}>
+              <p className="admin-details-item-title">
                 {user.education.degree} in {user.education.fieldOfStudy}
               </p>
-              <p style={{ fontSize: '0.82rem', color: 'var(--secondary-text)', margin: '2px 0 0 0' }}>
+              <p className="admin-details-item-sub">
                 {user.education.institution} • {user.education.startYear} – {user.education.endYear || 'Present'} {user.education.grade ? `(${user.education.grade})` : ''}
               </p>
             </div>
@@ -290,26 +179,15 @@ export default function UserDetailsModal({
 
           {/* Skills Taxonomy */}
           {user.skills && user.skills.length > 0 && (
-            <div style={{ padding: '14px 16px', borderRadius: '12px', backgroundColor: 'var(--box-subtle)', border: '1px solid var(--border-color)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px', color: '#10B981', fontWeight: 700, fontSize: '0.8rem' }}>
+            <div className="admin-details-section-card">
+              <div className="admin-details-section-header admin-text-green admin-mb-10">
                 <Layers size={16} /> VERIFIED SKILLS ({user.skills.length})
               </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+              <div className="admin-wrap-gap-6">
                 {user.skills.map((skill, idx) => {
                   const name = typeof skill === 'string' ? skill : skill.name;
                   return (
-                    <span
-                      key={idx}
-                      style={{
-                        fontSize: '0.75rem',
-                        fontWeight: 600,
-                        padding: '4px 10px',
-                        borderRadius: '9999px',
-                        backgroundColor: 'rgba(16, 185, 129, 0.12)',
-                        border: '1px solid rgba(16, 185, 129, 0.3)',
-                        color: '#34D399',
-                      }}
-                    >
+                    <span key={idx} className="admin-skill-chip-green">
                       {name}
                     </span>
                   );
@@ -320,18 +198,18 @@ export default function UserDetailsModal({
 
           {/* Experience Details */}
           {user.experience?.role && (
-            <div style={{ padding: '14px 16px', borderRadius: '12px', backgroundColor: 'var(--box-subtle)', border: '1px solid var(--border-color)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px', color: '#38BDF8', fontWeight: 700, fontSize: '0.8rem' }}>
+            <div className="admin-details-section-card">
+              <div className="admin-details-section-header admin-text-blue">
                 <Briefcase size={16} /> WORK EXPERIENCE
               </div>
-              <p style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--primary-text)', margin: 0 }}>
+              <p className="admin-details-item-title">
                 {user.experience.role} @ {user.experience.organization}
               </p>
-              <p style={{ fontSize: '0.78rem', color: 'var(--secondary-text)', margin: '2px 0 4px 0' }}>
+              <p className="admin-details-item-sub">
                 {user.experience.duration}
               </p>
               {user.experience.description && (
-                <p style={{ fontSize: '0.82rem', color: 'var(--primary-text)', margin: 0, lineHeight: '1.4' }}>
+                <p className="admin-details-body-text">
                   {user.experience.description}
                 </p>
               )}
@@ -340,14 +218,14 @@ export default function UserDetailsModal({
 
           {/* Company Details (Employer) */}
           {user.companyDetails?.companyName && (
-            <div style={{ padding: '14px 16px', borderRadius: '12px', backgroundColor: 'var(--box-subtle)', border: '1px solid var(--border-color)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px', color: '#EC4899', fontWeight: 700, fontSize: '0.8rem' }}>
+            <div className="admin-details-section-card">
+              <div className="admin-details-section-header admin-text-pink">
                 <Building size={16} /> COMPANY INFORMATION
               </div>
-              <p style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--primary-text)', margin: 0 }}>
+              <p className="admin-details-item-title">
                 {user.companyDetails.companyName}
               </p>
-              <p style={{ fontSize: '0.8rem', color: 'var(--secondary-text)', margin: '2px 0 0 0' }}>
+              <p className="admin-details-item-sub">
                 {user.companyDetails.industry} • {user.companyDetails.website}
               </p>
             </div>
@@ -355,7 +233,7 @@ export default function UserDetailsModal({
 
           {/* Location & Remote Pref */}
           {user.location && (user.location.city || user.location.country) && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.82rem', color: 'var(--secondary-text)' }}>
+            <div className="admin-location-pill-row">
               <MapPin size={14} />
               <span>
                 {[user.location.city, user.location.state, user.location.country].filter(Boolean).join(', ')} • Remote Preference: {user.location.remotePreference || 'Any'}
@@ -365,26 +243,15 @@ export default function UserDetailsModal({
         </div>
 
         {/* 4. Action Footer */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            borderTop: '1px solid var(--border-color)',
-            paddingTop: '18px',
-            flexWrap: 'wrap',
-            gap: '10px',
-          }}
-        >
-          <div style={{ display: 'flex', gap: '8px' }}>
+        <div className="admin-details-footer">
+          <div className="admin-footer-btn-group">
             {/* Change Role Trigger */}
             <button
               onClick={() => {
                 onClose();
                 onRequestRoleChange(user);
               }}
-              className="btn-secondary"
-              style={{ padding: '8px 14px', fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '6px' }}
+              className="btn-secondary admin-btn-action-sm"
             >
               <Award size={14} color="#A78BFA" /> Change Role
             </button>
@@ -395,19 +262,7 @@ export default function UserDetailsModal({
                 onClose();
                 onRequestBanToggle(user);
               }}
-              style={{
-                padding: '8px 14px',
-                fontSize: '0.82rem',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-color)',
-                backgroundColor: isSuspended ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                color: isSuspended ? '#34D399' : '#F87171',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontWeight: 600,
-              }}
+              className={`admin-btn-ban-trigger ${isSuspended ? 'suspended' : 'active'}`}
             >
               {isSuspended ? (
                 <>
@@ -426,25 +281,14 @@ export default function UserDetailsModal({
                 onClose();
                 onRequestDelete(user);
               }}
-              style={{
-                padding: '8px 12px',
-                fontSize: '0.82rem',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-color)',
-                background: 'none',
-                color: '#F43F5E',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-              }}
+              className="admin-btn-delete-trigger"
               title="Delete account"
             >
               <Trash2 size={14} />
             </button>
           </div>
 
-          <button onClick={onClose} className="btn-secondary" style={{ padding: '8px 18px', fontSize: '0.85rem' }}>
+          <button onClick={onClose} className="btn-secondary admin-btn-close-sm">
             Close
           </button>
         </div>

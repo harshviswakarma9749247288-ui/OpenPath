@@ -67,53 +67,27 @@ export default function App() {
     // If not authenticated and trying to view a protected page, render login requirement prompt
     if (!isAuthenticated && isProtectedPage) {
       return (
-        <div style={{ minHeight: '65vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
-          <div
-            className="card card-featured animate-fade-in"
-            style={{
-              maxWidth: '450px',
-              width: '100%',
-              textAlign: 'center',
-              padding: '40px 32px',
-              backgroundColor: 'var(--card-bg)',
-              borderRadius: '20px',
-              border: '1px solid var(--border-color)',
-            }}
-          >
-            <div
-              style={{
-                width: '64px',
-                height: '64px',
-                borderRadius: '50%',
-                background: 'rgba(236, 72, 153, 0.15)',
-                border: '1px solid rgba(236, 72, 153, 0.3)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto 18px auto',
-                color: '#EC4899',
-              }}
-            >
+        <div className="auth-guard-container">
+          <div className="card card-featured animate-fade-in auth-guard-card">
+            <div className="auth-guard-icon-box">
               <Lock size={28} />
             </div>
-            <h2 style={{ fontSize: '1.45rem', fontWeight: 800, marginBottom: '8px', color: 'var(--primary-text)' }}>
+            <h2 className="auth-guard-title">
               Sign In Required
             </h2>
-            <p style={{ fontSize: '0.9rem', color: 'var(--secondary-text)', marginBottom: '24px', lineHeight: '1.6' }}>
+            <p className="auth-guard-subtitle">
               Your session has ended or you signed out. Please sign in to access your dashboard, applications, and profile.
             </p>
-            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+            <div className="auth-guard-actions">
               <button
                 onClick={() => navigate('login', {}, { replace: true })}
-                className="btn-primary"
-                style={{ padding: '11px 26px', fontSize: '0.95rem' }}
+                className="btn-primary auth-guard-btn"
               >
                 Sign In Now <ArrowRight size={16} />
               </button>
               <button
                 onClick={() => navigate('landing')}
-                className="btn-secondary"
-                style={{ padding: '11px 20px', fontSize: '0.95rem' }}
+                className="btn-secondary auth-guard-btn"
               >
                 Back to Home
               </button>
@@ -173,45 +147,10 @@ export default function App() {
   };
 
   return (
-    <div className="app-container" style={{ position: 'relative', minHeight: '100vh' }}>
+    <div className="app-container app-root">
       {/* Toast Notification Container */}
       {toast && (
-        <div
-          className="card card-featured animate-fade-in"
-          style={{
-            position: 'fixed',
-            top: '20px',
-            right: '24px',
-            padding: '12px 20px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            backgroundColor:
-              toast.type === 'success'
-                ? 'var(--status-green-bg)'
-                : toast.type === 'error'
-                ? 'var(--status-red-bg)'
-                : 'var(--status-purple-bg)',
-            border:
-              toast.type === 'success'
-                ? '1px solid var(--status-green-border)'
-                : toast.type === 'error'
-                ? '1px solid var(--status-red-border)'
-                : '1px solid var(--status-purple-border)',
-            color:
-              toast.type === 'success'
-                ? 'var(--status-green-text)'
-                : toast.type === 'error'
-                ? 'var(--status-red-text)'
-                : 'var(--status-purple-text)',
-            boxShadow: 'var(--shadow-md)',
-            zIndex: 9999,
-            borderRadius: 'var(--radius-md)',
-            fontSize: '0.875rem',
-            fontWeight: 600,
-            backdropFilter: 'blur(16px)',
-          }}
-        >
+        <div className={`card card-featured animate-fade-in app-toast-banner ${toast.type}`}>
           {toast.type === 'success' ? (
             <CheckCircle2 size={18} />
           ) : toast.type === 'error' ? (
@@ -222,7 +161,8 @@ export default function App() {
           <span>{toast.message}</span>
           <button
             onClick={clearToast}
-            style={{ color: 'inherit', marginLeft: '6px', background: 'none', border: 'none', cursor: 'pointer' }}
+            className="app-toast-close-btn"
+            aria-label="Dismiss toast"
           >
             <X size={14} />
           </button>
@@ -233,40 +173,25 @@ export default function App() {
       {isMobileDrawerOpen && (
         <div
           onClick={() => setMobileDrawerOpen(false)}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(7, 10, 19, 0.8)',
-            backdropFilter: 'blur(8px)',
-            zIndex: 100,
-          }}
+          className="mobile-drawer-overlay"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            style={{
-              width: '280px',
-              height: '100%',
-              backgroundColor: 'var(--sidebar-bg)',
-              borderRight: '1px solid var(--border-color)',
-              backdropFilter: 'blur(20px)',
-              padding: '24px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-            }}
+            className="mobile-drawer-pane"
           >
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                <strong style={{ fontSize: '1.2rem', color: 'var(--primary-text)' }}>OpenPath</strong>
+              <div className="mobile-drawer-header">
+                <strong className="mobile-drawer-title">OpenPath</strong>
                 <button
                   onClick={() => setMobileDrawerOpen(false)}
-                  style={{ color: 'var(--secondary-text)', background: 'none', border: 'none', cursor: 'pointer' }}
+                  className="mobile-drawer-close-btn"
+                  aria-label="Close mobile menu"
                 >
                   <X size={20} />
                 </button>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div className="mobile-drawer-nav-list">
                 {isAdmin ? (
                   <>
                     <button
@@ -274,8 +199,7 @@ export default function App() {
                         navigate('admin');
                         setMobileDrawerOpen(false);
                       }}
-                      className="btn-ghost"
-                      style={{ justifyContent: 'flex-start', color: '#EC4899', fontWeight: 700 }}
+                      className="btn-ghost mobile-nav-btn admin"
                     >
                       <ShieldCheck size={16} /> Admin Command Center
                     </button>
@@ -284,8 +208,7 @@ export default function App() {
                         navigate('opportunities');
                         setMobileDrawerOpen(false);
                       }}
-                      className="btn-ghost"
-                      style={{ justifyContent: 'flex-start' }}
+                      className="btn-ghost mobile-nav-btn"
                     >
                       Browse Opportunities
                     </button>
@@ -294,8 +217,7 @@ export default function App() {
                         navigate('profile');
                         setMobileDrawerOpen(false);
                       }}
-                      className="btn-ghost"
-                      style={{ justifyContent: 'flex-start' }}
+                      className="btn-ghost mobile-nav-btn"
                     >
                       Admin Profile
                     </button>
@@ -307,8 +229,7 @@ export default function App() {
                         navigate('employer-dashboard');
                         setMobileDrawerOpen(false);
                       }}
-                      className="btn-ghost"
-                      style={{ justifyContent: 'flex-start' }}
+                      className="btn-ghost mobile-nav-btn"
                     >
                       Employer Hub
                     </button>
@@ -317,8 +238,7 @@ export default function App() {
                         navigate('create-opportunity');
                         setMobileDrawerOpen(false);
                       }}
-                      className="btn-ghost"
-                      style={{ justifyContent: 'flex-start' }}
+                      className="btn-ghost mobile-nav-btn"
                     >
                       Post Opportunity
                     </button>
@@ -327,8 +247,7 @@ export default function App() {
                         navigate('manage-opportunities');
                         setMobileDrawerOpen(false);
                       }}
-                      className="btn-ghost"
-                      style={{ justifyContent: 'flex-start' }}
+                      className="btn-ghost mobile-nav-btn"
                     >
                       Manage Listings
                     </button>
@@ -337,8 +256,7 @@ export default function App() {
                         navigate('candidate-review');
                         setMobileDrawerOpen(false);
                       }}
-                      className="btn-ghost"
-                      style={{ justifyContent: 'flex-start' }}
+                      className="btn-ghost mobile-nav-btn"
                     >
                       Candidate Review
                     </button>
@@ -350,8 +268,7 @@ export default function App() {
                         navigate('dashboard');
                         setMobileDrawerOpen(false);
                       }}
-                      className="btn-ghost"
-                      style={{ justifyContent: 'flex-start' }}
+                      className="btn-ghost mobile-nav-btn"
                     >
                       Student Hub
                     </button>
@@ -360,8 +277,7 @@ export default function App() {
                         navigate('opportunities');
                         setMobileDrawerOpen(false);
                       }}
-                      className="btn-ghost"
-                      style={{ justifyContent: 'flex-start' }}
+                      className="btn-ghost mobile-nav-btn"
                     >
                       Browse Opportunities
                     </button>
@@ -370,8 +286,7 @@ export default function App() {
                         navigate('applications');
                         setMobileDrawerOpen(false);
                       }}
-                      className="btn-ghost"
-                      style={{ justifyContent: 'flex-start' }}
+                      className="btn-ghost mobile-nav-btn"
                     >
                       My Applications
                     </button>
@@ -380,8 +295,7 @@ export default function App() {
                         navigate('learning');
                         setMobileDrawerOpen(false);
                       }}
-                      className="btn-ghost"
-                      style={{ justifyContent: 'flex-start' }}
+                      className="btn-ghost mobile-nav-btn"
                     >
                       Skills & Learning
                     </button>
@@ -390,8 +304,7 @@ export default function App() {
                         navigate('profile');
                         setMobileDrawerOpen(false);
                       }}
-                      className="btn-ghost"
-                      style={{ justifyContent: 'flex-start' }}
+                      className="btn-ghost mobile-nav-btn"
                     >
                       Digital Resume
                     </button>
@@ -403,8 +316,7 @@ export default function App() {
                       setMobileDrawerOpen(false);
                       openSignOutModal();
                     }}
-                    className="btn-ghost"
-                    style={{ justifyContent: 'flex-start', color: '#F43F5E', marginTop: '6px' }}
+                    className="btn-ghost mobile-nav-btn danger"
                   >
                     <LogOut size={16} /> Sign Out
                   </button>
@@ -412,16 +324,8 @@ export default function App() {
               </div>
             </div>
 
-            <div
-              style={{
-                paddingTop: '16px',
-                borderTop: '1px solid var(--border-color)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--secondary-text)' }}>Appearance</span>
+            <div className="mobile-drawer-footer">
+              <span className="candidate-bg-desc">Appearance</span>
               <ThemeToggle showLabel={true} size="sm" />
             </div>
           </div>
@@ -433,15 +337,15 @@ export default function App() {
 
       {/* Main Layout Rendering with 3D Page Transitions */}
       {isPublicPage || (!isAuthenticated && isProtectedPage) ? (
-        <div key={activePage} className="page-transition-3d" style={{ width: '100%', position: 'relative', zIndex: 1 }}>
+        <div key={activePage} className="page-transition-3d app-public-page">
           {renderActiveScreen()}
         </div>
       ) : (
         <>
           <Sidebar />
-          <div className="main-content" style={{ position: 'relative', zIndex: 1 }}>
+          <div className="main-content app-main-content">
             <Navbar />
-            <main key={activePage} className="page-transition-3d" style={{ flex: 1 }}>
+            <main key={activePage} className="page-transition-3d app-main-view">
               {renderActiveScreen()}
             </main>
           </div>

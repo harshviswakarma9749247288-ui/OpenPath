@@ -74,49 +74,26 @@ export default function CandidateReviewPage({ opportunityId }) {
   };
 
   return (
-    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
+    <div className="dashboard-container">
       <BackButton label="Back to Employer Hub" fallbackPage="employer-dashboard" />
 
       {/* Top Header & Opportunity Selector */}
-      <div
-        className="card card-featured"
-        style={{
-          padding: '28px',
-          marginBottom: '28px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '20px',
-        }}
-      >
+      <div className="card card-featured dashboard-header-banner">
         <div>
-          <span
-            style={{
-              fontSize: '0.75rem',
-              fontWeight: 700,
-              color: '#C084FC',
-              textTransform: 'uppercase',
-              backgroundColor: 'rgba(168, 85, 247, 0.15)',
-              border: '1px solid rgba(168, 85, 247, 0.35)',
-              padding: '4px 12px',
-              borderRadius: '9999px',
-              letterSpacing: '0.05em',
-            }}
-          >
+          <span className="header-category-pill">
             CANDIDATE INTELLIGENCE
           </span>
-          <h1 style={{ fontSize: '1.85rem', marginTop: '10px', color: 'var(--primary-text)' }}>
+          <h1 className="header-title-main">
             Candidate Review & Matching
           </h1>
-          <p style={{ fontSize: '0.9rem', color: 'var(--secondary-text)', marginTop: '4px' }}>
+          <p className="header-sub-text">
             Applicants ranked algorithmically by technical skill overlap and background compatibility.
           </p>
         </div>
 
         {/* Opportunity Selector Dropdown */}
-        <div style={{ minWidth: '260px' }}>
-          <label className="form-label" style={{ fontSize: '0.8rem' }}>Filter by Position</label>
+        <div className="review-selector-wrap">
+          <label className="form-label">Filter by Position</label>
           <select
             className="form-select"
             value={selectedOppId}
@@ -135,12 +112,12 @@ export default function CandidateReviewPage({ opportunityId }) {
 
       {/* Candidate List */}
       <div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <h3 style={{ fontSize: '1.15rem', color: 'var(--primary-text)' }}>
+        <div className="dashboard-section-header">
+          <h3 className="dashboard-section-title">
             Ranked Candidates for{' '}
-            <strong style={{ color: '#C084FC' }}>{oppDetails?.title || 'Selected Role'}</strong>
+            <strong className="text-accent-purple">{oppDetails?.title || 'Selected Role'}</strong>
           </h3>
-          <span style={{ fontSize: '0.85rem', color: 'var(--secondary-text)' }}>
+          <span className="candidate-card-sub">
             {candidates.length} Candidate{candidates.length !== 1 ? 's' : ''} Evaluated
           </span>
         </div>
@@ -154,12 +131,12 @@ export default function CandidateReviewPage({ opportunityId }) {
         ))}
 
         {opportunities.length === 0 && !isLoading && (
-          <div className="card" style={{ padding: '48px', textAlign: 'center', color: 'var(--secondary-text)' }}>
-            <Briefcase size={36} color="#CBD5E1" style={{ margin: '0 auto 12px auto' }} />
-            <h4 style={{ fontSize: '1.1rem', color: 'var(--primary-text)', marginBottom: '6px' }}>
+          <div className="card dashboard-empty-state">
+            <Briefcase size={36} color="#CBD5E1" className="dashboard-empty-icon" />
+            <h4 className="dashboard-empty-title">
               No opportunities created yet
             </h4>
-            <p style={{ fontSize: '0.85rem', marginBottom: '16px' }}>
+            <p className="dashboard-empty-sub">
               Post an internship or entry-level job to start receiving algorithmically matched talent!
             </p>
             <button onClick={() => navigate('create-opportunity')} className="btn-primary">
@@ -169,12 +146,12 @@ export default function CandidateReviewPage({ opportunityId }) {
         )}
 
         {opportunities.length > 0 && candidates.length === 0 && !isLoading && (
-          <div className="card" style={{ padding: '48px', textAlign: 'center', color: 'var(--secondary-text)' }}>
-            <Users size={36} color="#CBD5E1" style={{ margin: '0 auto 12px auto' }} />
-            <h4 style={{ fontSize: '1.1rem', color: 'var(--primary-text)', marginBottom: '6px' }}>
+          <div className="card dashboard-empty-state">
+            <Users size={36} color="#CBD5E1" className="dashboard-empty-icon" />
+            <h4 className="dashboard-empty-title">
               No candidates have applied to this role yet
             </h4>
-            <p style={{ fontSize: '0.85rem' }}>
+            <p className="dashboard-empty-sub no-margin">
               Student applications will automatically appear here with their 5-factor match score!
             </p>
           </div>

@@ -3,23 +3,14 @@ import { Calendar, Video } from 'lucide-react';
 
 export default function ApplicationTimeline({ timeline = [], interviewDetails = null }) {
   return (
-    <div style={{ padding: '16px 0' }}>
-      <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--primary-text)', marginBottom: '16px' }}>
+    <div className="app-timeline-container">
+      <h4 className="app-timeline-title">
         Application Progression Timeline
       </h4>
 
-      <div style={{ position: 'relative', paddingLeft: '24px' }}>
+      <div className="app-timeline-line-wrap">
         {/* Vertical line connecting events */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '8px',
-            bottom: '8px',
-            left: '8px',
-            width: '2px',
-            background: 'linear-gradient(180deg, #A855F7 0%, var(--border-color) 100%)',
-          }}
-        />
+        <div className="app-timeline-vertical-line" />
 
         {timeline.map((item, index) => {
           const isLatest = index === timeline.length - 1;
@@ -30,33 +21,21 @@ export default function ApplicationTimeline({ timeline = [], interviewDetails = 
           });
 
           return (
-            <div key={index} style={{ position: 'relative', marginBottom: '20px' }}>
+            <div key={index} className="app-timeline-event-item">
               {/* Dot */}
-              <div
-                style={{
-                  position: 'absolute',
-                  left: '-20px',
-                  top: '4px',
-                  width: '12px',
-                  height: '12px',
-                  borderRadius: '50%',
-                  backgroundColor: isLatest ? '#EC4899' : '#94A3B8',
-                  border: '2px solid var(--background)',
-                  boxShadow: isLatest ? '0 0 12px #EC4899' : 'none',
-                }}
-              />
+              <div className={`app-timeline-dot ${isLatest ? 'latest' : 'past'}`} />
 
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontWeight: 700, fontSize: '0.9rem', color: isLatest ? 'var(--primary-text)' : 'var(--secondary-text)' }}>
+                <div className="app-timeline-event-header">
+                  <span className={`app-timeline-event-stage ${isLatest ? 'latest' : 'past'}`}>
                     {item.stage}
                   </span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>
+                  <span className="app-timeline-event-date">
                     {formattedDate}
                   </span>
                 </div>
                 {item.note && (
-                  <p style={{ fontSize: '0.825rem', color: 'var(--secondary-text)', marginTop: '2px' }}>
+                  <p className="app-timeline-event-note">
                     {item.note}
                   </p>
                 )}
@@ -67,39 +46,29 @@ export default function ApplicationTimeline({ timeline = [], interviewDetails = 
       </div>
 
       {interviewDetails && interviewDetails.date && (
-        <div
-          style={{
-            marginTop: '16px',
-            padding: '16px',
-            borderRadius: 'var(--radius-md)',
-            backgroundColor: 'rgba(124, 58, 237, 0.08)',
-            border: '1px solid rgba(168, 85, 247, 0.35)',
-            boxShadow: '0 0 20px rgba(124, 58, 237, 0.12)',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#7C3AED', marginBottom: '10px' }}>
+        <div className="interview-confirmed-box">
+          <div className="interview-confirmed-header">
             <Calendar size={18} />
-            <strong style={{ fontSize: '0.9rem' }}>Interview Schedule Confirmed</strong>
+            <strong>Interview Schedule Confirmed</strong>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px', fontSize: '0.85rem' }}>
+          <div className="interview-details-grid">
             <div>
-              <span style={{ color: 'var(--secondary-text)' }}>Date & Time: </span>
-              <strong style={{ color: 'var(--primary-text)' }}>
+              <span>Date & Time: </span>
+              <strong>
                 {new Date(interviewDetails.date).toLocaleDateString()} at {interviewDetails.time || '11:00 AM'}
               </strong>
             </div>
             <div>
-              <span style={{ color: 'var(--secondary-text)' }}>Format: </span>
-              <strong style={{ color: 'var(--primary-text)' }}>{interviewDetails.type || 'Virtual Video Call'}</strong>
+              <span>Format: </span>
+              <strong>{interviewDetails.type || 'Virtual Video Call'}</strong>
             </div>
             {interviewDetails.link && (
-              <div style={{ gridColumn: '1 / -1', marginTop: '6px' }}>
+              <div className="grid-col-all">
                 <a
                   href={interviewDetails.link}
                   target="_blank"
                   rel="noreferrer"
-                  className="btn-primary"
-                  style={{ display: 'inline-flex', padding: '7px 16px', fontSize: '0.8rem' }}
+                  className="btn-primary interview-meeting-btn"
                 >
                   <Video size={14} /> Launch Meeting Room
                 </a>

@@ -51,18 +51,13 @@ export default function Tilt3DCard({
   return (
     <div
       ref={cardRef}
-      className={`tilt-3d-card ${className}`}
+      className={`tilt-3d-card ${isHovered ? 'hovered' : ''} ${className}`}
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
       style={{
         transform: transformStyle,
-        transformStyle: 'preserve-3d',
-        transition: isHovered
-          ? 'transform 0.08s ease-out, box-shadow 0.2s ease'
-          : 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease',
-        position: 'relative',
         ...style,
       }}
     >
@@ -71,16 +66,10 @@ export default function Tilt3DCard({
       {/* Dynamic Specular Glare Reflection */}
       {glare && (
         <div
+          className="tilt-3d-glare"
           style={{
-            position: 'absolute',
-            inset: 0,
-            borderRadius: 'inherit',
-            pointerEvents: 'none',
             opacity: glareStyle.opacity,
             background: `radial-gradient(circle at ${glareStyle.x}% ${glareStyle.y}%, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.05) 40%, transparent 80%)`,
-            transition: 'opacity 0.3s ease',
-            mixBlendMode: 'overlay',
-            zIndex: 10,
           }}
         />
       )}

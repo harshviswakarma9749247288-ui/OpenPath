@@ -424,38 +424,18 @@ export default function AdminPage({ initialTab = 'overview' }) {
   // Access check fallback
   if (!isAdmin) {
     return (
-      <div style={{ maxWidth: '600px', margin: '80px auto', padding: '0 20px', textAlign: 'center' }}>
-        <div
-          className="card card-featured animate-fade-in"
-          style={{
-            padding: '40px 24px',
-            borderRadius: '24px',
-            border: '1px solid rgba(239, 68, 68, 0.4)',
-            backgroundColor: 'var(--card-bg)',
-          }}
-        >
-          <div
-            style={{
-              width: '64px',
-              height: '64px',
-              borderRadius: '50%',
-              backgroundColor: 'rgba(239, 68, 68, 0.15)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 20px auto',
-              color: '#F87171',
-            }}
-          >
+      <div className="admin-access-denied-container">
+        <div className="card card-featured animate-fade-in admin-access-card">
+          <div className="admin-access-icon-box">
             <ShieldAlert size={32} />
           </div>
-          <h2 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: '8px', color: 'var(--primary-text)' }}>
+          <h2 className="admin-access-title">
             Administrative Privilege Required
           </h2>
-          <p style={{ color: 'var(--secondary-text)', fontSize: '0.95rem', marginBottom: '24px', lineHeight: '1.6' }}>
+          <p className="admin-access-desc">
             This Command Center is strictly restricted to platform administrators. Please sign in with an account having administrator permissions.
           </p>
-          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+          <div className="admin-access-actions">
             <button onClick={() => navigate('dashboard')} className="btn-secondary">
               Back to Dashboard
             </button>
@@ -473,76 +453,30 @@ export default function AdminPage({ initialTab = 'overview' }) {
   const funnel = statsData?.funnel || {};
 
   return (
-    <div style={{ maxWidth: '1340px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
-      <BackButton label="Back to Dashboard" fallbackPage="dashboard" style={{ marginBottom: '18px' }} />
+    <div className="admin-page-container">
+      <BackButton label="Back to Dashboard" fallbackPage="dashboard" className="admin-back-btn-spacing" />
 
       {/* 1. Header Banner */}
-      <div
-        className="card card-featured admin-header-banner"
-        style={{
-          padding: '28px',
-          marginBottom: '24px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '20px',
-          background: 'linear-gradient(135deg, rgba(30, 27, 75, 0.88) 0%, rgba(15, 23, 42, 0.92) 100%)',
-          border: '1px solid rgba(168, 85, 247, 0.35)',
-          borderRadius: '22px',
-        }}
-      >
+      <div className="card card-featured admin-header-banner">
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span
-              style={{
-                fontSize: '0.72rem',
-                fontWeight: 800,
-                color: '#EC4899',
-                backgroundColor: 'rgba(236, 72, 153, 0.16)',
-                border: '1px solid rgba(236, 72, 153, 0.4)',
-                padding: '4px 12px',
-                borderRadius: '9999px',
-                letterSpacing: '0.06em',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-              }}
-            >
+          <div className="admin-header-title-box">
+            <span className="admin-system-tag">
               <Activity size={12} className="spin" /> SYSTEM GOVERNANCE & TELEMETRY
             </span>
-            <span
-              style={{
-                fontSize: '0.72rem',
-                fontWeight: 700,
-                color: '#34D399',
-                backgroundColor: 'rgba(16, 185, 129, 0.14)',
-                border: '1px solid rgba(16, 185, 129, 0.35)',
-                padding: '3px 10px',
-                borderRadius: '9999px',
-              }}
-            >
+            <span className="admin-db-status">
               ● DB {sys?.dbState || 'Connected'}
             </span>
           </div>
 
-          <h1
-            style={{
-              fontSize: '2.2rem',
-              fontWeight: 800,
-              marginTop: '10px',
-              color: 'var(--primary-text)',
-              letterSpacing: '-0.5px',
-            }}
-          >
+          <h1 className="admin-header-title">
             Admin <span className="gradient-text">Command Center</span>
           </h1>
-          <p style={{ fontSize: '0.92rem', color: 'var(--secondary-text)', marginTop: '4px' }}>
+          <p className="admin-header-desc">
             Global platform governance, account role switching, ID ban enforcement, listing moderation, and taxonomy control.
           </p>
         </div>
 
-        <div className="admin-header-actions" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+        <div className="admin-header-actions">
           <button
             onClick={() => {
               fetchStats();
@@ -552,9 +486,8 @@ export default function AdminPage({ initialTab = 'overview' }) {
               if (activeTab === 'applications') fetchApplications();
               showToast('Refreshed admin telemetry data', 'info');
             }}
-            className="btn-secondary"
+            className="btn-secondary admin-refresh-btn"
             title="Reload metrics"
-            style={{ padding: '9px 15px', fontSize: '0.85rem' }}
           >
             <RefreshCw size={15} className={isLoadingStats ? 'spin' : ''} /> Refresh
           </button>
@@ -565,7 +498,6 @@ export default function AdminPage({ initialTab = 'overview' }) {
               setSkillModalState({ isOpen: true, skill: null });
             }}
             className="btn-primary"
-            style={{ padding: '9px 18px', fontSize: '0.85rem' }}
           >
             <PlusCircle size={15} /> Add Canonical Skill
           </button>
@@ -573,16 +505,7 @@ export default function AdminPage({ initialTab = 'overview' }) {
       </div>
 
       {/* 2. Navigation Tabs */}
-      <div
-        style={{
-          display: 'flex',
-          gap: '8px',
-          overflowX: 'auto',
-          paddingBottom: '8px',
-          marginBottom: '24px',
-          borderBottom: '1px solid var(--border-color)',
-        }}
-      >
+      <div className="admin-tabs-bar">
         {[
           { id: 'overview', label: 'Platform Overview', icon: Activity, count: null },
           { id: 'users', label: 'User Governance', icon: Users, count: m.totalUsers },
@@ -597,35 +520,12 @@ export default function AdminPage({ initialTab = 'overview' }) {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '10px 18px',
-                borderRadius: 'var(--radius-md)',
-                backgroundColor: isActive ? 'rgba(124, 58, 237, 0.22)' : 'var(--chip-bg)',
-                border: isActive ? '1px solid #A855F7' : '1px solid var(--border-color)',
-                color: isActive ? 'var(--primary-text)' : 'var(--secondary-text)',
-                fontWeight: isActive ? 700 : 500,
-                fontSize: '0.88rem',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                transition: 'all 0.2s ease',
-              }}
+              className={`admin-tab-btn ${isActive ? 'active' : ''}`}
             >
-              <Icon size={16} color={isActive ? '#F472B6' : 'currentColor'} />
+              <Icon size={16} />
               <span>{tab.label}</span>
               {tab.count !== null && (
-                <span
-                  style={{
-                    fontSize: '0.75rem',
-                    padding: '1px 7px',
-                    borderRadius: '9999px',
-                    backgroundColor: isActive ? 'rgba(236, 72, 153, 0.3)' : 'rgba(255, 255, 255, 0.08)',
-                    color: isActive ? '#F472B6' : 'inherit',
-                    fontWeight: 700,
-                  }}
-                >
+                <span className="admin-tab-badge">
                   {tab.count}
                 </span>
               )}
@@ -638,93 +538,53 @@ export default function AdminPage({ initialTab = 'overview' }) {
 
       {/* TAB 1: OVERVIEW */}
       {activeTab === 'overview' && (
-        <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div className="animate-fade-in admin-announcement-form">
           {/* Top KPI Cards Grid */}
-          <div
-            className="admin-metrics-grid"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
-              gap: '16px',
-            }}
-          >
+          <div className="admin-metrics-grid">
             {[
               {
                 title: 'Total Users',
                 value: m.totalUsers ?? '...',
                 sub: `${m.totalStudents || 0} Students • ${m.totalEmployers || 0} Employers`,
                 icon: Users,
-                color: '#A855F7',
-                bg: 'rgba(124, 58, 237, 0.14)',
-                border: 'rgba(124, 58, 237, 0.3)',
+                theme: 'admin-kpi-purple',
+                iconBoxClass: 'admin-kpi-icon-purple',
               },
               {
                 title: 'Opportunities',
                 value: m.totalOpportunities ?? '...',
                 sub: `${m.activeOpportunities || 0} Active • ${m.closedOpportunities || 0} Closed`,
                 icon: Briefcase,
-                color: '#EC4899',
-                bg: 'rgba(236, 72, 153, 0.14)',
-                border: 'rgba(236, 72, 153, 0.3)',
+                theme: 'admin-kpi-pink',
+                iconBoxClass: 'admin-kpi-icon-pink',
               },
               {
                 title: 'Platform Applications',
                 value: m.totalApplications ?? '...',
                 sub: `${funnel.Shortlisted || 0} Shortlisted • ${funnel.Selected || 0} Selected`,
                 icon: TrendingUp,
-                color: '#06B6D4',
-                bg: 'rgba(6, 182, 212, 0.14)',
-                border: 'rgba(6, 182, 212, 0.3)',
+                theme: 'admin-kpi-cyan',
+                iconBoxClass: 'admin-kpi-icon-blue',
               },
               {
                 title: 'Verified Skills',
                 value: m.totalSkills ?? '...',
                 sub: `${m.totalLearningResources || 0} Curated Roadmaps`,
                 icon: Layers,
-                color: '#10B981',
-                bg: 'rgba(16, 185, 129, 0.14)',
-                border: 'rgba(16, 185, 129, 0.3)',
+                theme: 'admin-kpi-emerald',
+                iconBoxClass: 'admin-kpi-icon-green',
               },
             ].map((kpi, idx) => {
               const Icon = kpi.icon;
               return (
-                <div
-                  key={idx}
-                  className="card"
-                  style={{
-                    padding: '20px',
-                    borderRadius: 'var(--radius-lg)',
-                    border: `1px solid ${kpi.border}`,
-                    background: `linear-gradient(135deg, ${kpi.bg} 0%, rgba(15, 23, 42, 0.5) 100%)`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '16px',
-                  }}
-                >
-                  <div
-                    style={{
-                      width: '48px',
-                      height: '48px',
-                      borderRadius: '14px',
-                      backgroundColor: kpi.bg,
-                      border: `1px solid ${kpi.border}`,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: kpi.color,
-                      flexShrink: 0,
-                    }}
-                  >
+                <div key={idx} className={`card admin-kpi-card-themed ${kpi.theme}`}>
+                  <div className={`admin-kpi-icon-box ${kpi.iconBoxClass}`}>
                     <Icon size={24} />
                   </div>
                   <div>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--secondary-text)', fontWeight: 600 }}>
-                      {kpi.title}
-                    </span>
-                    <h3 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--primary-text)', margin: '2px 0' }}>
-                      {kpi.value}
-                    </h3>
-                    <p style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>{kpi.sub}</p>
+                    <span className="admin-kpi-title">{kpi.title}</span>
+                    <h3 className="admin-kpi-value">{kpi.value}</h3>
+                    <p className="admin-kpi-sub">{kpi.sub}</p>
                   </div>
                 </div>
               );
@@ -732,47 +592,31 @@ export default function AdminPage({ initialTab = 'overview' }) {
           </div>
 
           {/* Application Pipeline Funnel & System Heartbeat */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1.4fr 1fr',
-              gap: '20px',
-            }}
-            className="admin-dashboard-split"
-          >
+          <div className="admin-dashboard-split">
             {/* Recruitment Pipeline Funnel Breakdown */}
-            <div className="card" style={{ padding: '24px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
+            <div className="card admin-funnel-card">
+              <div className="admin-funnel-header">
                 <div>
-                  <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--primary-text)' }}>
+                  <h3 className="admin-funnel-title">
                     Application Funnel Telemetry
                   </h3>
-                  <p style={{ fontSize: '0.82rem', color: 'var(--secondary-text)', marginTop: '2px' }}>
+                  <p className="admin-funnel-sub">
                     Conversion stages across all candidate applications platform-wide
                   </p>
                 </div>
-                <span
-                  style={{
-                    fontSize: '0.75rem',
-                    color: '#A855F7',
-                    fontWeight: 700,
-                    backgroundColor: 'rgba(168, 85, 247, 0.12)',
-                    padding: '4px 10px',
-                    borderRadius: '9999px',
-                  }}
-                >
+                <span className="admin-funnel-pill">
                   Total: {m.totalApplications || 0}
                 </span>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              <div className="admin-funnel-list">
                 {[
-                  { label: 'Applied (Initial)', key: 'Applied', color: '#818CF8' },
-                  { label: 'Under Review', key: 'Reviewing', color: '#FBBF24' },
-                  { label: 'Shortlisted by Match', key: 'Shortlisted', color: '#C084FC' },
-                  { label: 'Interview Scheduled', key: 'Interview', color: '#38BDF8' },
-                  { label: 'Offer / Selected', key: 'Selected', color: '#34D399' },
-                  { label: 'Archived / Rejected', key: 'Rejected', color: '#F87171' },
+                  { label: 'Applied (Initial)', key: 'Applied', colorClass: 'stage-applied' },
+                  { label: 'Under Review', key: 'Reviewing', colorClass: 'stage-reviewing' },
+                  { label: 'Shortlisted by Match', key: 'Shortlisted', colorClass: 'stage-shortlisted' },
+                  { label: 'Interview Scheduled', key: 'Interview', colorClass: 'stage-interview' },
+                  { label: 'Offer / Selected', key: 'Selected', colorClass: 'stage-selected' },
+                  { label: 'Archived / Rejected', key: 'Rejected', colorClass: 'stage-rejected' },
                 ].map((stage) => {
                   const count = funnel[stage.key] || 0;
                   const total = m.totalApplications || 1;
@@ -780,34 +624,17 @@ export default function AdminPage({ initialTab = 'overview' }) {
 
                   return (
                     <div key={stage.key}>
-                      <div
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          fontSize: '0.825rem',
-                          marginBottom: '4px',
-                        }}
-                      >
-                        <span style={{ fontWeight: 600, color: 'var(--primary-text)' }}>{stage.label}</span>
-                        <span style={{ color: 'var(--secondary-text)', fontWeight: 700 }}>
-                          {count} <span style={{ opacity: 0.6 }}>({percentage}%)</span>
+                      <div className="admin-funnel-stage-meta">
+                        <span className="admin-funnel-stage-label">{stage.label}</span>
+                        <span className="admin-funnel-stage-count">
+                          {count} <span className="admin-funnel-stage-pct">({percentage}%)</span>
                         </span>
                       </div>
-                      <div
-                        style={{
-                          height: '8px',
-                          backgroundColor: 'rgba(255, 255, 255, 0.06)',
-                          borderRadius: '9999px',
-                          overflow: 'hidden',
-                        }}
-                      >
+                      <div className="admin-funnel-bar-track">
                         <div
+                          className={`admin-funnel-bar-fill ${stage.colorClass}`}
                           style={{
-                            height: '100%',
                             width: `${Math.max(percentage, count > 0 ? 3 : 0)}%`,
-                            backgroundColor: stage.color,
-                            borderRadius: '9999px',
-                            transition: 'width 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
                           }}
                         />
                       </div>
@@ -818,34 +645,32 @@ export default function AdminPage({ initialTab = 'overview' }) {
             </div>
 
             {/* Quick Actions & Live Announcement Broadcast */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div className="admin-recent-list">
               {/* Broadcast Announcement */}
-              <div className="card" style={{ padding: '24px' }}>
-                <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--primary-text)', marginBottom: '4px' }}>
+              <div className="card admin-announcement-card">
+                <h3 className="admin-announcement-title">
                   Live Platform Announcement
                 </h3>
-                <p style={{ fontSize: '0.82rem', color: 'var(--secondary-text)', marginBottom: '16px' }}>
+                <p className="admin-announcement-desc">
                   Update the banner announcement shown on the public landing page in real-time.
                 </p>
 
-                <form onSubmit={handleSaveAnnouncement} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <form onSubmit={handleSaveAnnouncement} className="admin-announcement-form">
                   <div>
-                    <label className="form-label" style={{ fontSize: '0.78rem' }}>Badge Text</label>
+                    <label className="form-label admin-announcement-label">Badge Text</label>
                     <input
                       type="text"
-                      className="form-input"
-                      style={{ fontSize: '0.85rem', padding: '8px 12px' }}
+                      className="form-input admin-announcement-input"
                       placeholder="e.g. SCROLLTIDE 3D ENGINE or PLATFORM UPDATE"
                       value={announcementBadge}
                       onChange={(e) => setAnnouncementBadge(e.target.value)}
                     />
                   </div>
                   <div>
-                    <label className="form-label" style={{ fontSize: '0.78rem' }}>Announcement Headline</label>
+                    <label className="form-label admin-announcement-label">Announcement Headline</label>
                     <input
                       type="text"
-                      className="form-input"
-                      style={{ fontSize: '0.85rem', padding: '8px 12px' }}
+                      className="form-input admin-announcement-input"
                       placeholder="e.g. 5-Factor Vector AI Matching Engine Activated"
                       value={announcementText}
                       onChange={(e) => setAnnouncementText(e.target.value)}
@@ -854,8 +679,7 @@ export default function AdminPage({ initialTab = 'overview' }) {
                   <button
                     type="submit"
                     disabled={isSavingAnnouncement}
-                    className="btn-primary"
-                    style={{ alignSelf: 'flex-start', padding: '8px 16px', fontSize: '0.85rem' }}
+                    className="btn-primary admin-announcement-submit-btn"
                   >
                     <Send size={14} /> {isSavingAnnouncement ? 'Broadcasting...' : 'Broadcast Announcement'}
                   </button>
@@ -863,36 +687,32 @@ export default function AdminPage({ initialTab = 'overview' }) {
               </div>
 
               {/* Fast Jump Shortcuts */}
-              <div className="card" style={{ padding: '20px' }}>
-                <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--primary-text)', marginBottom: '12px' }}>
+              <div className="card admin-shortcuts-card">
+                <h4 className="admin-shortcuts-title">
                   Administrative Shortcuts
                 </h4>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                <div className="admin-shortcuts-grid">
                   <button
                     onClick={() => setActiveTab('users')}
-                    className="btn-ghost"
-                    style={{ justifyContent: 'flex-start', fontSize: '0.82rem', padding: '8px 10px' }}
+                    className="btn-ghost admin-shortcut-btn"
                   >
                     <Users size={15} color="#A855F7" /> Audit Users
                   </button>
                   <button
                     onClick={() => setActiveTab('opportunities')}
-                    className="btn-ghost"
-                    style={{ justifyContent: 'flex-start', fontSize: '0.82rem', padding: '8px 10px' }}
+                    className="btn-ghost admin-shortcut-btn"
                   >
                     <Briefcase size={15} color="#EC4899" /> Moderate Listings
                   </button>
                   <button
                     onClick={() => setActiveTab('skills')}
-                    className="btn-ghost"
-                    style={{ justifyContent: 'flex-start', fontSize: '0.82rem', padding: '8px 10px' }}
+                    className="btn-ghost admin-shortcut-btn"
                   >
                     <Layers size={15} color="#10B981" /> Taxonomy Control
                   </button>
                   <button
                     onClick={() => setActiveTab('system')}
-                    className="btn-ghost"
-                    style={{ justifyContent: 'flex-start', fontSize: '0.82rem', padding: '8px 10px' }}
+                    className="btn-ghost admin-shortcut-btn"
                   >
                     <Server size={15} color="#06B6D4" /> Server Telemetry
                   </button>
@@ -902,75 +722,45 @@ export default function AdminPage({ initialTab = 'overview' }) {
           </div>
 
           {/* Recent Platform Activity Streams */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
-              gap: '20px',
-            }}
-          >
+          <div className="admin-recent-streams-grid">
             {/* Recent Users */}
-            <div className="card" style={{ padding: '20px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--primary-text)' }}>
+            <div className="card admin-recent-stream-card">
+              <div className="admin-recent-header">
+                <h4 className="admin-recent-title">
                   Recent Registrations
                 </h4>
                 <button
                   onClick={() => setActiveTab('users')}
-                  style={{ background: 'none', border: 'none', color: '#A78BFA', fontSize: '0.78rem', cursor: 'pointer', fontWeight: 600 }}
+                  className="admin-recent-link-btn"
                 >
                   View All →
                 </button>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <div className="admin-recent-list">
                 {(statsData?.recentUsers || []).map((u) => (
                   <div
                     key={u._id}
                     onClick={() => setInspectUser(u)}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '10px 12px',
-                      borderRadius: '10px',
-                      backgroundColor: 'var(--chip-bg)',
-                      cursor: 'pointer',
-                      transition: 'background-color 0.15s ease',
-                    }}
+                    className="admin-recent-item"
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div className="admin-header-title-box">
                       <img
                         src={u.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=60'}
                         alt={u.name}
-                        style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }}
+                        className="admin-recent-avatar-sm"
                       />
                       <div>
-                        <p style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--primary-text)', margin: 0 }}>
+                        <p className="admin-recent-user-name">
                           {u.name}
                         </p>
-                        <p style={{ fontSize: '0.72rem', color: 'var(--secondary-text)', margin: 0 }}>
+                        <p className="admin-recent-user-email">
                           {u.email}
                         </p>
                       </div>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span
-                        style={{
-                          fontSize: '0.72rem',
-                          padding: '2px 8px',
-                          borderRadius: '9999px',
-                          fontWeight: 700,
-                          backgroundColor:
-                            u.role === 'admin'
-                              ? 'rgba(239, 68, 68, 0.18)'
-                              : u.role === 'employer'
-                              ? 'rgba(236, 72, 153, 0.18)'
-                              : 'rgba(124, 58, 237, 0.18)',
-                          color:
-                            u.role === 'admin' ? '#F87171' : u.role === 'employer' ? '#F472B6' : '#C084FC',
-                        }}
-                      >
+                    <div className="admin-header-title-box">
+                      <span className={`admin-role-pill-sm role-${u.role}`}>
                         {u.role}
                       </span>
                       <ChevronRight size={14} color="var(--secondary-text)" />
@@ -981,55 +771,36 @@ export default function AdminPage({ initialTab = 'overview' }) {
             </div>
 
             {/* Recent Opportunities */}
-            <div className="card" style={{ padding: '20px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--primary-text)' }}>
+            <div className="card admin-recent-stream-card">
+              <div className="admin-recent-header">
+                <h4 className="admin-recent-title">
                   Recent Opportunities
                 </h4>
                 <button
                   onClick={() => setActiveTab('opportunities')}
-                  style={{ background: 'none', border: 'none', color: '#A78BFA', fontSize: '0.78rem', cursor: 'pointer', fontWeight: 600 }}
+                  className="admin-recent-link-btn"
                 >
                   View All →
                 </button>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <div className="admin-recent-list">
                 {(statsData?.recentOpportunities || []).map((opp) => (
                   <div
                     key={opp._id}
                     onClick={() => setOppStatusModalOpp(opp)}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '10px 12px',
-                      borderRadius: '10px',
-                      backgroundColor: 'var(--chip-bg)',
-                      cursor: 'pointer',
-                      transition: 'background-color 0.15s ease',
-                    }}
+                    className="admin-recent-item"
                   >
                     <div>
-                      <p style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--primary-text)', margin: 0 }}>
+                      <p className="admin-recent-user-name">
                         {opp.title}
                       </p>
-                      <p style={{ fontSize: '0.72rem', color: 'var(--secondary-text)', margin: 0 }}>
+                      <p className="admin-recent-user-email">
                         {opp.organization} • {opp.type}
                       </p>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span
-                        style={{
-                          fontSize: '0.72rem',
-                          padding: '2px 8px',
-                          borderRadius: '9999px',
-                          fontWeight: 700,
-                          backgroundColor:
-                            opp.status === 'Active' ? 'rgba(16, 185, 129, 0.18)' : 'rgba(100, 116, 139, 0.2)',
-                          color: opp.status === 'Active' ? '#34D399' : '#94A3B8',
-                        }}
-                      >
+                    <div className="admin-header-title-box">
+                      <span className={`admin-opp-status-pill-sm ${opp.status === 'Active' ? 'active' : 'closed'}`}>
                         {opp.status}
                       </span>
                       <ChevronRight size={14} color="var(--secondary-text)" />
@@ -1046,52 +817,29 @@ export default function AdminPage({ initialTab = 'overview' }) {
       {activeTab === 'users' && (
         <div className="animate-fade-in">
           {/* Controls Bar */}
-          <div
-            className="card"
-            style={{
-              padding: '16px 20px',
-              marginBottom: '20px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: '12px',
-            }}
-          >
+          <div className="card admin-controls-card">
             {/* Search Input */}
-            <div style={{ position: 'relative', flex: '1', minWidth: '240px' }}>
+            <div className="admin-search-field-wrapper">
               <Search
                 size={16}
-                color="#64748B"
-                style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }}
+                className="admin-search-field-icon"
               />
               <input
                 type="text"
                 placeholder="Search users by name, email, or ID..."
-                className="form-input"
-                style={{ paddingLeft: '36px', fontSize: '0.85rem' }}
+                className="form-input admin-search-field-input"
                 value={userSearch}
                 onChange={(e) => setUserSearch(e.target.value)}
               />
             </div>
 
             {/* Role Filter Chips */}
-            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+            <div className="admin-filter-chips-wrap">
               {['all', 'student', 'employer', 'admin'].map((role) => (
                 <button
                   key={role}
                   onClick={() => setUserRoleFilter(role)}
-                  style={{
-                    padding: '6px 12px',
-                    borderRadius: 'var(--radius-sm)',
-                    fontSize: '0.8rem',
-                    fontWeight: 700,
-                    textTransform: 'capitalize',
-                    border: userRoleFilter === role ? '1px solid #A855F7' : '1px solid var(--border-color)',
-                    backgroundColor: userRoleFilter === role ? 'rgba(124, 58, 237, 0.2)' : 'var(--chip-bg)',
-                    color: userRoleFilter === role ? 'var(--primary-text)' : 'var(--secondary-text)',
-                    cursor: 'pointer',
-                  }}
+                  className={`admin-role-filter-chip ${userRoleFilter === role ? 'active' : ''}`}
                 >
                   {role === 'all' ? 'All Roles' : role}
                 </button>
@@ -1099,22 +847,12 @@ export default function AdminPage({ initialTab = 'overview' }) {
             </div>
 
             {/* Status Filter Chips */}
-            <div style={{ display: 'flex', gap: '6px' }}>
+            <div className="admin-footer-btn-group">
               {['all', 'active', 'suspended', 'banned'].map((st) => (
                 <button
                   key={st}
                   onClick={() => setUserStatusFilter(st)}
-                  style={{
-                    padding: '6px 10px',
-                    borderRadius: 'var(--radius-sm)',
-                    fontSize: '0.78rem',
-                    fontWeight: 600,
-                    textTransform: 'capitalize',
-                    border: userStatusFilter === st ? '1px solid #EC4899' : '1px solid var(--border-color)',
-                    backgroundColor: userStatusFilter === st ? 'rgba(236, 72, 153, 0.2)' : 'var(--chip-bg)',
-                    color: userStatusFilter === st ? 'var(--primary-text)' : 'var(--secondary-text)',
-                    cursor: 'pointer',
-                  }}
+                  className={`admin-status-filter-chip ${userStatusFilter === st ? 'active-user' : ''}`}
                 >
                   {st === 'all' ? 'All Status' : st}
                 </button>
@@ -1123,16 +861,16 @@ export default function AdminPage({ initialTab = 'overview' }) {
           </div>
 
           {/* Users Table */}
-          <div className="card admin-table-card" style={{ padding: '0', overflowX: 'auto', borderRadius: '18px' }}>
-            <table className="admin-data-table" style={{ width: '100%', minWidth: '680px', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
+          <div className="card admin-table-card">
+            <table className="admin-data-table">
               <thead>
-                <tr style={{ borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--box-subtle)' }}>
-                  <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700 }}>USER & ID</th>
-                  <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700 }}>ROLE</th>
-                  <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700 }}>ACTIVITY</th>
-                  <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700 }}>STATUS</th>
-                  <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700 }}>JOINED</th>
-                  <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700, textAlign: 'right' }}>
+                <tr>
+                  <th>USER & ID</th>
+                  <th>ROLE</th>
+                  <th>ACTIVITY</th>
+                  <th>STATUS</th>
+                  <th>JOINED</th>
+                  <th className="text-right">
                     ACTIONS
                   </th>
                 </tr>
@@ -1140,14 +878,14 @@ export default function AdminPage({ initialTab = 'overview' }) {
               <tbody>
                 {isLoadingUsers ? (
                   <tr>
-                    <td colSpan="6" style={{ padding: '40px', textAlign: 'center', color: 'var(--secondary-text)' }}>
-                      <RefreshCw size={24} className="spin" style={{ margin: '0 auto 10px auto' }} />
+                    <td colSpan="6" className="admin-table-loading-cell">
+                      <RefreshCw size={24} className="spin admin-spin-icon" />
                       Loading platform users...
                     </td>
                   </tr>
                 ) : users.length === 0 ? (
                   <tr>
-                    <td colSpan="6" style={{ padding: '40px', textAlign: 'center', color: 'var(--secondary-text)' }}>
+                    <td colSpan="6" className="admin-table-empty-cell">
                       No users found matching current filters.
                     </td>
                   </tr>
@@ -1159,17 +897,13 @@ export default function AdminPage({ initialTab = 'overview' }) {
                     return (
                       <tr
                         key={u._id}
-                        style={{
-                          borderBottom: '1px solid var(--border-color)',
-                          transition: 'background-color 0.15s ease',
-                          opacity: isBannedOrSuspended ? 0.75 : 1,
-                        }}
+                        className={`admin-table-row ${isBannedOrSuspended ? 'suspended' : ''}`}
                       >
                         {/* User Identity & Inspect Trigger */}
-                        <td style={{ padding: '14px 18px' }}>
+                        <td>
                           <div
                             onClick={() => setInspectUser(u)}
-                            style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}
+                            className="admin-table-user-cell"
                             title="Click to inspect profile"
                           >
                             <img
@@ -1178,15 +912,15 @@ export default function AdminPage({ initialTab = 'overview' }) {
                                 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=80'
                               }
                               alt={u.name}
-                              style={{ width: '38px', height: '38px', borderRadius: '50%', objectFit: 'cover' }}
+                              className="admin-table-avatar-md"
                             />
                             <div>
-                              <div style={{ fontWeight: 700, color: 'var(--primary-text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              <div className="admin-table-user-name">
                                 <span>{u.name}</span>
-                                {isSelf && <span style={{ color: '#F472B6', fontSize: '0.72rem' }}>(You)</span>}
+                                {isSelf && <span className="admin-self-tag">(You)</span>}
                               </div>
-                              <div style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>{u.email}</div>
-                              <div style={{ fontSize: '0.68rem', color: 'var(--secondary-text)', fontFamily: 'monospace', opacity: 0.7 }}>
+                              <div className="admin-table-user-email">{u.email}</div>
+                              <div className="admin-table-user-id">
                                 #{u._id.slice(-6)}
                               </div>
                             </div>
@@ -1194,41 +928,21 @@ export default function AdminPage({ initialTab = 'overview' }) {
                         </td>
 
                         {/* Role Badge & Modal Button */}
-                        <td style={{ padding: '14px 18px' }}>
+                        <td>
                           <button
                             disabled={isSelf}
                             onClick={() => setRoleModalUser(u)}
                             title={isSelf ? 'Cannot change own role' : 'Click to change user role'}
-                            style={{
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '6px',
-                              padding: '5px 10px',
-                              borderRadius: '8px',
-                              border: '1px solid var(--border-color)',
-                              backgroundColor:
-                                u.role === 'admin'
-                                  ? 'rgba(239, 68, 68, 0.18)'
-                                  : u.role === 'employer'
-                                  ? 'rgba(236, 72, 153, 0.18)'
-                                  : 'rgba(124, 58, 237, 0.18)',
-                              color:
-                                u.role === 'admin' ? '#F87171' : u.role === 'employer' ? '#F472B6' : '#C084FC',
-                              fontWeight: 700,
-                              fontSize: '0.78rem',
-                              cursor: isSelf ? 'not-allowed' : 'pointer',
-                              textTransform: 'capitalize',
-                              transition: 'all 0.2s ease',
-                            }}
+                            className={`admin-table-role-btn role-${u.role}`}
                           >
                             <Award size={13} />
                             <span>{u.role}</span>
-                            {!isSelf && <Edit size={11} style={{ opacity: 0.7, marginLeft: '2px' }} />}
+                            {!isSelf && <Edit size={11} className="admin-opacity-70" />}
                           </button>
                         </td>
 
                         {/* Activity Metric */}
-                        <td style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontSize: '0.8rem' }}>
+                        <td className="admin-activity-cell">
                           {u.role === 'employer' ? (
                             <span>{u.postedOpportunitiesCount || 0} listings posted</span>
                           ) : (
@@ -1237,31 +951,16 @@ export default function AdminPage({ initialTab = 'overview' }) {
                         </td>
 
                         {/* Status with Ban Reason Pill */}
-                        <td style={{ padding: '14px 18px' }}>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', alignItems: 'flex-start' }}>
+                        <td>
+                          <div className="admin-table-status-stack">
                             <span
-                              style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '4px',
-                                fontSize: '0.75rem',
-                                fontWeight: 700,
-                                padding: '3px 8px',
-                                borderRadius: '9999px',
-                                backgroundColor:
-                                  u.status === 'banned'
-                                    ? 'rgba(239, 68, 68, 0.22)'
-                                    : u.status === 'suspended'
-                                    ? 'rgba(245, 158, 11, 0.2)'
-                                    : 'rgba(16, 185, 129, 0.15)',
-                                color:
-                                  u.status === 'banned'
-                                    ? '#F87171'
-                                    : u.status === 'suspended'
-                                    ? '#FBBF24'
-                                    : '#34D399',
-                                border: '1px solid var(--border-color)',
-                              }}
+                              className={`admin-table-status-badge ${
+                                u.status === 'banned'
+                                  ? 'banned'
+                                  : u.status === 'suspended'
+                                  ? 'suspended'
+                                  : 'active'
+                              }`}
                             >
                               {u.status === 'banned' ? (
                                 <Ban size={12} />
@@ -1274,14 +973,7 @@ export default function AdminPage({ initialTab = 'overview' }) {
                             </span>
                             {u.banReason && (
                               <span
-                                style={{
-                                  fontSize: '0.68rem',
-                                  color: 'var(--secondary-text)',
-                                  maxWidth: '180px',
-                                  overflow: 'hidden',
-                                  textOverflow: 'ellipsis',
-                                  whiteSpace: 'nowrap',
-                                }}
+                                className="admin-table-ban-reason-text"
                                 title={u.banReason}
                               >
                                 {u.banReason}
@@ -1291,29 +983,18 @@ export default function AdminPage({ initialTab = 'overview' }) {
                         </td>
 
                         {/* Joined Date */}
-                        <td style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontSize: '0.78rem' }}>
+                        <td className="admin-joined-date-cell">
                           {new Date(u.createdAt).toLocaleDateString()}
                         </td>
 
                         {/* Actions (Inspect, Ban Modal, Delete Modal) */}
-                        <td style={{ padding: '14px 18px', textAlign: 'right' }}>
-                          <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end', alignItems: 'center' }}>
+                        <td className="text-right">
+                          <div className="admin-table-actions-cell">
                             {/* Inspect Profile */}
                             <button
                               onClick={() => setInspectUser(u)}
                               title="Inspect User Details"
-                              style={{
-                                padding: '6px 8px',
-                                borderRadius: '6px',
-                                background: 'none',
-                                border: '1px solid var(--border-color)',
-                                color: 'var(--secondary-text)',
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '4px',
-                                fontSize: '0.75rem',
-                              }}
+                              className="admin-table-action-btn-inspect"
                             >
                               <Eye size={13} /> Inspect
                             </button>
@@ -1329,21 +1010,9 @@ export default function AdminPage({ initialTab = 'overview' }) {
                                   ? 'Reactivate User ID'
                                   : 'Suspend or Ban User ID'
                               }
-                              style={{
-                                padding: '6px 9px',
-                                borderRadius: '6px',
-                                border: '1px solid var(--border-color)',
-                                backgroundColor: isBannedOrSuspended
-                                  ? 'rgba(16, 185, 129, 0.15)'
-                                  : 'rgba(239, 68, 68, 0.12)',
-                                color: isBannedOrSuspended ? '#10B981' : '#F87171',
-                                cursor: isSelf ? 'not-allowed' : 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '4px',
-                                fontSize: '0.75rem',
-                                fontWeight: 600,
-                              }}
+                              className={`admin-table-action-btn-ban ${
+                                isBannedOrSuspended ? 'suspended' : 'active'
+                              }`}
                             >
                               {isBannedOrSuspended ? (
                                 <>
@@ -1371,14 +1040,7 @@ export default function AdminPage({ initialTab = 'overview' }) {
                                 })
                               }
                               title={isSelf ? 'Cannot delete own account' : 'Delete User Permanently'}
-                              style={{
-                                padding: '6px',
-                                borderRadius: '6px',
-                                background: 'none',
-                                border: '1px solid var(--border-color)',
-                                color: '#F43F5E',
-                                cursor: isSelf ? 'not-allowed' : 'pointer',
-                              }}
+                              className="admin-table-action-btn-del"
                             >
                               <Trash2 size={13} />
                             </button>
@@ -1398,49 +1060,27 @@ export default function AdminPage({ initialTab = 'overview' }) {
       {activeTab === 'opportunities' && (
         <div className="animate-fade-in">
           {/* Filter Bar */}
-          <div
-            className="card"
-            style={{
-              padding: '16px 20px',
-              marginBottom: '20px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: '12px',
-            }}
-          >
-            <div style={{ position: 'relative', flex: '1', minWidth: '240px' }}>
+          <div className="card admin-controls-card">
+            <div className="admin-search-field-wrapper">
               <Search
                 size={16}
-                color="#64748B"
-                style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }}
+                className="admin-search-field-icon"
               />
               <input
                 type="text"
                 placeholder="Search opportunities by title or company..."
-                className="form-input"
-                style={{ paddingLeft: '36px', fontSize: '0.85rem' }}
+                className="form-input admin-search-field-input"
                 value={oppSearch}
                 onChange={(e) => setOppSearch(e.target.value)}
               />
             </div>
 
-            <div style={{ display: 'flex', gap: '6px' }}>
+            <div className="admin-footer-btn-group">
               {['all', 'Active', 'Closed', 'Draft'].map((status) => (
                 <button
                   key={status}
                   onClick={() => setOppStatusFilter(status)}
-                  style={{
-                    padding: '6px 12px',
-                    borderRadius: 'var(--radius-sm)',
-                    fontSize: '0.8rem',
-                    fontWeight: 700,
-                    border: oppStatusFilter === status ? '1px solid #EC4899' : '1px solid var(--border-color)',
-                    backgroundColor: oppStatusFilter === status ? 'rgba(236, 72, 153, 0.2)' : 'var(--chip-bg)',
-                    color: oppStatusFilter === status ? 'var(--primary-text)' : 'var(--secondary-text)',
-                    cursor: 'pointer',
-                  }}
+                  className={`admin-status-filter-chip ${oppStatusFilter === status ? 'active-opp' : ''}`}
                 >
                   {status === 'all' ? 'All Statuses' : status}
                 </button>
@@ -1449,16 +1089,16 @@ export default function AdminPage({ initialTab = 'overview' }) {
           </div>
 
           {/* Opportunities Table */}
-          <div className="card admin-table-card" style={{ padding: '0', overflowX: 'auto', borderRadius: '18px' }}>
-            <table className="admin-data-table" style={{ width: '100%', minWidth: '680px', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
+          <div className="card admin-table-card">
+            <table className="admin-data-table">
               <thead>
-                <tr style={{ borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--box-subtle)' }}>
-                  <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700 }}>LISTING</th>
-                  <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700 }}>TYPE</th>
-                  <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700 }}>POSTED BY</th>
-                  <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700 }}>APPLICANTS</th>
-                  <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700 }}>STATUS</th>
-                  <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700, textAlign: 'right' }}>
+                <tr>
+                  <th>LISTING</th>
+                  <th>TYPE</th>
+                  <th>POSTED BY</th>
+                  <th>APPLICANTS</th>
+                  <th>STATUS</th>
+                  <th className="text-right">
                     ACTIONS
                   </th>
                 </tr>
@@ -1466,83 +1106,58 @@ export default function AdminPage({ initialTab = 'overview' }) {
               <tbody>
                 {isLoadingOpps ? (
                   <tr>
-                    <td colSpan="6" style={{ padding: '40px', textAlign: 'center', color: 'var(--secondary-text)' }}>
-                      <RefreshCw size={24} className="spin" style={{ margin: '0 auto 10px auto' }} />
+                    <td colSpan="6" className="admin-table-loading-cell">
+                      <RefreshCw size={24} className="spin admin-spin-icon" />
                       Loading opportunities...
                     </td>
                   </tr>
                 ) : opportunities.length === 0 ? (
                   <tr>
-                    <td colSpan="6" style={{ padding: '40px', textAlign: 'center', color: 'var(--secondary-text)' }}>
+                    <td colSpan="6" className="admin-table-empty-cell">
                       No opportunities found matching search parameters.
                     </td>
                   </tr>
                 ) : (
                   opportunities.map((opp) => (
-                    <tr key={opp._id} style={{ borderBottom: '1px solid var(--border-color)' }}>
+                    <tr key={opp._id} className="admin-table-row">
                       {/* Title & Org */}
-                      <td style={{ padding: '14px 18px' }}>
-                        <div style={{ fontWeight: 700, color: 'var(--primary-text)' }}>{opp.title}</div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>
+                      <td>
+                        <div className="admin-opp-title-text">{opp.title}</div>
+                        <div className="admin-opp-sub-text">
                           {opp.organization} • {opp.location?.type || 'Remote'}
                         </div>
                       </td>
 
                       {/* Type Badge */}
-                      <td style={{ padding: '14px 18px' }}>
-                        <span
-                          style={{
-                            fontSize: '0.75rem',
-                            padding: '3px 8px',
-                            borderRadius: '9999px',
-                            backgroundColor: 'rgba(124, 58, 237, 0.12)',
-                            color: '#C084FC',
-                            fontWeight: 600,
-                          }}
-                        >
+                      <td>
+                        <span className="admin-opp-type-badge">
                           {opp.type}
                         </span>
                       </td>
 
                       {/* Created By */}
-                      <td style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontSize: '0.78rem' }}>
+                      <td className="admin-opp-creator-cell">
                         {opp.createdBy?.name || 'Recruiter'}
-                        <div style={{ fontSize: '0.72rem', opacity: 0.8 }}>{opp.createdBy?.email}</div>
+                        <div className="admin-opp-creator-email">{opp.createdBy?.email}</div>
                       </td>
 
                       {/* Applicants */}
-                      <td style={{ padding: '14px 18px', fontWeight: 700, color: '#38BDF8' }}>
+                      <td className="admin-opp-applicants-val">
                         {opp.applicantCount || 0} candidates
                       </td>
 
                       {/* Status Modal Trigger */}
-                      <td style={{ padding: '14px 18px' }}>
+                      <td>
                         <button
                           onClick={() => setOppStatusModalOpp(opp)}
                           title="Click to change listing status"
-                          style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '5px',
-                            fontSize: '0.75rem',
-                            padding: '3px 10px',
-                            borderRadius: '9999px',
-                            fontWeight: 700,
-                            backgroundColor:
-                              opp.status === 'Active'
-                                ? 'rgba(16, 185, 129, 0.15)'
-                                : opp.status === 'Closed'
-                                ? 'rgba(245, 158, 11, 0.15)'
-                                : 'rgba(100, 116, 139, 0.18)',
-                            color:
-                              opp.status === 'Active'
-                                ? '#34D399'
-                                : opp.status === 'Closed'
-                                ? '#FBBF24'
-                                : '#94A3B8',
-                            border: '1px solid var(--border-color)',
-                            cursor: 'pointer',
-                          }}
+                          className={`admin-opp-status-badge-btn ${
+                            opp.status === 'Active'
+                              ? 'active'
+                              : opp.status === 'Closed'
+                              ? 'closed'
+                              : 'draft'
+                          }`}
                         >
                           {opp.status === 'Active' ? (
                             <CheckCircle2 size={12} />
@@ -1550,24 +1165,17 @@ export default function AdminPage({ initialTab = 'overview' }) {
                             <XCircle size={12} />
                           )}
                           <span>{opp.status}</span>
-                          <Edit size={10} style={{ opacity: 0.6 }} />
+                          <Edit size={10} className="admin-opacity-70" />
                         </button>
                       </td>
 
                       {/* Actions */}
-                      <td style={{ padding: '14px 18px', textAlign: 'right' }}>
-                        <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end' }}>
+                      <td className="text-right">
+                        <div className="admin-table-actions-cell">
                           <button
                             onClick={() => navigate('details', { id: opp._id })}
                             title="View Public Details"
-                            style={{
-                              padding: '6px',
-                              borderRadius: '6px',
-                              background: 'none',
-                              border: '1px solid var(--border-color)',
-                              color: 'var(--secondary-text)',
-                              cursor: 'pointer',
-                            }}
+                            className="admin-table-action-btn-icon"
                           >
                             <ExternalLink size={14} />
                           </button>
@@ -1575,14 +1183,7 @@ export default function AdminPage({ initialTab = 'overview' }) {
                           <button
                             onClick={() => setOppStatusModalOpp(opp)}
                             title="Moderate Status"
-                            style={{
-                              padding: '6px',
-                              borderRadius: '6px',
-                              background: 'none',
-                              border: '1px solid var(--border-color)',
-                              color: opp.status === 'Active' ? '#F59E0B' : '#10B981',
-                              cursor: 'pointer',
-                            }}
+                            className={`admin-table-action-btn-icon ${opp.status === 'Active' ? 'admin-text-amber' : 'admin-text-green'}`}
                           >
                             {opp.status === 'Active' ? <XCircle size={14} /> : <CheckCircle2 size={14} />}
                           </button>
@@ -1593,21 +1194,14 @@ export default function AdminPage({ initialTab = 'overview' }) {
                                 isOpen: true,
                                 type: 'opportunity',
                                 item: {
-                                  id: opp._id,
-                                  title: `${opp.title} (${opp.organization})`,
-                                  subtitle: `Type: ${opp.type} • ID: ${opp._id}`,
+                                    id: opp._id,
+                                    title: `${opp.title} (${opp.organization})`,
+                                    subtitle: `Type: ${opp.type} • ID: ${opp._id}`,
                                 },
                               })
                             }
                             title="Delete Opportunity"
-                            style={{
-                              padding: '6px',
-                              borderRadius: '6px',
-                              background: 'none',
-                              border: '1px solid var(--border-color)',
-                              color: '#F43F5E',
-                              cursor: 'pointer',
-                            }}
+                            className="admin-table-action-btn-del"
                           >
                             <Trash2 size={14} />
                           </button>
@@ -1626,40 +1220,26 @@ export default function AdminPage({ initialTab = 'overview' }) {
       {activeTab === 'skills' && (
         <div className="animate-fade-in">
           {/* Header & Add Button */}
-          <div
-            className="card"
-            style={{
-              padding: '16px 20px',
-              marginBottom: '20px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: '12px',
-            }}
-          >
-            <div style={{ position: 'relative', flex: '1', minWidth: '240px' }}>
+          <div className="card admin-controls-card">
+            <div className="admin-search-field-wrapper">
               <Search
                 size={16}
-                color="#64748B"
-                style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }}
+                className="admin-search-field-icon"
               />
               <input
                 type="text"
                 placeholder="Search canonical skills by name..."
-                className="form-input"
-                style={{ paddingLeft: '36px', fontSize: '0.85rem' }}
+                className="form-input admin-search-field-input"
                 value={skillSearch}
                 onChange={(e) => setSkillSearch(e.target.value)}
               />
             </div>
 
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <div className="admin-header-actions">
               <select
                 value={skillCategoryFilter}
                 onChange={(e) => setSkillCategoryFilter(e.target.value)}
-                className="form-input"
-                style={{ fontSize: '0.82rem', padding: '7px 12px', width: 'auto' }}
+                className="form-input admin-category-select-control"
               >
                 <option value="all">All Categories</option>
                 <option value="Frontend">Frontend</option>
@@ -1675,7 +1255,6 @@ export default function AdminPage({ initialTab = 'overview' }) {
               <button
                 onClick={() => setSkillModalState({ isOpen: true, skill: null })}
                 className="btn-primary"
-                style={{ padding: '8px 16px', fontSize: '0.82rem' }}
               >
                 <PlusCircle size={15} /> Add Canonical Skill
               </button>
@@ -1683,93 +1262,45 @@ export default function AdminPage({ initialTab = 'overview' }) {
           </div>
 
           {/* Skills Grid */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-              gap: '16px',
-            }}
-          >
+          <div className="admin-skills-grid-container">
             {isLoadingSkills ? (
-              <div style={{ gridColumn: '1 / -1', padding: '40px', textAlign: 'center', color: 'var(--secondary-text)' }}>
-                <RefreshCw size={24} className="spin" style={{ margin: '0 auto 10px auto' }} />
+              <div className="admin-grid-full-loading">
+                <RefreshCw size={24} className="spin admin-spin-icon" />
                 Loading skills taxonomy...
               </div>
             ) : skills.length === 0 ? (
-              <div style={{ gridColumn: '1 / -1', padding: '40px', textAlign: 'center', color: 'var(--secondary-text)' }}>
+              <div className="admin-grid-full-loading">
                 No skills found matching filter.
               </div>
             ) : (
               skills.map((skill) => (
                 <div
                   key={skill._id}
-                  className="card"
-                  style={{
-                    padding: '18px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    gap: '12px',
-                    borderRadius: '16px',
-                  }}
+                  className="card admin-skill-taxonomy-card"
                 >
                   <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '6px' }}>
-                      <span
-                        style={{
-                          fontSize: '0.72rem',
-                          padding: '2px 8px',
-                          borderRadius: '9999px',
-                          backgroundColor: 'rgba(16, 185, 129, 0.14)',
-                          color: '#34D399',
-                          fontWeight: 700,
-                        }}
-                      >
+                    <div className="admin-skill-card-top">
+                      <span className="admin-skill-category-tag">
                         {skill.category}
                       </span>
-                      <span
-                        style={{
-                          fontSize: '0.72rem',
-                          color: '#A855F7',
-                          fontWeight: 700,
-                        }}
-                      >
+                      <span className="admin-skill-listings-count">
                         {skill.opportunityCount || 0} listings
                       </span>
                     </div>
 
-                    <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--primary-text)' }}>
+                    <h4 className="admin-skill-card-title">
                       {skill.name}
                     </h4>
-                    <p style={{ fontSize: '0.78rem', color: 'var(--secondary-text)', marginTop: '4px', lineHeight: '1.4' }}>
+                    <p className="admin-skill-card-desc">
                       {skill.description || 'Verified canonical competency.'}
                     </p>
                   </div>
 
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'flex-end',
-                      gap: '8px',
-                      borderTop: '1px solid var(--border-color)',
-                      paddingTop: '10px',
-                    }}
-                  >
+                  <div className="admin-skill-card-footer">
                     <button
                       onClick={() => setSkillModalState({ isOpen: true, skill })}
                       title="Edit Skill"
-                      style={{
-                        padding: '4px 10px',
-                        background: 'none',
-                        border: '1px solid var(--border-color)',
-                        borderRadius: '6px',
-                        color: 'var(--primary-text)',
-                        cursor: 'pointer',
-                        fontSize: '0.75rem',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                      }}
+                      className="admin-skill-action-btn-edit"
                     >
                       <Edit size={12} /> Edit
                     </button>
@@ -1787,18 +1318,7 @@ export default function AdminPage({ initialTab = 'overview' }) {
                         })
                       }
                       title="Delete Skill"
-                      style={{
-                        padding: '4px 8px',
-                        background: 'none',
-                        border: '1px solid var(--border-color)',
-                        borderRadius: '6px',
-                        color: '#F43F5E',
-                        cursor: 'pointer',
-                        fontSize: '0.75rem',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                      }}
+                      className="admin-skill-action-btn-del"
                     >
                       <Trash2 size={12} /> Delete
                     </button>
@@ -1814,42 +1334,22 @@ export default function AdminPage({ initialTab = 'overview' }) {
       {activeTab === 'applications' && (
         <div className="animate-fade-in">
           {/* Status Filter */}
-          <div
-            className="card"
-            style={{
-              padding: '16px 20px',
-              marginBottom: '20px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: '12px',
-            }}
-          >
+          <div className="card admin-controls-card">
             <div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--primary-text)' }}>
+              <h3 className="admin-funnel-title">
                 Platform-Wide Candidate Applications
               </h3>
-              <p style={{ fontSize: '0.8rem', color: 'var(--secondary-text)' }}>
+              <p className="admin-funnel-sub">
                 Audit log of all student submissions and live recruitment milestones
               </p>
             </div>
 
-            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+            <div className="admin-filter-chips-wrap">
               {['all', 'Applied', 'Reviewing', 'Shortlisted', 'Interview', 'Selected', 'Rejected'].map((status) => (
                 <button
                   key={status}
                   onClick={() => setAppStatusFilter(status)}
-                  style={{
-                    padding: '6px 12px',
-                    borderRadius: 'var(--radius-sm)',
-                    fontSize: '0.78rem',
-                    fontWeight: 700,
-                    border: appStatusFilter === status ? '1px solid #38BDF8' : '1px solid var(--border-color)',
-                    backgroundColor: appStatusFilter === status ? 'rgba(56, 189, 248, 0.2)' : 'var(--chip-bg)',
-                    color: appStatusFilter === status ? 'var(--primary-text)' : 'var(--secondary-text)',
-                    cursor: 'pointer',
-                  }}
+                  className={`admin-status-filter-chip ${appStatusFilter === status ? 'active-app' : ''}`}
                 >
                   {status === 'all' ? 'All' : status}
                 </button>
@@ -1858,41 +1358,41 @@ export default function AdminPage({ initialTab = 'overview' }) {
           </div>
 
           {/* Applications Table */}
-          <div className="card admin-table-card" style={{ padding: '0', overflowX: 'auto', borderRadius: '18px' }}>
-            <table className="admin-data-table" style={{ width: '100%', minWidth: '680px', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
+          <div className="card admin-table-card">
+            <table className="admin-data-table">
               <thead>
-                <tr style={{ borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--box-subtle)' }}>
-                  <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700 }}>CANDIDATE</th>
-                  <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700 }}>OPPORTUNITY</th>
-                  <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700 }}>ORGANIZATION</th>
-                  <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700 }}>STATUS</th>
-                  <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700 }}>APPLIED DATE</th>
+                <tr>
+                  <th>CANDIDATE</th>
+                  <th>OPPORTUNITY</th>
+                  <th>ORGANIZATION</th>
+                  <th>STATUS</th>
+                  <th>APPLIED DATE</th>
                 </tr>
               </thead>
               <tbody>
                 {isLoadingApps ? (
                   <tr>
-                    <td colSpan="5" style={{ padding: '40px', textAlign: 'center', color: 'var(--secondary-text)' }}>
-                      <RefreshCw size={24} className="spin" style={{ margin: '0 auto 10px auto' }} />
+                    <td colSpan="5" className="admin-table-loading-cell">
+                      <RefreshCw size={24} className="spin admin-spin-icon" />
                       Loading application audit log...
                     </td>
                   </tr>
                 ) : applications.length === 0 ? (
                   <tr>
-                    <td colSpan="5" style={{ padding: '40px', textAlign: 'center', color: 'var(--secondary-text)' }}>
+                    <td colSpan="5" className="admin-table-empty-cell">
                       No applications recorded for current filter.
                     </td>
                   </tr>
                 ) : (
                   applications.map((app) => (
-                    <tr key={app._id} style={{ borderBottom: '1px solid var(--border-color)' }}>
+                    <tr key={app._id} className="admin-table-row">
                       {/* Candidate */}
-                      <td style={{ padding: '14px 18px' }}>
+                      <td>
                         <div
                           onClick={() => {
                             if (app.user) setInspectUser(app.user);
                           }}
-                          style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
+                          className="admin-header-title-box pointer"
                           title="Click to inspect candidate"
                         >
                           <img
@@ -1901,13 +1401,13 @@ export default function AdminPage({ initialTab = 'overview' }) {
                               'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=60'
                             }
                             alt="User"
-                            style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }}
+                            className="admin-recent-avatar-sm"
                           />
                           <div>
-                            <div style={{ fontWeight: 700, color: 'var(--primary-text)' }}>
+                            <div className="admin-opp-title-text">
                               {app.user?.name || 'Candidate'}
                             </div>
-                            <div style={{ fontSize: '0.725rem', color: 'var(--secondary-text)' }}>
+                            <div className="admin-recent-user-email">
                               {app.user?.email}
                             </div>
                           </div>
@@ -1915,22 +1415,22 @@ export default function AdminPage({ initialTab = 'overview' }) {
                       </td>
 
                       {/* Opp Title */}
-                      <td style={{ padding: '14px 18px', fontWeight: 600, color: 'var(--primary-text)' }}>
+                      <td className="admin-opp-title-text">
                         {app.opportunity?.title || 'Opportunity'}
                       </td>
 
                       {/* Organization */}
-                      <td style={{ padding: '14px 18px', color: 'var(--secondary-text)' }}>
+                      <td className="admin-joined-date-cell">
                         {app.opportunity?.organization || 'Organization'}
                       </td>
 
                       {/* Status Badge */}
-                      <td style={{ padding: '14px 18px' }}>
+                      <td>
                         <ApplicationStatusBadge status={app.status} />
                       </td>
 
                       {/* Applied Date */}
-                      <td style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontSize: '0.78rem' }}>
+                      <td className="admin-joined-date-cell">
                         {new Date(app.appliedAt).toLocaleDateString()}
                       </td>
                     </tr>
@@ -1944,103 +1444,81 @@ export default function AdminPage({ initialTab = 'overview' }) {
 
       {/* TAB 6: SYSTEM & DIAGNOSTICS */}
       {activeTab === 'system' && (
-        <div className="animate-fade-in" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
+        <div className="animate-fade-in admin-diagnostics-grid">
           {/* Server Runtime */}
-          <div className="card" style={{ padding: '24px', borderRadius: '18px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-              <div
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '10px',
-                  backgroundColor: 'rgba(6, 182, 212, 0.15)',
-                  color: '#06B6D4',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
+          <div className="card admin-diagnostics-card">
+            <div className="admin-diagnostics-header">
+              <div className="admin-diagnostics-icon-cpu">
                 <Cpu size={22} />
               </div>
               <div>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--primary-text)', margin: 0 }}>
+                <h3 className="admin-diagnostics-title">
                   Runtime Environment
                 </h3>
-                <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>Node.js Process Telemetry</span>
+                <span className="admin-diagnostics-subtitle">Node.js Process Telemetry</span>
               </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.85rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '6px' }}>
-                <span style={{ color: 'var(--secondary-text)' }}>Node Version</span>
-                <span style={{ fontWeight: 700, color: 'var(--primary-text)' }}>{sys.nodeVersion || 'v20+'}</span>
+            <div className="admin-diagnostics-rows-list">
+              <div className="admin-diagnostics-row">
+                <span className="admin-diagnostics-label">Node Version</span>
+                <span className="admin-diagnostics-val">{sys.nodeVersion || 'v20+'}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '6px' }}>
-                <span style={{ color: 'var(--secondary-text)' }}>OS Platform</span>
-                <span style={{ fontWeight: 700, color: 'var(--primary-text)' }}>{sys.platform} ({sys.arch})</span>
+              <div className="admin-diagnostics-row">
+                <span className="admin-diagnostics-label">OS Platform</span>
+                <span className="admin-diagnostics-val">{sys.platform} ({sys.arch})</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '6px' }}>
-                <span style={{ color: 'var(--secondary-text)' }}>Server Uptime</span>
-                <span style={{ fontWeight: 700, color: '#10B981' }}>
+              <div className="admin-diagnostics-row">
+                <span className="admin-diagnostics-label">Server Uptime</span>
+                <span className="admin-diagnostics-val-green">
                   {Math.floor((sys.uptime || 0) / 60)} mins {(sys.uptime || 0) % 60} secs
                 </span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '6px' }}>
-                <span style={{ color: 'var(--secondary-text)' }}>Heap Memory Used</span>
-                <span style={{ fontWeight: 700, color: 'var(--primary-text)' }}>{sys.memoryHeapMB || 0} MB</span>
+              <div className="admin-diagnostics-row">
+                <span className="admin-diagnostics-label">Heap Memory Used</span>
+                <span className="admin-diagnostics-val">{sys.memoryHeapMB || 0} MB</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '4px' }}>
-                <span style={{ color: 'var(--secondary-text)' }}>RSS Memory</span>
-                <span style={{ fontWeight: 700, color: 'var(--primary-text)' }}>{sys.memoryRssMB || 0} MB</span>
+              <div className="admin-diagnostics-row-noborder">
+                <span className="admin-diagnostics-label">RSS Memory</span>
+                <span className="admin-diagnostics-val">{sys.memoryRssMB || 0} MB</span>
               </div>
             </div>
           </div>
 
           {/* Database Health */}
-          <div className="card" style={{ padding: '24px', borderRadius: '18px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-              <div
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '10px',
-                  backgroundColor: 'rgba(16, 185, 129, 0.15)',
-                  color: '#10B981',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
+          <div className="card admin-diagnostics-card">
+            <div className="admin-diagnostics-header">
+              <div className="admin-diagnostics-icon-db">
                 <Database size={22} />
               </div>
               <div>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--primary-text)', margin: 0 }}>
+                <h3 className="admin-diagnostics-title">
                   Database Connectivity
                 </h3>
-                <span style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>MongoDB Cluster Telemetry</span>
+                <span className="admin-diagnostics-subtitle">MongoDB Cluster Telemetry</span>
               </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.85rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '6px' }}>
-                <span style={{ color: 'var(--secondary-text)' }}>Connection State</span>
-                <span style={{ fontWeight: 700, color: '#34D399' }}>● {sys.dbState || 'Connected'}</span>
+            <div className="admin-diagnostics-rows-list">
+              <div className="admin-diagnostics-row">
+                <span className="admin-diagnostics-label">Connection State</span>
+                <span className="admin-diagnostics-val-emerald">● {sys.dbState || 'Connected'}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '6px' }}>
-                <span style={{ color: 'var(--secondary-text)' }}>User Records</span>
-                <span style={{ fontWeight: 700, color: 'var(--primary-text)' }}>{m.totalUsers || 0}</span>
+              <div className="admin-diagnostics-row">
+                <span className="admin-diagnostics-label">User Records</span>
+                <span className="admin-diagnostics-val">{m.totalUsers || 0}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '6px' }}>
-                <span style={{ color: 'var(--secondary-text)' }}>Opportunity Records</span>
-                <span style={{ fontWeight: 700, color: 'var(--primary-text)' }}>{m.totalOpportunities || 0}</span>
+              <div className="admin-diagnostics-row">
+                <span className="admin-diagnostics-label">Opportunity Records</span>
+                <span className="admin-diagnostics-val">{m.totalOpportunities || 0}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '6px' }}>
-                <span style={{ color: 'var(--secondary-text)' }}>Application Records</span>
-                <span style={{ fontWeight: 700, color: 'var(--primary-text)' }}>{m.totalApplications || 0}</span>
+              <div className="admin-diagnostics-row">
+                <span className="admin-diagnostics-label">Application Records</span>
+                <span className="admin-diagnostics-val">{m.totalApplications || 0}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '4px' }}>
-                <span style={{ color: 'var(--secondary-text)' }}>Indexed Skill Taxonomy</span>
-                <span style={{ fontWeight: 700, color: 'var(--primary-text)' }}>{m.totalSkills || 0} nodes</span>
+              <div className="admin-diagnostics-row-noborder">
+                <span className="admin-diagnostics-label">Indexed Skill Taxonomy</span>
+                <span className="admin-diagnostics-val">{m.totalSkills || 0} nodes</span>
               </div>
             </div>
           </div>

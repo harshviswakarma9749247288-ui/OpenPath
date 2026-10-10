@@ -73,25 +73,9 @@ export default function Navbar() {
   };
 
   return (
-    <header
-      style={{
-        height: '68px',
-        backgroundColor: 'var(--nav-bg)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        borderBottom: '1px solid var(--border-color)',
-        padding: '0 24px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        position: 'sticky',
-        top: 0,
-        zIndex: 40,
-        transition: 'background-color 0.3s ease, border-color 0.3s ease',
-      }}
-    >
+    <header className="navbar-header">
       {/* Left: Mobile hamburger + Page Title & Welcome */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+      <div className="navbar-left">
         <button
           onClick={() => setMobileDrawerOpen(true)}
           className="mobile-menu-btn"
@@ -101,143 +85,61 @@ export default function Navbar() {
         </button>
 
         <div>
-          <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--primary-text)' }}>
-            {getPageTitle()}
-          </h2>
+          <h2 className="navbar-title">{getPageTitle()}</h2>
           {isAuthenticated && user && (
-            <p style={{ fontSize: '0.775rem', color: 'var(--secondary-text)' }}>
-              Welcome back, <strong style={{ color: '#C084FC' }}>{user.name.split(' ')[0]}</strong>
+            <p className="navbar-welcome">
+              Welcome back, <strong className="navbar-welcome-name">{user.name.split(' ')[0]}</strong>
             </p>
           )}
         </div>
       </div>
 
       {/* Right: Theme Toggle, Notifications Bell & User Pill */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+      <div className="navbar-right">
         {/* Light / Dark Mode Toggle Button */}
         <ThemeToggle size="default" />
 
         {/* Notifications Dropdown */}
-        <div style={{ position: 'relative' }}>
+        <div className="relative-wrap">
           <button
             onClick={() => setShowNotifMenu(!showNotifMenu)}
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              backgroundColor: 'var(--chip-bg)',
-              border: '1px solid var(--border-color)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'var(--primary-text)',
-              position: 'relative',
-              backdropFilter: 'blur(8px)',
-              cursor: 'pointer',
-              transition: 'var(--transition-normal)',
-            }}
+            className="navbar-bell-btn"
+            aria-label="Toggle notifications"
           >
             <Bell size={18} />
-            {unreadCount > 0 && (
-              <span
-                style={{
-                  position: 'absolute',
-                  top: '7px',
-                  right: '7px',
-                  width: '9px',
-                  height: '9px',
-                  backgroundColor: '#EC4899',
-                  borderRadius: '50%',
-                  boxShadow: '0 0 10px #EC4899',
-                }}
-              />
-            )}
+            {unreadCount > 0 && <span className="navbar-unread-dot" />}
           </button>
 
           {/* Dropdown Card */}
           {showNotifMenu && (
-            <div
-              className="card animate-fade-in navbar-dropdown-card"
-              style={{
-                position: 'absolute',
-                right: 0,
-                top: '48px',
-                width: '350px',
-                maxWidth: 'calc(100vw - 32px)',
-                maxHeight: '420px',
-                display: 'flex',
-                flexDirection: 'column',
-                backgroundColor: 'var(--card-bg)',
-                backdropFilter: 'blur(20px)',
-                border: '1px solid var(--border-color)',
-                boxShadow: 'var(--shadow-lg), 0 0 20px rgba(124, 58, 237, 0.1)',
-                zIndex: 100,
-                overflow: 'hidden',
-                borderRadius: 'var(--radius-lg)',
-              }}
-            >
-              <div
-                style={{
-                  padding: '14px 18px',
-                  borderBottom: '1px solid var(--border-color)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  backgroundColor: 'var(--box-subtle)',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className="card animate-fade-in navbar-dropdown-card">
+              <div className="navbar-dropdown-header">
+                <div className="navbar-dropdown-header-left">
                   <Bell size={16} color="#7C3AED" />
-                  <strong style={{ fontSize: '0.875rem', color: 'var(--primary-text)' }}>Notifications</strong>
+                  <strong className="navbar-dropdown-title">Notifications</strong>
                   {unreadCount > 0 && (
-                    <span
-                      style={{
-                        fontSize: '0.7rem',
-                        backgroundColor: 'rgba(236, 72, 153, 0.2)',
-                        color: '#F472B6',
-                        border: '1px solid rgba(236, 72, 153, 0.4)',
-                        padding: '1px 6px',
-                        borderRadius: '10px',
-                        fontWeight: 700,
-                      }}
-                    >
+                    <span className="navbar-unread-pill">
                       {unreadCount} new
                     </span>
                   )}
                 </div>
                 {unreadCount > 0 && (
-                  <button
-                    onClick={handleMarkAllRead}
-                    style={{
-                      fontSize: '0.75rem',
-                      color: '#7C3AED',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      fontWeight: 600,
-                    }}
-                  >
+                  <button onClick={handleMarkAllRead} className="navbar-mark-read-btn">
                     <CheckCheck size={14} /> Mark all read
                   </button>
                 )}
               </div>
 
-              <div style={{ overflowY: 'auto', flex: 1, padding: '8px 0' }}>
+              <div className="navbar-dropdown-body">
                 {notifications.length === 0 ? (
-                  <div style={{ padding: '28px', textAlign: 'center', color: 'var(--secondary-text)' }}>
-                    <p style={{ fontSize: '0.85rem' }}>No notifications right now.</p>
+                  <div className="navbar-empty-notif">
+                    <p className="candidate-bg-desc">No notifications right now.</p>
                   </div>
                 ) : (
                   notifications.map((n) => (
                     <div
                       key={n._id}
-                      style={{
-                        padding: '12px 18px',
-                        borderBottom: '1px solid var(--border-color)',
-                        backgroundColor: n.isRead ? 'transparent' : 'rgba(124, 58, 237, 0.08)',
-                        cursor: 'pointer',
-                        transition: 'background-color 0.2s',
-                      }}
+                      className={`navbar-notif-item ${n.isRead ? '' : 'unread'}`}
                       onClick={() => {
                         setShowNotifMenu(false);
                         if (n.relatedApplication) navigate('applications');
@@ -245,15 +147,15 @@ export default function Navbar() {
                           navigate('details', { id: n.relatedOpportunity._id || n.relatedOpportunity });
                       }}
                     >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                        <span style={{ fontSize: '0.825rem', fontWeight: 600, color: 'var(--primary-text)' }}>
+                      <div className="navbar-notif-title-row">
+                        <span className="navbar-notif-item-title">
                           {n.title}
                         </span>
-                        <span style={{ fontSize: '0.7rem', color: 'var(--secondary-text)' }}>
+                        <span className="navbar-notif-time">
                           {new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
-                      <p style={{ fontSize: '0.775rem', color: 'var(--secondary-text)', marginTop: '2px' }}>
+                      <p className="navbar-notif-message">
                         {n.message}
                       </p>
                     </div>
@@ -266,21 +168,11 @@ export default function Navbar() {
 
         {/* User Avatar & Role + Sign Out Button */}
         {isAuthenticated && user ? (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div className="navbar-user-group">
             <div
               onClick={() => navigate('profile')}
               title="View Digital Resume Profile"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                padding: '4px 12px 4px 4px',
-                borderRadius: '9999px',
-                backgroundColor: 'var(--box-subtle)',
-                border: '1px solid var(--border-color)',
-                cursor: 'pointer',
-                backdropFilter: 'blur(8px)',
-              }}
+              className="navbar-profile-pill"
             >
               <img
                 src={
@@ -288,34 +180,12 @@ export default function Navbar() {
                   'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120'
                 }
                 alt={user.name}
-                style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }}
+                className="navbar-profile-avatar"
               />
-              <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--primary-text)' }}>
+              <span className="navbar-profile-name">
                 {(user.name || 'User').split(' ')[0]}
               </span>
-              <span
-                style={{
-                  fontSize: '0.7rem',
-                  padding: '2px 8px',
-                  borderRadius: '9999px',
-                  background:
-                    user.role === 'admin'
-                      ? 'rgba(239, 68, 68, 0.2)'
-                      : user.role === 'employer'
-                      ? 'rgba(236, 72, 153, 0.2)'
-                      : 'rgba(124, 58, 237, 0.25)',
-                  color:
-                    user.role === 'admin' ? '#F87171' : user.role === 'employer' ? '#F472B6' : '#C084FC',
-                  border:
-                    user.role === 'admin'
-                      ? '1px solid rgba(239, 68, 68, 0.4)'
-                      : user.role === 'employer'
-                      ? '1px solid rgba(236, 72, 153, 0.4)'
-                      : '1px solid rgba(124, 58, 237, 0.4)',
-                  fontWeight: 700,
-                  textTransform: 'uppercase',
-                }}
-              >
+              <span className={`navbar-role-badge role-${user.role}`}>
                 {user.role}
               </span>
             </div>
@@ -323,13 +193,7 @@ export default function Navbar() {
             {user.role === 'admin' && activePage !== 'admin' && (
               <button
                 onClick={() => navigate('admin')}
-                className="btn-primary"
-                style={{
-                  padding: '6px 14px',
-                  fontSize: '0.78rem',
-                  fontWeight: 700,
-                  background: 'linear-gradient(135deg, #EF4444 0%, #EC4899 100%)',
-                }}
+                className="btn-primary navbar-admin-btn"
               >
                 Admin Command
               </button>
@@ -338,39 +202,17 @@ export default function Navbar() {
             <button
               onClick={openSignOutModal}
               title="Sign Out"
-              style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '50%',
-                backgroundColor: 'var(--chip-bg)',
-                border: '1px solid var(--border-color)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--secondary-text)',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = '#F43F5E';
-                e.currentTarget.style.borderColor = 'rgba(244, 63, 94, 0.4)';
-                e.currentTarget.style.backgroundColor = 'rgba(244, 63, 94, 0.1)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = 'var(--secondary-text)';
-                e.currentTarget.style.borderColor = 'var(--border-color)';
-                e.currentTarget.style.backgroundColor = 'var(--chip-bg)';
-              }}
+              className="navbar-signout-btn"
             >
               <LogOut size={16} />
             </button>
           </div>
         ) : (
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button onClick={() => navigate('login')} className="btn-secondary" style={{ padding: '6px 16px' }}>
+          <div className="navbar-auth-group">
+            <button onClick={() => navigate('login')} className="btn-secondary navbar-btn">
               Sign In
             </button>
-            <button onClick={() => navigate('register')} className="btn-primary" style={{ padding: '6px 18px' }}>
+            <button onClick={() => navigate('register')} className="btn-primary navbar-btn">
               Get Started
             </button>
           </div>

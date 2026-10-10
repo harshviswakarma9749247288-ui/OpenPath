@@ -5,11 +5,11 @@ export default function HoloRadar3D({ breakdown, overallScore = 88 }) {
   const [hoveredFactor, setHoveredFactor] = useState(null);
 
   const factors = [
-    { key: 'skill', name: 'Skill Match', weight: '40%', score: breakdown?.skillMatch?.score || 90, color: '#38BDF8' },
-    { key: 'qual', name: 'Academics', weight: '20%', score: breakdown?.qualification?.score || 95, color: '#34D399' },
-    { key: 'loc', name: 'Location', weight: '20%', score: breakdown?.location?.score || 100, color: '#C084FC' },
-    { key: 'exp', name: 'Experience', weight: '10%', score: breakdown?.experience?.score || 80, color: '#FBBF24' },
-    { key: 'int', name: 'Interests', weight: '10%', score: breakdown?.interest?.score || 85, color: '#F472B6' },
+    { key: 'skill', name: 'Skill Match', weight: '40%', score: breakdown?.skillMatch?.score || 90 },
+    { key: 'qual', name: 'Academics', weight: '20%', score: breakdown?.qualification?.score || 95 },
+    { key: 'loc', name: 'Location', weight: '20%', score: breakdown?.location?.score || 100 },
+    { key: 'exp', name: 'Experience', weight: '10%', score: breakdown?.experience?.score || 80 },
+    { key: 'int', name: 'Interests', weight: '10%', score: breakdown?.interest?.score || 85 },
   ];
 
   // Pentagon Geometry (5 vertices)
@@ -46,73 +46,28 @@ export default function HoloRadar3D({ breakdown, overallScore = 88 }) {
     .join(' ');
 
   return (
-    <Tilt3DCard
-      className="card card-featured"
-      style={{
-        padding: '24px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        position: 'relative',
-        overflow: 'hidden',
-      }}
-    >
-      <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center', marginBottom: '14px' }}>
+    <Tilt3DCard className="card card-featured holo-radar-card">
+      <div className="holo-radar-header">
         <div>
-          <span
-            style={{
-              fontSize: '0.725rem',
-              fontWeight: 700,
-              color: '#C084FC',
-              letterSpacing: '0.05em',
-              textTransform: 'uppercase',
-            }}
-          >
+          <span className="holo-radar-tag">
             3D HOLOGRAPHIC RADAR
           </span>
-          <h4 style={{ fontSize: '1.1rem', color: 'var(--primary-text)', marginTop: '2px' }}>
+          <h4 className="holo-radar-title">
             5-Factor Fit Topology
           </h4>
         </div>
 
-        <div
-          style={{
-            padding: '4px 12px',
-            borderRadius: '9999px',
-            backgroundColor: 'var(--status-green-bg)',
-            border: '1px solid var(--status-green-border)',
-            color: 'var(--status-green-text)',
-            fontSize: '0.8rem',
-            fontWeight: 700,
-          }}
-        >
+        <div className="holo-radar-overall-badge">
           {overallScore}% Overall Index
         </div>
       </div>
 
       {/* SVG Radar Container with 3D Holographic Perspective */}
-      <div
-        style={{
-          position: 'relative',
-          width: `${size}px`,
-          height: `${size}px`,
-          margin: '10px 0',
-        }}
-      >
+      <div className="holo-radar-svg-box">
         {/* Hologram Scanner Line */}
-        <div
-          className="anim-scanner-sweep"
-          style={{
-            position: 'absolute',
-            inset: 0,
-            borderRadius: '50%',
-            background: 'conic-gradient(from 0deg, transparent 0deg, rgba(168, 85, 247, 0.25) 60deg, transparent 65deg)',
-            pointerEvents: 'none',
-            zIndex: 3,
-          }}
-        />
+        <div className="anim-scanner-sweep holo-scanner-sweep" />
 
-        <svg width={size} height={size} style={{ overflow: 'visible' }}>
+        <svg width={size} height={size} className="holo-radar-svg">
           <defs>
             <linearGradient id="scoreMeshGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#7C3AED" stopOpacity="0.6" />
@@ -131,8 +86,7 @@ export default function HoloRadar3D({ breakdown, overallScore = 88 }) {
             <polygon
               key={idx}
               points={poly}
-              fill="none"
-              stroke="var(--border-color)"
+              className="holo-grid-poly"
               strokeWidth={idx === 4 ? 1.5 : 1}
               strokeDasharray={idx < 4 ? '3,3' : 'none'}
               opacity={0.6 + idx * 0.1}
@@ -149,9 +103,7 @@ export default function HoloRadar3D({ breakdown, overallScore = 88 }) {
                 y1={center}
                 x2={outer.x}
                 y2={outer.y}
-                stroke="var(--border-color)"
-                strokeWidth="1"
-                opacity="0.5"
+                className="holo-axis-spoke"
               />
             );
           })}
@@ -159,13 +111,7 @@ export default function HoloRadar3D({ breakdown, overallScore = 88 }) {
           {/* Score Polygon Mesh */}
           <polygon
             points={scorePoints}
-            fill="url(#scoreMeshGrad)"
-            stroke="#EC4899"
-            strokeWidth="2.5"
-            filter="url(#neonGlow)"
-            style={{
-              transition: 'all 0.4s ease',
-            }}
+            className="holo-score-mesh"
           />
 
           {/* Vertex Nodes with Tooltips */}
@@ -177,19 +123,13 @@ export default function HoloRadar3D({ breakdown, overallScore = 88 }) {
                 key={f.key}
                 onMouseEnter={() => setHoveredFactor(f.key)}
                 onMouseLeave={() => setHoveredFactor(null)}
-                style={{ cursor: 'pointer' }}
+                className="holo-vertex-group"
               >
                 <circle
                   cx={pt.x}
                   cy={pt.y}
                   r={isHovered ? 7 : 5}
-                  fill={f.color}
-                  stroke="#FFFFFF"
-                  strokeWidth="1.5"
-                  style={{
-                    filter: `drop-shadow(0 0 6px ${f.color})`,
-                    transition: 'r 0.2s ease',
-                  }}
+                  className={`holo-vertex-dot dot-${f.key}`}
                 />
               </g>
             );
@@ -198,29 +138,17 @@ export default function HoloRadar3D({ breakdown, overallScore = 88 }) {
       </div>
 
       {/* Factor Pills legend */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center', width: '100%', marginTop: '6px' }}>
+      <div className="holo-pills-row">
         {factors.map((f) => (
           <div
             key={f.key}
             onMouseEnter={() => setHoveredFactor(f.key)}
             onMouseLeave={() => setHoveredFactor(null)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '4px 10px',
-              borderRadius: '9999px',
-              backgroundColor: hoveredFactor === f.key ? 'var(--box-subtle)' : 'transparent',
-              border: `1px solid ${hoveredFactor === f.key ? f.color : 'var(--border-color)'}`,
-              fontSize: '0.75rem',
-              color: 'var(--primary-text)',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-            }}
+            className={`holo-factor-pill factor-${f.key} ${hoveredFactor === f.key ? 'hovered' : ''}`}
           >
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: f.color }} />
+            <span className={`holo-factor-indicator-dot dot-${f.key}`} />
             <span>{f.name}</span>
-            <strong style={{ color: f.color }}>{f.score}%</strong>
+            <strong className={`holo-factor-score-val val-${f.key}`}>{f.score}%</strong>
           </div>
         ))}
       </div>

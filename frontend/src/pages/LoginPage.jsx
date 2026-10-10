@@ -249,124 +249,62 @@ export default function LoginPage() {
   };
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        backgroundColor: 'var(--background)',
-        position: 'relative',
-      }}
-      className="split-auth-layout"
-    >
+    <div className="split-auth-layout">
       {/* Floating Theme Toggle in Auth Screen */}
-      <div style={{ position: 'fixed', top: '20px', right: '24px', zIndex: 100 }}>
+      <div className="auth-theme-toggle-floating">
         <ThemeToggle showLabel={true} size="sm" />
       </div>
 
       {/* Left Branding Pane */}
-      <div
-        className="auth-branding-pane"
-        style={{
-          background: 'linear-gradient(135deg, rgba(30, 27, 75, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%)',
-          padding: '60px 48px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          color: '#FFFFFF',
-          position: 'relative',
-          overflow: 'hidden',
-          borderRight: '1px solid rgba(255, 255, 255, 0.08)',
-        }}
-      >
-        <div className="bg-subtle-glow" style={{ opacity: 0.8 }} />
+      <div className="auth-branding-pane">
+        <div className="auth-brand-ambient-glow" />
 
-        <div style={{ position: 'relative', zIndex: 1 }}>
+        <div className="auth-brand-content">
           {/* Logo */}
-          <div
-            onClick={() => navigate('landing')}
-            style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', marginBottom: '48px' }}
-          >
+          <div onClick={() => navigate('landing')} className="auth-brand-logo-row">
             <AnimatedLogo size="md" />
-            <span style={{ fontSize: '1.4rem', fontWeight: 800, letterSpacing: '-0.5px' }}>
+            <span className="auth-brand-logo-text">
               Open<span className="gradient-text">Path</span>
             </span>
           </div>
 
-          <h2 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#FFFFFF', lineHeight: '1.2', marginBottom: '16px' }}>
+          <h2 className="auth-brand-heading">
             Find Your Path. <br />
             <span className="gradient-text">Build Your Future.</span>
           </h2>
-          <p style={{ color: '#94A3B8', fontSize: '1.05rem', lineHeight: '1.6', maxWidth: '440px' }}>
+          <p className="auth-brand-desc">
             The career platform engineered for students, freshers, and early talent with transparent,
             explainable matching and customized skill roadmaps.
           </p>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', position: 'relative', zIndex: 1 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#E2E8F0', fontSize: '0.9rem' }}>
+        <div className="auth-features-list">
+          <div className="auth-feature-item">
             <CheckCircle2 size={20} color="#A78BFA" />
             <span>50% Skills, 15% Qualifications, 15% Experience factor scoring</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#E2E8F0', fontSize: '0.9rem' }}>
+          <div className="auth-feature-item">
             <CheckCircle2 size={20} color="#F472B6" />
             <span>Actionable skill gap detection and curated learning paths</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#E2E8F0', fontSize: '0.9rem' }}>
+          <div className="auth-feature-item">
             <CheckCircle2 size={20} color="#38BDF8" />
             <span>Direct employer review portal with instant candidate rankings</span>
           </div>
         </div>
 
-        <div style={{ fontSize: '0.8rem', color: '#64748B', position: 'relative', zIndex: 1 }}>
+        <div className="auth-brand-footer">
           © 2026 OpenPath • Connecting talent with verified opportunities.
         </div>
       </div>
 
       {/* Right Login Form Pane */}
-      <div
-        className="auth-form-pane"
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          maxWidth: '520px',
-          margin: '0 auto',
-          width: '100%',
-        }}
-      >
-        <BackButton label="Back to Home" fallbackPage="landing" style={{ alignSelf: 'flex-start', marginBottom: '20px' }} />
+      <div className="auth-form-pane">
+        <BackButton label="Back to Home" fallbackPage="landing" className="auth-back-btn" />
 
-        <div style={{ marginBottom: '20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-            <span
-              style={{
-                fontSize: '0.725rem',
-                fontWeight: 800,
-                padding: '3px 10px',
-                borderRadius: '9999px',
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-                background:
-                  portalRole === 'admin'
-                    ? 'rgba(239, 68, 68, 0.2)'
-                    : portalRole === 'employer'
-                    ? 'rgba(236, 72, 153, 0.2)'
-                    : 'rgba(124, 58, 237, 0.2)',
-                color:
-                  portalRole === 'admin'
-                    ? '#F87171'
-                    : portalRole === 'employer'
-                    ? '#F472B6'
-                    : '#C084FC',
-                border:
-                  portalRole === 'admin'
-                    ? '1px solid rgba(239, 68, 68, 0.4)'
-                    : portalRole === 'employer'
-                    ? '1px solid rgba(236, 72, 153, 0.4)'
-                    : '1px solid rgba(124, 58, 237, 0.4)',
-              }}
-            >
+        <div className="auth-form-header">
+          <div className="auth-badge-row">
+            <span className={`auth-portal-badge role-${portalRole}`}>
               {portalRole === 'admin'
                 ? '🛡️ Admin Command Portal'
                 : portalRole === 'employer'
@@ -374,14 +312,14 @@ export default function LoginPage() {
                 : '🎓 Student Portal'}
             </span>
           </div>
-          <h2 style={{ fontSize: '1.95rem', fontWeight: 800, color: 'var(--primary-text)' }}>
+          <h2 className="auth-form-title">
             {portalRole === 'admin'
               ? 'Administrator Sign In'
               : portalRole === 'employer'
               ? 'Employer Sign In'
               : 'Student Sign In'}
           </h2>
-          <p style={{ fontSize: '0.875rem', color: 'var(--secondary-text)', marginTop: '4px', lineHeight: '1.5' }}>
+          <p className="auth-form-subtitle">
             {portalRole === 'admin'
               ? 'Sign in to access platform governance, user directory, listing moderation, and system telemetry.'
               : portalRole === 'employer'
@@ -391,18 +329,7 @@ export default function LoginPage() {
         </div>
 
         {/* Role Portal Switcher */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr 1fr',
-            gap: '6px',
-            padding: '4px',
-            backgroundColor: 'var(--chip-bg)',
-            border: '1px solid var(--border-color)',
-            borderRadius: 'var(--radius-md)',
-            marginBottom: '14px',
-          }}
-        >
+        <div className="auth-role-switcher">
           <button
             type="button"
             onClick={() => {
@@ -412,21 +339,7 @@ export default function LoginPage() {
                 setPassword('');
               }
             }}
-            style={{
-              padding: '8px 10px',
-              borderRadius: 'var(--radius-sm)',
-              border: portalRole === 'student' ? '1px solid #A855F7' : '1px solid transparent',
-              backgroundColor: portalRole === 'student' ? 'rgba(124, 58, 237, 0.22)' : 'transparent',
-              color: portalRole === 'student' ? 'var(--primary-text)' : 'var(--secondary-text)',
-              fontWeight: 700,
-              fontSize: '0.8rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '5px',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-            }}
+            className={`auth-role-btn ${portalRole === 'student' ? 'active-student' : ''}`}
           >
             <GraduationCap size={15} color={portalRole === 'student' ? '#C084FC' : 'currentColor'} />
             <span>Student</span>
@@ -441,21 +354,7 @@ export default function LoginPage() {
                 setPassword('');
               }
             }}
-            style={{
-              padding: '8px 10px',
-              borderRadius: 'var(--radius-sm)',
-              border: portalRole === 'employer' ? '1px solid #EC4899' : '1px solid transparent',
-              backgroundColor: portalRole === 'employer' ? 'rgba(236, 72, 153, 0.22)' : 'transparent',
-              color: portalRole === 'employer' ? 'var(--primary-text)' : 'var(--secondary-text)',
-              fontWeight: 700,
-              fontSize: '0.8rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '5px',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-            }}
+            className={`auth-role-btn ${portalRole === 'employer' ? 'active-employer' : ''}`}
           >
             <Briefcase size={15} color={portalRole === 'employer' ? '#F472B6' : 'currentColor'} />
             <span>Employer</span>
@@ -470,21 +369,7 @@ export default function LoginPage() {
                 setPassword('');
               }
             }}
-            style={{
-              padding: '8px 10px',
-              borderRadius: 'var(--radius-sm)',
-              border: portalRole === 'admin' ? '1px solid #EF4444' : '1px solid transparent',
-              backgroundColor: portalRole === 'admin' ? 'rgba(239, 68, 68, 0.22)' : 'transparent',
-              color: portalRole === 'admin' ? 'var(--primary-text)' : 'var(--secondary-text)',
-              fontWeight: 700,
-              fontSize: '0.8rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '5px',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-            }}
+            className={`auth-role-btn ${portalRole === 'admin' ? 'active-admin' : ''}`}
           >
             <ShieldCheck size={15} color={portalRole === 'admin' ? '#F87171' : 'currentColor'} />
             <span>Admin</span>
@@ -492,36 +377,11 @@ export default function LoginPage() {
         </div>
 
         {/* Login Method Tabs */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '8px',
-            padding: '4px',
-            backgroundColor: 'var(--card-bg)',
-            border: '1px solid var(--border-color)',
-            borderRadius: 'var(--radius-md)',
-            marginBottom: '20px',
-          }}
-        >
+        <div className="auth-mode-toggle">
           <button
             type="button"
             onClick={() => setLoginMode('password')}
-            style={{
-              padding: '9px 12px',
-              borderRadius: 'var(--radius-sm)',
-              border: loginMode === 'password' ? '1px solid #A855F7' : '1px solid transparent',
-              backgroundColor: loginMode === 'password' ? 'rgba(124, 58, 237, 0.2)' : 'transparent',
-              color: loginMode === 'password' ? 'var(--primary-text)' : 'var(--secondary-text)',
-              fontWeight: 700,
-              fontSize: '0.85rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '6px',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-            }}
+            className={`auth-mode-btn ${loginMode === 'password' ? 'active-password' : ''}`}
           >
             <KeyRound size={16} /> Password Sign In
           </button>
@@ -532,38 +392,14 @@ export default function LoginPage() {
               setLoginMode('otp');
               if (!otpEmail && email) setOtpEmail(email);
             }}
-            style={{
-              padding: '9px 12px',
-              borderRadius: 'var(--radius-sm)',
-              border: loginMode === 'otp' ? '1px solid #EC4899' : '1px solid transparent',
-              backgroundColor: loginMode === 'otp' ? 'rgba(236, 72, 153, 0.2)' : 'transparent',
-              color: loginMode === 'otp' ? 'var(--primary-text)' : 'var(--secondary-text)',
-              fontWeight: 700,
-              fontSize: '0.85rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '6px',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-            }}
+            className={`auth-mode-btn ${loginMode === 'otp' ? 'active-otp' : ''}`}
           >
             <Mail size={16} /> Email OTP Sign In
           </button>
         </div>
 
         {error && (
-          <div
-            style={{
-              padding: '12px 14px',
-              backgroundColor: 'var(--status-red-bg)',
-              border: '1px solid var(--status-red-border)',
-              borderRadius: 'var(--radius-md)',
-              color: 'var(--status-red-text)',
-              fontSize: '0.85rem',
-              marginBottom: '18px',
-            }}
-          >
+          <div className="auth-error-banner">
             {error}
           </div>
         )}
@@ -573,17 +409,12 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label className="form-label">Email Address</label>
-              <div style={{ position: 'relative' }}>
-                <Mail
-                  size={18}
-                  color="#64748B"
-                  style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }}
-                />
+              <div className="auth-input-wrapper">
+                <Mail size={18} className="auth-input-icon" />
                 <input
                   type="email"
                   required
-                  className="form-input"
-                  style={{ paddingLeft: '40px' }}
+                  className="form-input auth-input-field"
                   placeholder={
                     portalRole === 'admin'
                       ? 'admin@openpath.io or administrator email'
@@ -598,7 +429,7 @@ export default function LoginPage() {
             </div>
 
             <div className="form-group">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div className="auth-password-header">
                 <label className="form-label">Password</label>
                 <button
                   type="button"
@@ -606,22 +437,17 @@ export default function LoginPage() {
                     setForgotEmail(email);
                     setShowForgotModal(true);
                   }}
-                  style={{ fontSize: '0.8rem', color: '#A78BFA', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}
+                  className="auth-forgot-link"
                 >
                   Forgot Password?
                 </button>
               </div>
-              <div style={{ position: 'relative' }}>
-                <Lock
-                  size={18}
-                  color="#64748B"
-                  style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }}
-                />
+              <div className="auth-input-wrapper">
+                <Lock size={18} className="auth-input-icon" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
-                  className="form-input"
-                  style={{ paddingLeft: '40px', paddingRight: '40px' }}
+                  className="form-input auth-input-field-both"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -629,16 +455,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  style={{
-                    position: 'absolute',
-                    right: '12px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    color: '#64748B',
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                  }}
+                  className="auth-toggle-pwd-btn"
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -648,30 +465,19 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="btn-primary"
-              style={{ width: '100%', padding: '12px', marginTop: '6px' }}
+              className="btn-primary auth-submit-btn"
             >
               {isLoading ? 'Signing In...' : 'Sign In'} <ArrowRight size={18} />
             </button>
 
-            <div style={{ textAlign: 'center', marginTop: '16px' }}>
+            <div className="auth-alt-action-box">
               <button
                 type="button"
                 onClick={() => {
                   setLoginMode('otp');
                   if (!otpEmail && email) setOtpEmail(email);
                 }}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: '#A78BFA',
-                  fontSize: '0.85rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                }}
+                className="auth-alt-btn"
               >
                 <Mail size={15} /> Sign in using Email OTP Code instead
               </button>
@@ -684,17 +490,12 @@ export default function LoginPage() {
               <form onSubmit={handleSendLoginOtp}>
                 <div className="form-group">
                   <label className="form-label">Account Email Address</label>
-                  <div style={{ position: 'relative' }}>
-                    <Mail
-                      size={18}
-                      color="#64748B"
-                      style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }}
-                    />
+                  <div className="auth-input-wrapper">
+                    <Mail size={18} className="auth-input-icon" />
                     <input
                       type="email"
                       required
-                      className="form-input"
-                      style={{ paddingLeft: '40px' }}
+                      className="form-input auth-input-field"
                       placeholder="Enter your registered email"
                       value={otpEmail || email}
                       onChange={(e) => {
@@ -708,26 +509,16 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={isSendingLoginOtp}
-                  className="btn-primary"
-                  style={{ width: '100%', padding: '12px', marginTop: '6px' }}
+                  className="btn-primary auth-submit-btn"
                 >
                   {isSendingLoginOtp ? 'Generating Code...' : 'Get Login OTP Code'} <ArrowRight size={18} />
                 </button>
 
-                <div style={{ textAlign: 'center', marginTop: '16px' }}>
+                <div className="auth-alt-action-box">
                   <button
                     type="button"
                     onClick={() => setLoginMode('password')}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      color: 'var(--secondary-text)',
-                      fontSize: '0.85rem',
-                      cursor: 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                    }}
+                    className="auth-alt-btn-muted"
                   >
                     <KeyRound size={15} /> Sign in with Password instead
                   </button>
@@ -736,55 +527,30 @@ export default function LoginPage() {
             ) : (
               /* OTP Code Input Step */
               <div>
-                <div style={{ textAlign: 'center', marginBottom: '18px' }}>
-                  <p style={{ fontSize: '0.875rem', color: 'var(--secondary-text)' }}>
+                <div className="auth-center-header">
+                  <p className="auth-otp-target-text">
                     Enter the 6-digit code sent to <strong>{otpEmail || email}</strong>
                   </p>
                 </div>
 
                 {otpDeliveredViaSmtp ? (
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '8px',
-                      padding: '10px 14px',
-                      backgroundColor: 'rgba(16, 185, 129, 0.12)',
-                      borderRadius: 'var(--radius-md)',
-                      border: '1px solid rgba(168, 85, 129, 0.3)',
-                      color: '#10B981',
-                      fontSize: '0.85rem',
-                      marginBottom: '16px',
-                    }}
-                  >
+                  <div className="auth-otp-status-banner success">
                     <CheckCircle2 size={16} /> Verification code delivered to your email inbox!
                   </div>
                 ) : otpPreviewCode ? (
-                  <div
-                    style={{
-                      padding: '12px 14px',
-                      backgroundColor: 'rgba(124, 58, 237, 0.15)',
-                      borderRadius: 'var(--radius-md)',
-                      border: '1px solid rgba(168, 85, 247, 0.35)',
-                      textAlign: 'center',
-                      marginBottom: '16px',
-                      fontSize: '0.85rem',
-                      color: 'var(--primary-text)',
-                    }}
-                  >
-                    <span style={{ color: 'var(--secondary-text)' }}>Email Verification Code: </span>
-                    <strong style={{ color: '#F472B6', letterSpacing: '4px', fontSize: '1.25rem', display: 'block', margin: '4px 0' }}>
+                  <div className="auth-otp-preview-card">
+                    <span className="auth-subdued-text">Email Verification Code: </span>
+                    <strong className="auth-otp-preview-code">
                       {otpPreviewCode}
                     </strong>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--secondary-text)' }}>
+                    <div className="auth-instruction-caption">
                       (Enter this 6-digit code below to authenticate)
                     </div>
                   </div>
                 ) : null}
 
                 <form onSubmit={handleLoginWithOtpSubmit}>
-                  <div className="form-group" style={{ marginBottom: '18px' }}>
+                  <div className="form-group auth-mb-18">
                     <input
                       type="text"
                       inputMode="numeric"
@@ -794,14 +560,7 @@ export default function LoginPage() {
                       required
                       autoFocus
                       placeholder="000000"
-                      className="form-input"
-                      style={{
-                        fontSize: '2rem',
-                        textAlign: 'center',
-                        letterSpacing: '10px',
-                        fontWeight: 800,
-                        color: 'var(--primary-text)',
-                      }}
+                      className="form-input auth-code-input-lg"
                       value={otpLoginCode}
                       onChange={(e) => setOtpLoginCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                     />
@@ -810,33 +569,17 @@ export default function LoginPage() {
                   <button
                     type="submit"
                     disabled={isLoggingInOtp || otpLoginCode.length < 6}
-                    className="btn-primary"
-                    style={{ width: '100%', padding: '12px' }}
+                    className="btn-primary auth-submit-btn"
                   >
                     {isLoggingInOtp ? 'Verifying...' : 'Verify & Sign In'} <ArrowRight size={18} />
                   </button>
                 </form>
 
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginTop: '16px',
-                    paddingTop: '12px',
-                    borderTop: '1px solid var(--border-color)',
-                  }}
-                >
+                <div className="auth-otp-footer-row">
                   <button
                     type="button"
                     onClick={() => setOtpStep('email')}
-                    style={{
-                      fontSize: '0.825rem',
-                      color: 'var(--secondary-text)',
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                    }}
+                    className="auth-switch-back-btn"
                   >
                     ← Change Email
                   </button>
@@ -845,40 +588,21 @@ export default function LoginPage() {
                     type="button"
                     disabled={otpCooldown > 0 || isSendingLoginOtp}
                     onClick={handleResendLoginOtp}
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      fontSize: '0.825rem',
-                      fontWeight: 600,
-                      color: otpCooldown > 0 ? 'var(--secondary-text)' : '#A78BFA',
-                      background: 'none',
-                      border: 'none',
-                      cursor: otpCooldown > 0 ? 'not-allowed' : 'pointer',
-                    }}
+                    className="auth-resend-btn"
                   >
                     <RefreshCw size={13} className={isSendingLoginOtp ? 'spin' : ''} />
                     {otpCooldown > 0 ? `Resend Code (${otpCooldown}s)` : 'Resend Code'}
                   </button>
                 </div>
 
-                <div style={{ textAlign: 'center', marginTop: '14px' }}>
+                <div className="auth-alt-action-box">
                   <button
                     type="button"
                     onClick={() => {
                       setLoginMode('password');
                       setOtpStep('email');
                     }}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      color: 'var(--secondary-text)',
-                      fontSize: '0.8rem',
-                      cursor: 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '5px',
-                    }}
+                    className="auth-switch-back-btn"
                   >
                     <KeyRound size={13} /> Switch back to Password Sign In
                   </button>
@@ -888,11 +612,11 @@ export default function LoginPage() {
           </div>
         )}
 
-        <p style={{ textAlign: 'center', marginTop: '24px', fontSize: '0.9rem', color: 'var(--secondary-text)' }}>
+        <p className="auth-footer-prompt">
           Don't have an OpenPath account?{' '}
           <button
             onClick={() => navigate('register')}
-            style={{ color: '#F472B6', fontWeight: 700, background: 'none', border: 'none', cursor: 'pointer' }}
+            className="auth-footer-link"
           >
             Create an Account
           </button>
@@ -901,24 +625,12 @@ export default function LoginPage() {
 
       {/* Forgot Password Modal */}
       {showForgotModal && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(3, 7, 18, 0.75)',
-            backdropFilter: 'blur(12px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-            padding: '16px',
-          }}
-        >
-          <div className="card" style={{ maxWidth: '440px', width: '100%', padding: '28px', backgroundColor: 'var(--card-bg)' }}>
-            <h3 style={{ fontSize: '1.25rem', marginBottom: '8px', color: 'var(--primary-text)' }}>
+        <div className="auth-modal-overlay">
+          <div className="card auth-modal-card">
+            <h3 className="auth-modal-title">
               {forgotStep === 'email' ? 'Reset Your Password' : 'Enter Verification Code'}
             </h3>
-            <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', marginBottom: '18px' }}>
+            <p className="auth-modal-desc">
               {forgotStep === 'email'
                 ? 'Enter your registered email address to receive an OTP verification code.'
                 : `Enter the verification code sent to ${forgotEmail} and choose a new password.`}
@@ -929,13 +641,12 @@ export default function LoginPage() {
                 <input
                   type="email"
                   required
-                  className="form-input"
+                  className="form-input auth-mb-18"
                   placeholder="user@example.com"
                   value={forgotEmail}
                   onChange={(e) => setForgotEmail(e.target.value)}
-                  style={{ marginBottom: '18px' }}
                 />
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                <div className="auth-modal-actions">
                   <button type="button" onClick={() => setShowForgotModal(false)} className="btn-secondary">
                     Cancel
                   </button>
@@ -947,42 +658,17 @@ export default function LoginPage() {
             ) : (
               <form onSubmit={handleResetPassword}>
                 {forgotDeliveredViaSmtp ? (
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '8px',
-                      padding: '8px 12px',
-                      backgroundColor: 'rgba(16, 185, 129, 0.12)',
-                      borderRadius: 'var(--radius-md)',
-                      border: '1px solid rgba(16, 185, 129, 0.3)',
-                      color: '#10B981',
-                      fontSize: '0.825rem',
-                      marginBottom: '14px',
-                    }}
-                  >
+                  <div className="auth-otp-status-banner success auth-mb-14">
                     <CheckCircle2 size={15} /> Code delivered to inbox!
                   </div>
                 ) : resetOtpPreview ? (
-                  <div
-                    style={{
-                      padding: '10px',
-                      backgroundColor: 'rgba(124, 58, 237, 0.15)',
-                      borderRadius: 'var(--radius-md)',
-                      border: '1px solid rgba(168, 85, 247, 0.35)',
-                      textAlign: 'center',
-                      marginBottom: '16px',
-                      fontSize: '0.85rem',
-                      color: 'var(--primary-text)',
-                    }}
-                  >
-                    Demo OTP Code: <strong style={{ color: '#F472B6' }}>{resetOtpPreview}</strong>
+                  <div className="auth-otp-preview-card auth-mb-16">
+                    Demo OTP Code: <strong className="auth-highlight-pink">{resetOtpPreview}</strong>
                   </div>
                 ) : null}
 
-                <div className="form-group" style={{ marginBottom: '12px' }}>
-                  <label className="form-label" style={{ fontSize: '0.8rem' }}>6-Digit OTP</label>
+                <div className="form-group auth-mb-12">
+                  <label className="form-label auth-modal-field-label">6-Digit OTP</label>
                   <input
                     type="text"
                     inputMode="numeric"
@@ -996,8 +682,8 @@ export default function LoginPage() {
                   />
                 </div>
 
-                <div className="form-group" style={{ marginBottom: '18px' }}>
-                  <label className="form-label" style={{ fontSize: '0.8rem' }}>New Password</label>
+                <div className="form-group auth-mb-18">
+                  <label className="form-label auth-modal-field-label">New Password</label>
                   <input
                     type="password"
                     required
@@ -1009,27 +695,25 @@ export default function LoginPage() {
                   />
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div className="auth-modal-split-actions">
                   <button
                     type="button"
                     onClick={() => setForgotStep('email')}
-                    className="btn-ghost"
-                    style={{ fontSize: '0.825rem' }}
+                    className="btn-ghost auth-btn-ghost-sm"
                   >
                     ← Back
                   </button>
 
-                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <div className="auth-modal-btn-group">
                     <button
                       type="button"
                       disabled={forgotCooldown > 0 || forgotLoading}
                       onClick={handleResendResetCode}
-                      className="btn-outline"
-                      style={{ fontSize: '0.8rem', padding: '6px 12px' }}
+                      className="btn-outline auth-btn-resend-modal"
                     >
                       {forgotCooldown > 0 ? `Resend (${forgotCooldown}s)` : 'Resend'}
                     </button>
-                    <button type="submit" disabled={forgotLoading} className="btn-primary" style={{ padding: '8px 16px' }}>
+                    <button type="submit" disabled={forgotLoading} className="btn-primary auth-btn-submit-modal">
                       {forgotLoading ? 'Resetting...' : 'Reset Password'}
                     </button>
                   </div>

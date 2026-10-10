@@ -23,24 +23,12 @@ export default function BackButton({
 
   const isPill = variant === 'pill';
   const isGhost = variant === 'ghost';
+  const variantClass = isGhost ? 'ghost' : isPill ? 'pill' : 'liquid';
 
   return (
     <button
       onClick={handleClick}
-      className={`back-btn ${isGhost ? 'btn-ghost' : isPill ? 'announcement-pill' : 'btn-liquid-glass'} ${className}`}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '8px',
-        padding: isPill ? '7px 18px 7px 14px' : isGhost ? '8px 14px' : '9px 20px',
-        fontSize: '0.85rem',
-        fontWeight: 600,
-        cursor: 'pointer',
-        marginBottom: '18px',
-        textDecoration: 'none',
-        borderRadius: 'var(--radius-full)',
-        ...style,
-      }}
+      className={`back-btn ${variantClass} ${isGhost ? 'btn-ghost' : isPill ? 'announcement-pill' : 'btn-liquid-glass'} ${className}`}
       title={`Go back (${label})`}
     >
       <ArrowLeft size={16} className="back-arrow-icon" />

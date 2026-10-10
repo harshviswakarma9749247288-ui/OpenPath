@@ -51,43 +51,24 @@ export default function StudentDashboard() {
   }
 
   return (
-    <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
-      <BackButton label="Back to Home" fallbackPage="landing" style={{ marginBottom: '20px' }} />
+    <div className="dashboard-container">
+      <BackButton label="Back to Home" fallbackPage="landing" />
 
-      {/* 1. Profile Completion Banner */}
-      <div
-        className="card card-featured"
-        style={{
-          padding: '24px',
-          marginBottom: '32px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '20px',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+      {/* 1. Profile Completeness Banner */}
+      <div className="card card-featured completeness-banner">
+        <div className="completeness-left">
           {/* Circular Percentage */}
           <MatchScoreBadge score={percentage} size={64} strokeWidth={5} showLabel={false} />
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-              <h3 style={{ fontSize: '1.2rem', color: 'var(--primary-text)' }}>Profile Completeness</h3>
+            <div className="candidate-card-title-row">
+              <h3 className="candidate-card-title">Profile Completeness</h3>
               <span
-                style={{
-                  fontSize: '0.75rem',
-                  fontWeight: 600,
-                  backgroundColor: percentage >= 80 ? 'rgba(16, 185, 129, 0.15)' : 'rgba(245, 158, 11, 0.15)',
-                  color: percentage >= 80 ? '#34D399' : '#FBBF24',
-                  border: `1px solid ${percentage >= 80 ? 'rgba(16, 185, 129, 0.35)' : 'rgba(245, 158, 11, 0.35)'}`,
-                  padding: '3px 10px',
-                  borderRadius: '9999px',
-                }}
+                className={`completeness-status-pill ${percentage >= 80 ? 'optimized' : 'incomplete'}`}
               >
                 {percentage >= 80 ? 'Optimized for Matching' : 'Missing Key Fields'}
               </span>
             </div>
-            <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)' }}>
+            <p className="candidate-bg-desc">
               {missing.length > 0
                 ? `Add ${missing.join(', ')} to boost your 5-factor accuracy.`
                 : 'Your profile is 100% complete and fully optimized for top recruiter discovery.'}
@@ -98,42 +79,26 @@ export default function StudentDashboard() {
         <button
           onClick={() => navigate('profile')}
           className="btn-primary"
-          style={{ padding: '10px 20px', fontSize: '0.875rem' }}
         >
           {percentage >= 80 ? 'View Digital Resume' : 'Complete Profile'} <ArrowRight size={16} />
         </button>
       </div>
 
       {/* 2. Contextual Quick Actions */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: '16px',
-          marginBottom: '36px',
-        }}
-      >
+      <div className="quick-actions-grid">
         <Tilt3DCard
           onClick={() => navigate('opportunities')}
-          className="card"
+          className="card quick-action-card cyan"
           maxTilt={8}
-          style={{
-            padding: '18px',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '14px',
-            borderLeft: '4px solid #38BDF8',
-          }}
         >
-          <div style={{ width: '42px', height: '42px', borderRadius: '10px', backgroundColor: 'rgba(56, 189, 248, 0.15)', border: '1px solid rgba(56, 189, 248, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#38BDF8' }}>
+          <div className="quick-action-icon-box cyan">
             <Compass size={22} />
           </div>
           <div>
-            <strong style={{ fontSize: '0.95rem', color: 'var(--primary-text)', display: 'block' }}>
+            <strong className="quick-action-title">
               Explore Roles
             </strong>
-            <span style={{ fontSize: '0.775rem', color: 'var(--secondary-text)' }}>
+            <span className="quick-action-sub">
               Browse algorithmic matches
             </span>
           </div>
@@ -141,93 +106,76 @@ export default function StudentDashboard() {
 
         <Tilt3DCard
           onClick={() => navigate('applications')}
-          className="card"
+          className="card quick-action-card emerald"
           maxTilt={8}
-          style={{
-            padding: '18px',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '14px',
-            borderLeft: '4px solid #34D399',
-          }}
         >
-          <div style={{ width: '42px', height: '42px', borderRadius: '10px', backgroundColor: 'rgba(52, 211, 153, 0.15)', border: '1px solid rgba(52, 211, 153, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#34D399' }}>
+          <div className="quick-action-icon-box emerald">
             <FileText size={22} />
           </div>
           <div>
-            <strong style={{ fontSize: '0.95rem', color: 'var(--primary-text)', display: 'block' }}>
+            <strong className="quick-action-title">
               My Applications
             </strong>
-            <span style={{ fontSize: '0.775rem', color: 'var(--secondary-text)' }}>Track interview stages</span>
+            <span className="quick-action-sub">Track interview stages</span>
           </div>
         </Tilt3DCard>
 
         <Tilt3DCard
           onClick={() => navigate('learning')}
-          className="card"
+          className="card quick-action-card purple"
           maxTilt={8}
-          style={{
-            padding: '18px',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '14px',
-            borderLeft: '4px solid #C084FC',
-          }}
         >
-          <div style={{ width: '42px', height: '42px', borderRadius: '10px', backgroundColor: 'rgba(192, 132, 252, 0.15)', border: '1px solid rgba(192, 132, 252, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#C084FC' }}>
+          <div className="quick-action-icon-box purple">
             <BookOpen size={22} />
           </div>
           <div>
-            <strong style={{ fontSize: '0.95rem', color: 'var(--primary-text)', display: 'block' }}>
+            <strong className="quick-action-title">
               Skills & Learning
             </strong>
-            <span style={{ fontSize: '0.775rem', color: 'var(--secondary-text)' }}>Bridge missing gaps</span>
+            <span className="quick-action-sub">Bridge missing gaps</span>
           </div>
         </Tilt3DCard>
       </div>
 
       {/* 3. Section: Best Matches (4 cards + View All) */}
-      <div style={{ marginBottom: '40px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
+      <div className="dashboard-section-wrap">
+        <div className="dashboard-section-header">
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className="candidate-card-title-row">
               <Sparkles size={20} color="#7C3AED" />
-              <h2 style={{ fontSize: '1.4rem', color: 'var(--primary-text)' }}>Best Matches for You</h2>
+              <h2 className="dashboard-section-title">Best Matches for You</h2>
             </div>
-            <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)' }}>
+            <p className="dashboard-section-subtitle">
               Top weighted compatibility across skills, education, and location.
             </p>
           </div>
           <button
             onClick={() => navigate('opportunities')}
-            className="btn-ghost"
-            style={{ fontSize: '0.85rem', color: '#7C3AED', fontWeight: 600 }}
+            className="btn-ghost dashboard-section-link purple"
           >
             View All Best Matches →
           </button>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))', gap: '18px' }}>
+        <div className="dashboard-cards-grid">
           {recommendations.bestMatches.map((opp) => (
             <OpportunityCard key={opp._id} opportunity={opp} />
           ))}
           {recommendations.bestMatches.length === 0 && !isLoading && (
-            <p style={{ color: 'var(--secondary-text)', fontSize: '0.9rem' }}>No opportunities found.</p>
+            <p className="candidate-bg-desc">No opportunities found.</p>
           )}
         </div>
       </div>
 
       {/* 4. Section: Based on Your Skills */}
-      <div style={{ marginBottom: '40px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
+      <div className="dashboard-section-wrap">
+        <div className="dashboard-section-header">
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className="candidate-card-title-row">
               <TrendingUp size={20} color="#059669" />
-              <h2 style={{ fontSize: '1.4rem', color: 'var(--primary-text)' }}>Based on Your Verified Skills</h2>
+              <h2 className="dashboard-section-title">Based on Your Verified Skills</h2>
             </div>
-            <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)' }}>
+            <p className="dashboard-section-subtitle">
               {user?.skills?.length
                 ? `Roles matching your technical competencies: ${user.skills.map((s) => s.name || s).slice(0, 4).join(', ')}.`
                 : 'Roles matching verified competencies. Add more skills to profile to expand recommendations.'}
@@ -235,19 +183,18 @@ export default function StudentDashboard() {
           </div>
           <button
             onClick={() => navigate('opportunities')}
-            className="btn-ghost"
-            style={{ fontSize: '0.85rem', color: '#059669', fontWeight: 600 }}
+            className="btn-ghost dashboard-section-link emerald"
           >
             Explore Skills Catalog →
           </button>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))', gap: '18px' }}>
+        <div className="dashboard-cards-grid">
           {recommendations.basedOnSkills.map((opp) => (
             <OpportunityCard key={opp._id} opportunity={opp} />
           ))}
           {recommendations.basedOnSkills.length === 0 && (
-            <div className="card" style={{ padding: '24px', gridColumn: '1 / -1', color: 'var(--secondary-text)', textAlign: 'center' }}>
+            <div className="card dashboard-empty-state">
               <p>Add technical skills in your Profile to unlock skill-based recommendations.</p>
             </div>
           )}
@@ -256,13 +203,13 @@ export default function StudentDashboard() {
 
       {/* 5. Section: Based on Your Interests */}
       <div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
+        <div className="dashboard-section-header">
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className="candidate-card-title-row">
               <Briefcase size={20} color="#DB2777" />
-              <h2 style={{ fontSize: '1.4rem', color: 'var(--primary-text)' }}>Based on Your Career Interests</h2>
+              <h2 className="dashboard-section-title">Based on Your Career Interests</h2>
             </div>
-            <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)' }}>
+            <p className="dashboard-section-subtitle">
               {user?.interests?.length
                 ? `Selected for your interest domains: ${user.interests.slice(0, 3).join(', ')}.`
                 : 'Selected based on your chosen career domains and industry tags.'}
@@ -270,19 +217,18 @@ export default function StudentDashboard() {
           </div>
           <button
             onClick={() => navigate('opportunities')}
-            className="btn-ghost"
-            style={{ fontSize: '0.85rem', color: '#DB2777', fontWeight: 600 }}
+            className="btn-ghost dashboard-section-link pink"
           >
             See All Opportunities →
           </button>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))', gap: '18px' }}>
+        <div className="dashboard-cards-grid">
           {recommendations.basedOnInterests.map((opp) => (
             <OpportunityCard key={opp._id} opportunity={opp} />
           ))}
           {recommendations.basedOnInterests.length === 0 && (
-            <div className="card" style={{ padding: '24px', gridColumn: '1 / -1', color: 'var(--secondary-text)', textAlign: 'center' }}>
+            <div className="card dashboard-empty-state">
               <p>Explore opportunities matching diverse career interests and industry pathways.</p>
             </div>
           )}

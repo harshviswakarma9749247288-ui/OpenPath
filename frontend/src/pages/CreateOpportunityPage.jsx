@@ -111,7 +111,7 @@ export default function CreateOpportunityPage() {
   };
 
   return (
-    <div style={{ maxWidth: '840px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
+    <div className="dashboard-container wizard-container">
       <BackButton
         label={step > 1 ? `Back to Step ${step - 1}` : 'Back to Dashboard'}
         onClick={step > 1 ? () => setStep(step - 1) : undefined}
@@ -119,16 +119,16 @@ export default function CreateOpportunityPage() {
       />
 
       {/* Progress Steps Header */}
-      <div style={{ marginBottom: '32px' }}>
-        <h1 style={{ fontSize: '1.85rem', color: 'var(--primary-text)', marginBottom: '8px' }}>
+      <div className="dashboard-section-wrap">
+        <h1 className="header-title-main">
           Post a New Opportunity
         </h1>
-        <p style={{ color: 'var(--secondary-text)', fontSize: '0.9rem' }}>
+        <p className="header-sub-text">
           5-Step Structured Opportunity Wizard
         </p>
 
         {/* Step indicator pills */}
-        <div style={{ display: 'flex', gap: '8px', marginTop: '16px', overflowX: 'auto', paddingBottom: '4px' }}>
+        <div className="wizard-steps-header">
           {[
             { num: 1, label: 'Basic Info' },
             { num: 2, label: 'Location & Salary' },
@@ -138,32 +138,13 @@ export default function CreateOpportunityPage() {
           ].map((s) => (
             <div
               key={s.num}
-              style={{
-                flex: 1,
-                minWidth: '120px',
-                padding: '10px 14px',
-                borderRadius: 'var(--radius-md)',
-                backgroundColor:
-                  step === s.num
-                    ? 'rgba(124, 58, 237, 0.15)'
-                    : step > s.num
-                    ? 'rgba(16, 185, 129, 0.15)'
-                    : 'var(--box-subtle)',
-                border:
-                  step === s.num
-                    ? '1.5px solid rgba(124, 58, 237, 0.5)'
-                    : step > s.num
-                    ? '1px solid rgba(16, 185, 129, 0.35)'
-                    : '1px solid var(--box-subtle-border)',
-                boxShadow: step === s.num ? '0 0 15px rgba(124, 58, 237, 0.15)' : 'none',
-                fontSize: '0.8rem',
-                color: step === s.num ? '#7C3AED' : step > s.num ? '#059669' : 'var(--secondary-text)',
-                fontWeight: 600,
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                backdropFilter: 'blur(8px)',
-              }}
+              className={`wizard-step-pill ${
+                step === s.num
+                  ? 'current'
+                  : step > s.num
+                  ? 'completed'
+                  : 'upcoming'
+              }`}
             >
               {step > s.num ? <CheckCircle2 size={14} /> : <span>{s.num}.</span>} {s.label}
             </div>
@@ -171,11 +152,11 @@ export default function CreateOpportunityPage() {
         </div>
       </div>
 
-      <div className="card card-featured" style={{ padding: '32px' }}>
+      <div className="card card-featured wizard-card-body">
         {/* STEP 1: BASIC INFORMATION */}
         {step === 1 && (
           <div className="animate-fade-in">
-            <h3 style={{ fontSize: '1.2rem', marginBottom: '18px', color: 'var(--primary-text)' }}>Step 1: Role Overview</h3>
+            <h3 className="wizard-step-title">Step 1: Role Overview</h3>
 
             <div className="form-group">
               <label className="form-label">Opportunity Title *</label>
@@ -189,7 +170,7 @@ export default function CreateOpportunityPage() {
               />
             </div>
 
-            <div className="form-grid-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div className="form-grid-2col">
               <div className="form-group">
                 <label className="form-label">Hiring Organization / Company *</label>
                 <input
@@ -230,9 +211,9 @@ export default function CreateOpportunityPage() {
         {/* STEP 2: LOCATION & SALARY */}
         {step === 2 && (
           <div className="animate-fade-in">
-            <h3 style={{ fontSize: '1.2rem', marginBottom: '18px' }}>Step 2: Location & Compensation</h3>
+            <h3 className="wizard-step-title">Step 2: Location & Compensation</h3>
 
-            <div className="form-grid-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div className="form-grid-2col">
               <div className="form-group">
                 <label className="form-label">Work Model *</label>
                 <select className="form-select" value={locationType} onChange={(e) => setLocationType(e.target.value)}>
@@ -254,7 +235,7 @@ export default function CreateOpportunityPage() {
               </div>
             </div>
 
-            <div className="form-grid-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div className="form-grid-2col">
               <div className="form-group">
                 <label className="form-label">Stipend / Salary Amount</label>
                 <input
@@ -292,7 +273,7 @@ export default function CreateOpportunityPage() {
         {/* STEP 3: RESPONSIBILITIES & REQUIREMENTS */}
         {step === 3 && (
           <div className="animate-fade-in">
-            <h3 style={{ fontSize: '1.2rem', marginBottom: '18px' }}>Step 3: Responsibilities & Requirements</h3>
+            <h3 className="wizard-step-title">Step 3: Responsibilities & Requirements</h3>
 
             <div className="form-group">
               <label className="form-label">Key Responsibilities (one per line)</label>
@@ -321,17 +302,17 @@ export default function CreateOpportunityPage() {
         {/* STEP 4: SKILLS & ELIGIBILITY */}
         {step === 4 && (
           <div className="animate-fade-in">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-              <h3 style={{ fontSize: '1.2rem', color: 'var(--primary-text)' }}>Step 4: Mandatory & Preferred Skills</h3>
-              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#7C3AED' }}>
+            <div className="dashboard-section-header">
+              <h3 className="wizard-step-title">Step 4: Mandatory & Preferred Skills</h3>
+              <span className="wizard-step-tag">
                 Directly feeds the 40% Skill Match algorithm
               </span>
             </div>
-            <p style={{ fontSize: '0.85rem', color: 'var(--secondary-text)', marginBottom: '16px' }}>
+            <p className="candidate-bg-desc">
               Click to tag skills candidates must possess or will develop during this opportunity.
             </p>
 
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '20px' }}>
+            <div className="wizard-skills-cloud">
               {availableSkills.map((s) => {
                 const isSelected = selectedSkills.some((sel) => sel._id === s._id);
                 return (
@@ -339,20 +320,7 @@ export default function CreateOpportunityPage() {
                     key={s._id}
                     type="button"
                     onClick={() => handleToggleSkill(s)}
-                    style={{
-                      padding: '7px 14px',
-                      borderRadius: '8px',
-                      fontSize: '0.85rem',
-                      fontWeight: 600,
-                      background: isSelected ? 'var(--primary-gradient)' : 'var(--chip-bg)',
-                      color: isSelected ? '#FFFFFF' : 'var(--chip-text)',
-                      border: isSelected ? '1px solid transparent' : '1px solid var(--chip-border)',
-                      boxShadow: isSelected ? '0 0 10px rgba(168, 85, 247, 0.4)' : 'none',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      backdropFilter: 'blur(8px)',
-                    }}
+                    className={`wizard-skill-btn ${isSelected ? 'selected' : ''}`}
                   >
                     {isSelected && <CheckCircle2 size={14} />} {s.name}
                   </button>
@@ -360,9 +328,9 @@ export default function CreateOpportunityPage() {
               })}
             </div>
 
-            <div style={{ padding: '14px', backgroundColor: 'var(--box-subtle)', borderRadius: '10px', border: '1px solid var(--box-subtle-border)', fontSize: '0.85rem' }}>
-              <strong style={{ color: 'var(--primary-text)' }}>Selected Skills ({selectedSkills.length}): </strong>
-              <span style={{ color: 'var(--secondary-text)' }}>
+            <div className="wizard-selected-skills-box">
+              <strong className="candidate-bg-title">Selected Skills ({selectedSkills.length}): </strong>
+              <span className="candidate-bg-desc">
                 {selectedSkills.map((s) => s.name).join(', ') || 'None selected yet'}
               </span>
             </div>
@@ -372,37 +340,37 @@ export default function CreateOpportunityPage() {
         {/* STEP 5: REVIEW & PUBLISH */}
         {step === 5 && (
           <div className="animate-fade-in">
-            <h3 style={{ fontSize: '1.2rem', marginBottom: '18px', color: 'var(--primary-text)' }}>Step 5: Review & Publish</h3>
+            <h3 className="wizard-step-title">Step 5: Review & Publish</h3>
 
-            <div style={{ padding: '24px', backgroundColor: 'var(--box-subtle)', borderRadius: '12px', border: '1px solid var(--box-subtle-border)', marginBottom: '20px' }}>
-              <h4 style={{ fontSize: '1.2rem', color: 'var(--primary-text)', marginBottom: '6px' }}>
+            <div className="wizard-preview-card">
+              <h4 className="wizard-preview-title">
                 {title || 'Untitled Opportunity'}
               </h4>
-              <p style={{ fontSize: '0.9rem', color: 'var(--secondary-text)', marginBottom: '14px' }}>
+              <p className="wizard-preview-meta">
                 {organization} • {type} • {locationType} ({city}) • {salaryAmount} / {salaryPeriod}
               </p>
 
-              <div style={{ marginBottom: '12px' }}>
-                <strong style={{ fontSize: '0.85rem', display: 'block', marginBottom: '6px', color: 'var(--primary-text)' }}>Required Skills:</strong>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+              <div className="candidate-modal-section">
+                <strong className="candidate-modal-section-title">Required Skills:</strong>
+                <div className="candidate-skills-row">
                   {selectedSkills.map((s, idx) => (
                     <span key={idx} className="skill-chip skill-chip-matched">
                       {s.name}
                     </span>
                   ))}
-                  {selectedSkills.length === 0 && <span style={{ color: 'var(--secondary-text)' }}>None</span>}
+                  {selectedSkills.length === 0 && <span className="candidate-bg-desc">None</span>}
                 </div>
               </div>
 
               <div>
-                <strong style={{ fontSize: '0.85rem', display: 'block', marginBottom: '4px', color: 'var(--primary-text)' }}>Deadline:</strong>
-                <span style={{ fontSize: '0.85rem', color: 'var(--primary-text)' }}>
+                <strong className="candidate-modal-section-title">Deadline:</strong>
+                <span className="candidate-modal-exp-desc">
                   {new Date(deadline).toLocaleDateString()}
                 </span>
               </div>
             </div>
 
-            <div style={{ padding: '14px', backgroundColor: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.25)', borderRadius: '10px', color: '#38BDF8', fontSize: '0.85rem' }}>
+            <div className="wizard-ready-notice">
               ✨ <strong>Ready for instant candidate matching:</strong> As soon as this role is published,
               OpenPath will match it against student profiles and compute compatibility scores in real time.
             </div>
@@ -410,7 +378,7 @@ export default function CreateOpportunityPage() {
         )}
 
         {/* Wizard Controls */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '28px', borderTop: '1px solid var(--border-color)', paddingTop: '20px' }}>
+        <div className="wizard-controls-footer">
           {step > 1 ? (
             <button type="button" onClick={() => setStep(step - 1)} className="btn-secondary">
               <ArrowLeft size={16} /> Previous Step
@@ -438,8 +406,7 @@ export default function CreateOpportunityPage() {
               type="button"
               disabled={isSubmitting}
               onClick={handleSubmit}
-              className="btn-primary"
-              style={{ padding: '12px 28px' }}
+              className="btn-primary wizard-submit-btn"
             >
               {isSubmitting ? 'Publishing...' : 'Publish Opportunity'} <Sparkles size={16} />
             </button>

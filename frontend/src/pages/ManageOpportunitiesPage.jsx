@@ -61,15 +61,15 @@ export default function ManageOpportunitiesPage() {
   };
 
   return (
-    <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '24px 20px 80px 20px' }}>
+    <div className="dashboard-container">
       <BackButton label="Back to Employer Hub" fallbackPage="employer-dashboard" />
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px', flexWrap: 'wrap', gap: '16px' }}>
+      <div className="dashboard-header-banner">
         <div>
-          <h1 style={{ fontSize: '2rem', color: 'var(--primary-text)', marginBottom: '4px' }}>
+          <h1 className="header-title-main">
             Manage Your Opportunities
           </h1>
-          <p style={{ color: 'var(--secondary-text)', fontSize: '0.95rem' }}>
+          <p className="header-sub-text">
             Review posted roles, track applicant counts per stage, and update active listing states.
           </p>
         </div>
@@ -77,103 +77,83 @@ export default function ManageOpportunitiesPage() {
         <button
           onClick={() => navigate('create-opportunity')}
           className="btn-primary"
-          style={{ padding: '10px 20px' }}
         >
           <PlusCircle size={16} /> Post New Opportunity
         </button>
       </div>
 
-      <div className="card" style={{ padding: '24px' }}>
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>
+      <div className="card dashboard-section-card">
+        <div className="dashboard-table-wrapper">
+          <table className="dashboard-table">
             <thead>
-              <tr style={{ borderBottom: '1.5px solid var(--border-color)', color: 'var(--secondary-text)' }}>
-                <th style={{ padding: '12px 14px' }}>Role / Organization</th>
-                <th style={{ padding: '12px 14px' }}>Type & Location</th>
-                <th style={{ padding: '12px 14px' }}>Status</th>
-                <th style={{ padding: '12px 14px' }}>Applicants</th>
-                <th style={{ padding: '12px 14px' }}>Shortlisted</th>
-                <th style={{ padding: '12px 14px' }}>Deadline</th>
-                <th style={{ padding: '12px 14px', textAlign: 'right' }}>Actions</th>
+              <tr className="dashboard-table-head-row">
+                <th className="dashboard-table-th">Role / Organization</th>
+                <th className="dashboard-table-th">Type & Location</th>
+                <th className="dashboard-table-th">Status</th>
+                <th className="dashboard-table-th">Applicants</th>
+                <th className="dashboard-table-th">Shortlisted</th>
+                <th className="dashboard-table-th">Deadline</th>
+                <th className="dashboard-table-th align-right">Actions</th>
               </tr>
             </thead>
             <tbody>
               {opportunities.map((opp) => (
-                <tr key={opp._id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                  <td style={{ padding: '14px' }}>
-                    <strong style={{ fontSize: '0.95rem', color: 'var(--primary-text)', display: 'block' }}>
+                <tr key={opp._id} className="dashboard-table-row">
+                  <td className="dashboard-table-td">
+                    <strong className="candidate-bg-title">
                       {opp.title}
                     </strong>
-                    <span style={{ fontSize: '0.775rem', color: 'var(--secondary-text)' }}>
+                    <span className="candidate-bg-desc">
                       {opp.organization}
                     </span>
                   </td>
 
-                  <td style={{ padding: '14px' }}>
-                    <span className="badge badge-internship" style={{ fontSize: '0.75rem', marginBottom: '2px' }}>
+                  <td className="dashboard-table-td">
+                    <span className="badge badge-internship">
                       {opp.type}
                     </span>
-                    <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--secondary-text)' }}>
+                    <span className="candidate-bg-desc">
                       {opp.location?.type} ({opp.location?.city || (opp.location?.type === 'Remote' ? 'Remote' : 'Location not specified')})
                     </span>
                   </td>
 
-                  <td style={{ padding: '14px' }}>
+                  <td className="dashboard-table-td">
                     <button
                       onClick={() => handleToggleStatus(opp._id, opp.status)}
-                      style={{
-                        padding: '4px 12px',
-                        borderRadius: '9999px',
-                        fontSize: '0.75rem',
-                        fontWeight: 600,
-                        backgroundColor: opp.status === 'Active' ? 'var(--status-green-bg)' : 'var(--chip-bg)',
-                        color: opp.status === 'Active' ? 'var(--status-green-text)' : 'var(--secondary-text)',
-                        border: opp.status === 'Active' ? '1px solid var(--status-green-border)' : '1px solid var(--chip-border)',
-                        cursor: 'pointer',
-                      }}
+                      className={`opp-status-toggle-btn ${opp.status === 'Active' ? 'active' : 'closed'}`}
                       title="Click to toggle Active/Closed"
                     >
                       {opp.status === 'Active' ? '● Active' : '○ Closed'}
                     </button>
                   </td>
 
-                  <td style={{ padding: '14px' }}>
-                    <span style={{ fontWeight: 700, color: '#C084FC', fontSize: '1rem' }}>
+                  <td className="dashboard-table-td">
+                    <span className="table-stat-purple">
                       {opp.totalApplicants || 0}
                     </span>
                   </td>
 
-                  <td style={{ padding: '14px' }}>
-                    <span style={{ fontWeight: 600, color: 'var(--status-green-text)' }}>
+                  <td className="dashboard-table-td">
+                    <span className="table-stat-green">
                       {opp.shortlisted || 0}
                     </span>
                   </td>
 
-                  <td style={{ padding: '14px', color: 'var(--secondary-text)', fontSize: '0.8rem' }}>
+                  <td className="dashboard-table-td">
                     {new Date(opp.deadline).toLocaleDateString()}
                   </td>
 
-                  <td style={{ padding: '14px', textAlign: 'right' }}>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                  <td className="dashboard-table-td align-right">
+                    <div className="dashboard-table-actions">
                       <button
                         onClick={() => navigate('candidate-review', { opportunityId: opp._id })}
-                        className="btn-primary"
-                        style={{ padding: '6px 14px', fontSize: '0.775rem' }}
+                        className="btn-primary candidate-review-btn"
                       >
                         <Users size={14} /> Review Candidates
                       </button>
                       <button
                         onClick={() => handleDelete(opp._id)}
-                        style={{
-                          padding: '6px 10px',
-                          color: 'var(--status-red-text)',
-                          borderRadius: '8px',
-                          border: '1px solid var(--status-red-border)',
-                          backgroundColor: 'var(--status-red-bg)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
+                        className="btn-table-delete"
                         title="Delete Listing"
                       >
                         <Trash2 size={14} />
@@ -184,7 +164,7 @@ export default function ManageOpportunitiesPage() {
               ))}
               {opportunities.length === 0 && !isLoading && (
                 <tr>
-                  <td colSpan={7} style={{ padding: '40px', textAlign: 'center', color: 'var(--secondary-text)' }}>
+                  <td colSpan={7} className="dashboard-table-empty">
                     No opportunities posted yet. Click "Post New Opportunity" above to create your first listing.
                   </td>
                 </tr>
