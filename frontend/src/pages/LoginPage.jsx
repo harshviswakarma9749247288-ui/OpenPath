@@ -325,8 +325,8 @@ export default function LoginPage() {
 
       {/* Right Login Form Pane */}
       <div
+        className="auth-form-pane"
         style={{
-          padding: '60px 48px',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',

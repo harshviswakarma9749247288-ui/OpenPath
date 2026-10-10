@@ -18,8 +18,16 @@ import notificationRoutes from './routes/notificationRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import { seedInitialData } from './config/seed.js';
+import { securityHeaders, mongoSanitize } from './middleware/securityMiddleware.js';
+import { generalApiLimiter } from './middleware/rateLimiter.js';
 
 const app = express();
+
+// Hardening: Disable Express signature header
+app.disable('x-powered-by');
+
+// Security HTTP Headers
+app.use(securityHeaders);
 
 // Middleware
 app.use(
@@ -38,6 +46,12 @@ app.use(
 app.use(cookieParser());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// NoSQL Injection Sanitizer across all incoming bodies, queries, and params
+app.use(mongoSanitize);
+
+// General rate limiter on all /api routes
+app.use('/api', generalApiLimiter);
 
 // Request logger for development
 if (ENV.NODE_ENV !== 'test') {

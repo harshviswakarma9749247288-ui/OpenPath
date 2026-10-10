@@ -91,15 +91,11 @@ export default function Navbar() {
       }}
     >
       {/* Left: Mobile hamburger + Page Title & Welcome */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
         <button
           onClick={() => setMobileDrawerOpen(true)}
-          style={{
-            display: 'none',
-            color: 'var(--secondary-text)',
-            padding: '6px',
-          }}
           className="mobile-menu-btn"
+          aria-label="Toggle navigation menu"
         >
           <Menu size={22} />
         </button>
@@ -161,12 +157,13 @@ export default function Navbar() {
           {/* Dropdown Card */}
           {showNotifMenu && (
             <div
-              className="card animate-fade-in"
+              className="card animate-fade-in navbar-dropdown-card"
               style={{
                 position: 'absolute',
                 right: 0,
                 top: '48px',
                 width: '350px',
+                maxWidth: 'calc(100vw - 32px)',
                 maxHeight: '420px',
                 display: 'flex',
                 flexDirection: 'column',

@@ -111,12 +111,13 @@ export const getApplicationById = async (req, res, next) => {
       return errorResponse(res, 'Application not found.', 404);
     }
 
-    // Role check: Only the applicant or the opportunity owner can view
-    const isOwnerStudent = application.user._id.toString() === req.user._id.toString();
+    // Role check: Only the applicant, opportunity owner, or administrator can view
+    const isOwnerStudent = application.user?._id?.toString() === req.user._id.toString();
     const isOpportunityEmployer =
       application.opportunity?.createdBy?.toString() === req.user._id.toString();
+    const isAdmin = req.user.role === 'admin';
 
-    if (!isOwnerStudent && !isOpportunityEmployer) {
+    if (!isOwnerStudent && !isOpportunityEmployer && !isAdmin) {
       return errorResponse(res, 'Access denied.', 403);
     }
 
@@ -142,8 +143,12 @@ export const updateApplicationStatus = async (req, res, next) => {
       return errorResponse(res, 'Application not found.', 404);
     }
 
-    // Check employer ownership of opportunity
-    if (application.opportunity.createdBy.toString() !== req.user._id.toString()) {
+    // Check employer ownership of opportunity (or platform admin)
+    const oppCreatedBy = application.opportunity?.createdBy?.toString();
+    const isOwner = oppCreatedBy && oppCreatedBy === req.user._id.toString();
+    const isAdminUser = req.user.role === 'admin';
+
+    if (!isOwner && !isAdminUser) {
       return errorResponse(res, 'Unauthorized to update this application.', 403);
     }
 

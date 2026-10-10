@@ -67,7 +67,7 @@ export default function DeleteConfirmationModal({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="card anim-float-subtle"
+        className="card anim-float-subtle admin-action-center-modal"
         style={{
           maxWidth: '480px',
           width: '100%',
@@ -189,7 +189,7 @@ export default function DeleteConfirmationModal({
         </div>
 
         {/* Action Buttons */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+        <div className="modal-action-buttons" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
           <button
             type="button"
             onClick={onClose}

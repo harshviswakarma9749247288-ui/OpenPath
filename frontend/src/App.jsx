@@ -135,7 +135,7 @@ export default function App() {
       case 'dashboard':
         return isAdmin ? <AdminPage /> : isEmployer ? <EmployerDashboard /> : <StudentDashboard />;
       case 'admin':
-        return <AdminPage />;
+        return isAdmin ? <AdminPage /> : isEmployer ? <EmployerDashboard /> : <StudentDashboard />;
       case 'opportunities':
         return <OpportunitiesPage />;
       case 'details':

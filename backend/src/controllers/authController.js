@@ -102,9 +102,13 @@ export const login = async (req, res, next) => {
 // @desc    Log user out / clear cookie
 // @route   POST /api/auth/logout
 export const logout = (req, res) => {
-  res.cookie(ENV.COOKIE_NAME, 'none', {
-    expires: new Date(Date.now() + 5 * 1000),
+  const isProduction = ENV.NODE_ENV === 'production';
+  res.cookie(ENV.COOKIE_NAME, '', {
     httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
+    expires: new Date(0),
+    maxAge: 0,
   });
   return successResponse(res, {}, 'Successfully logged out.');
 };
@@ -164,7 +168,7 @@ export const sendOtp = async (req, res, next) => {
       {
         email: emailNorm,
         delivered,
-        previewOtp: delivered ? undefined : previewOtp,
+        previewOtp: (delivered && ENV.NODE_ENV === 'production') ? undefined : previewOtp,
         expiresIn: '10 minutes',
       },
       delivered
@@ -330,7 +334,7 @@ export const forgotPassword = async (req, res, next) => {
 
     return successResponse(
       res,
-      { email: emailNorm, delivered, previewOtp: delivered ? undefined : previewOtp },
+      { email: emailNorm, delivered, previewOtp: (delivered && ENV.NODE_ENV === 'production') ? undefined : previewOtp },
       delivered
         ? `Password reset code sent to ${emailNorm}. Please check your inbox.`
         : `Reset code generated for ${emailNorm} (Demo Code: ${previewOtp})`

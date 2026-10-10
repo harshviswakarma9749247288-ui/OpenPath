@@ -230,7 +230,7 @@ export default function ProfilePage() {
         <form onSubmit={handleSaveProfile} className="card card-featured" style={{ padding: '32px', marginBottom: '28px' }}>
           <h3 style={{ fontSize: '1.25rem', marginBottom: '20px', color: 'var(--primary-text)' }}>Edit Profile Information</h3>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div className="form-grid-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <div className="form-group">
               <label className="form-label">Full Name</label>
               <input
@@ -252,7 +252,7 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div className="form-grid-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <div className="form-group">
               <label className="form-label">Work Mode Preference</label>
               <select
@@ -281,7 +281,7 @@ export default function ProfilePage() {
           {!isAdmin && (
             <>
               <h4 style={{ fontSize: '1rem', color: '#38BDF8', marginTop: '16px', marginBottom: '12px' }}>Education</h4>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <div className="form-grid-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                 <div className="form-group">
                   <label className="form-label">Degree</label>
                   <input
@@ -304,7 +304,7 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px' }}>
+              <div className="form-grid-2col" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px' }}>
                 <div className="form-group">
                   <label className="form-label">Field of Study / Major</label>
                   <input
@@ -328,7 +328,7 @@ export default function ProfilePage() {
               </div>
 
               <h4 style={{ fontSize: '1rem', color: '#F472B6', marginTop: '16px', marginBottom: '12px' }}>Experience & Projects</h4>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <div className="form-grid-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                 <div className="form-group">
                   <label className="form-label">Role / Title</label>
                   <input
@@ -351,7 +351,7 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '16px' }}>
+              <div className="form-grid-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '16px' }}>
                 <div className="form-group">
                   <label className="form-label">Duration</label>
                   <input

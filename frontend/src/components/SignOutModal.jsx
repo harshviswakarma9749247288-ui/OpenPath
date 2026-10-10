@@ -54,7 +54,7 @@ export default function SignOutModal() {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="card anim-float-subtle"
+        className="card anim-float-subtle admin-action-center-modal logout-confirm-box"
         style={{
           maxWidth: '440px',
           width: '100%',
@@ -140,7 +140,7 @@ export default function SignOutModal() {
         </p>
 
         {/* Action Buttons */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+        <div className="modal-action-buttons" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
           <button
             type="button"
             onClick={closeSignOutModal}

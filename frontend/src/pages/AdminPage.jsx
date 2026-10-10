@@ -478,7 +478,7 @@ export default function AdminPage({ initialTab = 'overview' }) {
 
       {/* 1. Header Banner */}
       <div
-        className="card card-featured"
+        className="card card-featured admin-header-banner"
         style={{
           padding: '28px',
           marginBottom: '24px',
@@ -542,7 +542,7 @@ export default function AdminPage({ initialTab = 'overview' }) {
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+        <div className="admin-header-actions" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
           <button
             onClick={() => {
               fetchStats();
@@ -641,6 +641,7 @@ export default function AdminPage({ initialTab = 'overview' }) {
         <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           {/* Top KPI Cards Grid */}
           <div
+            className="admin-metrics-grid"
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
@@ -1122,8 +1123,8 @@ export default function AdminPage({ initialTab = 'overview' }) {
           </div>
 
           {/* Users Table */}
-          <div className="card" style={{ padding: '0', overflowX: 'auto', borderRadius: '18px' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
+          <div className="card admin-table-card" style={{ padding: '0', overflowX: 'auto', borderRadius: '18px' }}>
+            <table className="admin-data-table" style={{ width: '100%', minWidth: '680px', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--box-subtle)' }}>
                   <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700 }}>USER & ID</th>
@@ -1448,8 +1449,8 @@ export default function AdminPage({ initialTab = 'overview' }) {
           </div>
 
           {/* Opportunities Table */}
-          <div className="card" style={{ padding: '0', overflowX: 'auto', borderRadius: '18px' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
+          <div className="card admin-table-card" style={{ padding: '0', overflowX: 'auto', borderRadius: '18px' }}>
+            <table className="admin-data-table" style={{ width: '100%', minWidth: '680px', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--box-subtle)' }}>
                   <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700 }}>LISTING</th>
@@ -1857,8 +1858,8 @@ export default function AdminPage({ initialTab = 'overview' }) {
           </div>
 
           {/* Applications Table */}
-          <div className="card" style={{ padding: '0', overflowX: 'auto', borderRadius: '18px' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
+          <div className="card admin-table-card" style={{ padding: '0', overflowX: 'auto', borderRadius: '18px' }}>
+            <table className="admin-data-table" style={{ width: '100%', minWidth: '680px', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--box-subtle)' }}>
                   <th style={{ padding: '14px 18px', color: 'var(--secondary-text)', fontWeight: 700 }}>CANDIDATE</th>

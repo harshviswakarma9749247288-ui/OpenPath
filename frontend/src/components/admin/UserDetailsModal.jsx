@@ -70,7 +70,7 @@ export default function UserDetailsModal({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="card anim-float-subtle"
+        className="card anim-float-subtle admin-action-center-modal"
         style={{
           maxWidth: '680px',
           width: '100%',

@@ -276,9 +276,9 @@ export default function OpportunitiesPage() {
       </div>
 
       {/* Main Browse Layout */}
-      <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: '24px' }}>
+      <div className="opportunities-browse-layout" style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: '24px' }}>
         {/* Left Filter Panel */}
-        <div className="card" style={{ padding: '20px', height: 'fit-content', position: 'sticky', top: '88px' }}>
+        <div className="card filter-panel-sidebar" style={{ padding: '20px', height: 'fit-content', position: 'sticky', top: '88px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <strong style={{ fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
               <SlidersHorizontal size={16} /> Filters

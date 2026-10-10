@@ -186,7 +186,7 @@ export default function ProfileSetupPage() {
             <h3 style={{ fontSize: '1.15rem', color: 'var(--primary-text)' }}>1. Academic Background</h3>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div className="form-grid-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <div className="form-group">
               <label className="form-label">Degree</label>
               <input
@@ -211,7 +211,7 @@ export default function ProfileSetupPage() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px' }}>
+          <div className="form-grid-2col" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px' }}>
             <div className="form-group">
               <label className="form-label">Field of Study / Major</label>
               <input
@@ -313,7 +313,7 @@ export default function ProfileSetupPage() {
             <h3 style={{ fontSize: '1.15rem', color: 'var(--primary-text)' }}>3. Location & Preferences</h3>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div className="form-grid-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <div className="form-group">
               <label className="form-label">Current City</label>
               <input

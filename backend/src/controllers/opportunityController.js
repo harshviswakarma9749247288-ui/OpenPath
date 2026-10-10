@@ -216,8 +216,10 @@ export const updateOpportunity = async (req, res, next) => {
       return errorResponse(res, 'Opportunity not found.', 404);
     }
 
-    // Verify employer ownership
-    if (opportunity.createdBy.toString() !== req.user._id.toString()) {
+    // Verify employer ownership (or platform admin)
+    const isOwner = opportunity.createdBy && opportunity.createdBy.toString() === req.user._id.toString();
+    const isAdmin = req.user.role === 'admin';
+    if (!isOwner && !isAdmin) {
       return errorResponse(res, 'Unauthorized to edit this opportunity.', 403);
     }
 
@@ -246,7 +248,9 @@ export const deleteOpportunity = async (req, res, next) => {
       return errorResponse(res, 'Opportunity not found.', 404);
     }
 
-    if (opportunity.createdBy.toString() !== req.user._id.toString()) {
+    const isOwner = opportunity.createdBy && opportunity.createdBy.toString() === req.user._id.toString();
+    const isAdmin = req.user.role === 'admin';
+    if (!isOwner && !isAdmin) {
       return errorResponse(res, 'Unauthorized to delete this opportunity.', 403);
     }
 

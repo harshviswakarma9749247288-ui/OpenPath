@@ -189,7 +189,7 @@ export default function CreateOpportunityPage() {
               />
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div className="form-grid-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               <div className="form-group">
                 <label className="form-label">Hiring Organization / Company *</label>
                 <input
@@ -232,7 +232,7 @@ export default function CreateOpportunityPage() {
           <div className="animate-fade-in">
             <h3 style={{ fontSize: '1.2rem', marginBottom: '18px' }}>Step 2: Location & Compensation</h3>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div className="form-grid-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               <div className="form-group">
                 <label className="form-label">Work Model *</label>
                 <select className="form-select" value={locationType} onChange={(e) => setLocationType(e.target.value)}>
@@ -254,7 +254,7 @@ export default function CreateOpportunityPage() {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div className="form-grid-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               <div className="form-group">
                 <label className="form-label">Stipend / Salary Amount</label>
                 <input
