@@ -30,16 +30,30 @@ app.disable('x-powered-by');
 app.use(securityHeaders);
 
 // Middleware
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'http://localhost:4173',
+  'http://127.0.0.1:4173',
+  ...(ENV.CLIENT_URL ? ENV.CLIENT_URL.split(',').map((url) => url.trim()) : []),
+];
+
 app.use(
   cors({
-    origin: [
-      'http://localhost:3000',
-      'http://127.0.0.1:3000',
-      'http://localhost:5173',
-      'http://127.0.0.1:5173',
-      'http://localhost:4173',
-      'http://127.0.0.1:4173',
-    ],
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (
+        allowedOrigins.includes(origin) ||
+        origin.endsWith('.vercel.app') ||
+        origin.endsWith('.netlify.app') ||
+        origin.endsWith('.onrender.com')
+      ) {
+        return callback(null, true);
+      }
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
     credentials: true,
   })
 );
