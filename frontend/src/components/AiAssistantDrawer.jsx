@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Bot, X, Send, Sparkles, User, RefreshCw, Briefcase, Target, RotateCcw } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
-import { api } from '../utils/api';
 
 /**
  * Helper to render markdown bold (**text**) and bullet lists nicely in the chat bubble.
@@ -97,13 +96,19 @@ export default function AiAssistantDrawer() {
     ]);
   };
 
-  // Core Send message function
+  // Core Send message function with real-time SSE streaming
   const handleSend = useCallback(async (textToSend) => {
     const message = textToSend || inputMessage;
     if (!message || !message.trim() || loading) return;
 
     const userMessage = { id: Date.now(), sender: 'user', text: message };
-    setMessages((prev) => [...prev, userMessage]);
+    const aiMessageId = Date.now() + 1;
+
+    setMessages((prev) => [
+      ...prev,
+      userMessage,
+      { id: aiMessageId, sender: 'ai', text: '' },
+    ]);
     setInputMessage('');
     setLoading(true);
 
@@ -129,43 +134,82 @@ export default function AiAssistantDrawer() {
         content: m.text,
       }));
 
-      const data = await api.post(
-        '/ai/chat',
-        {
+      const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const token = localStorage.getItem('openpath_token');
+
+      const response = await fetch(`${API_BASE}/ai/stream`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
           prompt: message,
           messages: conversationHistory,
           context: {
             student: studentContext,
             opportunity: opportunityContext,
           },
-        },
-        { timeout: 60000 }
-      );
+        }),
+      });
 
-      if (data && (data.reply || data.response)) {
-        setMessages((prev) => [
-          ...prev,
-          { id: Date.now() + 1, sender: 'ai', text: data.reply || data.response },
-        ]);
-      } else {
-        setMessages((prev) => [
-          ...prev,
-          { 
-            id: Date.now() + 1, 
-            sender: 'ai', 
-            text: "I received your query, but could not generate a response. Please try rephrasing or ask about a specific skill." 
-          },
-        ]);
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let streamedText = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split('\n');
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed || trimmed.startsWith(':')) continue;
+          if (trimmed === 'data: [DONE]') break;
+
+          if (trimmed.startsWith('data: ')) {
+            try {
+              const data = JSON.parse(trimmed.slice(6));
+              if (data.token) {
+                streamedText += data.token;
+                setMessages((prev) =>
+                  prev.map((m) =>
+                    m.id === aiMessageId ? { ...m, text: streamedText } : m
+                  )
+                );
+              }
+            } catch {}
+          }
+        }
+      }
+
+      // If nothing streamed, provide safe fallback
+      if (!streamedText.trim()) {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === aiMessageId
+              ? { ...m, text: "I'm ready to help with your career! You can ask me to analyze skill gaps, project roadmaps, or interview prep." }
+              : m
+          )
+        );
       }
     } catch (err) {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: Date.now() + 1,
-          sender: 'ai',
-          text: '⚠️ Unable to connect to the OpenPath Career AI service. Please ensure your backend is active.',
-        },
-      ]);
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === aiMessageId
+            ? {
+                ...m,
+                text: '⚠️ Unable to connect to OpenPath Career AI. Please ensure your backend is active.',
+              }
+            : m
+        )
+      );
     } finally {
       setLoading(false);
     }
@@ -308,7 +352,13 @@ export default function AiAssistantDrawer() {
                     </div>
                   )}
                   <div className={`ai-message-bubble ${msg.sender === 'user' ? 'user' : 'ai'}`}>
-                    <FormattedMessageContent text={msg.text} />
+                    {msg.text ? (
+                      <FormattedMessageContent text={msg.text} />
+                    ) : (
+                      <span className="ai-loading-text flex items-center gap-1">
+                        <RefreshCw size={14} className="animate-spin inline" /> Thinking...
+                      </span>
+                    )}
                   </div>
                   {msg.sender === 'user' && (
                     <div className="ai-avatar-circle user">
@@ -317,16 +367,6 @@ export default function AiAssistantDrawer() {
                   )}
                 </div>
               ))}
-              {loading && (
-                <div className="ai-message-row ai">
-                  <div className="ai-avatar-circle ai">
-                    <RefreshCw size={16} color="#fff" className="animate-spin" />
-                  </div>
-                  <div className="ai-message-bubble ai ai-loading-text">
-                    Consulting AI Career Mentor...
-                  </div>
-                </div>
-              )}
               <div ref={messagesEndRef} />
             </div>
 

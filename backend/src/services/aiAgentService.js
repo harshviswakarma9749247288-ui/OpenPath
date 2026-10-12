@@ -5,10 +5,14 @@ import { ENV } from '../config/env.js';
  * Prefers ENV.LOCAL_AI_MODEL, otherwise dynamically falls back
  * to any installed model (e.g. llama3.2:1b, llama3:latest).
  */
+let cachedActiveModel = null;
+
 async function getAvailableModel(baseUrl, preferredModel) {
+  if (cachedActiveModel) return cachedActiveModel;
+
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2500);
+    const timeoutId = setTimeout(() => controller.abort(), 2000);
     const res = await fetch(`${baseUrl}/api/tags`, { signal: controller.signal });
     clearTimeout(timeoutId);
 
@@ -17,14 +21,20 @@ async function getAvailableModel(baseUrl, preferredModel) {
     const modelNames = (data.models || []).map((m) => m.name || m.model);
 
     if (modelNames.length === 0) return preferredModel;
-    if (modelNames.includes(preferredModel)) return preferredModel;
+    if (modelNames.includes(preferredModel)) {
+      cachedActiveModel = preferredModel;
+      return preferredModel;
+    }
 
     // Check if preferred model base name matches (e.g. 'llama3.2' matches 'llama3.2:1b')
     const baseName = preferredModel.split(':')[0].toLowerCase();
     const match = modelNames.find((m) => m.toLowerCase().includes(baseName));
-    if (match) return match;
+    if (match) {
+      cachedActiveModel = match;
+      return match;
+    }
 
-    // Fallback to first available model
+    cachedActiveModel = modelNames[0];
     return modelNames[0];
   } catch {
     return preferredModel;
@@ -200,10 +210,11 @@ export async function queryLocalAgent({ prompt, messages = [], systemPrompt, con
       body: JSON.stringify({
         model: activeModel,
         messages: chatMessages,
+        keep_alive: '1h',
         options: {
-          num_predict: 250,      // Keeps generation fast on CPU (typically 5-15s)
-          temperature: 0.7,
-          top_p: 0.9,
+          num_predict: 200,      // Keeps generation fast on CPU (typically 5-10s)
+          num_thread: 4,         // Utilize 4 CPU threads for fast inference
+          temperature: 0.6,
         },
         stream: false,
       }),
@@ -243,5 +254,116 @@ export async function queryLocalAgent({ prompt, messages = [], systemPrompt, con
         ? 'Response generated via OpenPath Career Intelligence (Local model busy)'
         : 'Response generated via OpenPath Career Intelligence',
     };
+  }
+}
+
+/**
+ * Stream responses token-by-token directly from Ollama.
+ * Dispatches each generated token to onChunk callback in real-time (<500ms TTFT).
+ */
+export async function streamLocalAgent({ prompt, messages = [], systemPrompt, context = {}, onChunk }) {
+  const baseUrl = ENV.LOCAL_AI_BASE_URL || 'http://localhost:11434';
+  const configuredModel = ENV.LOCAL_AI_MODEL || 'llama3.2:1b';
+  const timeoutMs = ENV.LOCAL_AI_TIMEOUT || 45000;
+
+  let contextBlock = '';
+  if (context.student) {
+    contextBlock += `\nStudent Profile:
+- Name: ${context.student.name || 'Candidate'}
+- Target Role: ${context.student.targetRole || 'Software Engineer'}
+- Current Skills: ${Array.isArray(context.student.skills) ? context.student.skills.join(', ') : 'None listed'}
+- Experience Level: ${context.student.experienceLevel || 'Entry-Level'}`;
+  }
+
+  if (context.opportunity) {
+    contextBlock += `\n\nTarget Opportunity:
+- Role Title: ${context.opportunity.title || 'Role'}
+- Required Skills: ${Array.isArray(context.opportunity.requiredSkills) ? context.opportunity.requiredSkills.join(', ') : 'None listed'}
+- Current Match Score: ${context.opportunity.matchScore || 'N/A'}%`;
+  }
+
+  const basePersona = systemPrompt || 
+    `You are the OpenPath AI Career Mentor. OpenPath provides transparent 5-factor matching (Skills 40%, Academic 20%, Location 20%, Industry 10%, Experience 10%). Provide encouraging, direct, and actionable advice to bridge skill gaps. Keep responses concise (under 180 words) using clean bullet points.`;
+
+  const finalSystemPrompt = `${basePersona}\n\nContext:${contextBlock}\n\nInstructions: Provide concise, high-impact bullet points directly answering the user's career query.`;
+
+  const chatMessages = [
+    { role: 'system', content: finalSystemPrompt },
+  ];
+
+  if (Array.isArray(messages) && messages.length > 0) {
+    const recentHistory = messages.slice(-4).map((m) => ({
+      role: m.role === 'user' ? 'user' : 'assistant',
+      content: m.content || m.text || '',
+    }));
+    chatMessages.push(...recentHistory);
+  }
+
+  const lastMsg = chatMessages[chatMessages.length - 1];
+  if (!lastMsg || lastMsg.role !== 'user' || lastMsg.content !== prompt) {
+    chatMessages.push({ role: 'user', content: prompt });
+  }
+
+  const activeModel = await getAvailableModel(baseUrl, configuredModel);
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetch(`${baseUrl}/api/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal,
+      body: JSON.stringify({
+        model: activeModel,
+        messages: chatMessages,
+        keep_alive: '1h',
+        options: {
+          num_predict: 200,
+          num_thread: 4,
+          temperature: 0.6,
+        },
+        stream: true,
+      }),
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw new Error(`Ollama stream error status: ${response.status}`);
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let tokenCount = 0;
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value, { stream: true });
+      const lines = chunk.split('\n').filter(Boolean);
+
+      for (const line of lines) {
+        try {
+          const json = JSON.parse(line);
+          const token = json.message?.content || '';
+          if (token) {
+            tokenCount++;
+            onChunk(token);
+          }
+        } catch {}
+      }
+    }
+
+    if (tokenCount === 0) {
+      throw new Error('No tokens received from stream');
+    }
+
+    return { success: true, model: activeModel, source: 'ollama' };
+  } catch (err) {
+    clearTimeout(timeoutId);
+    const fallbackText = generateCareerAdvisorFallback({ prompt, context });
+    onChunk(fallbackText);
+    return { success: true, model: activeModel || configuredModel, source: 'fallback' };
   }
 }
