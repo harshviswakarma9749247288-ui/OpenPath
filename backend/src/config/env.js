@@ -28,5 +28,5 @@ export const ENV = {
   // Local AI Agent Configuration
   LOCAL_AI_BASE_URL: process.env.LOCAL_AI_BASE_URL || 'http://localhost:11434',
   LOCAL_AI_MODEL: process.env.LOCAL_AI_MODEL || 'llama3.2:1b',
-  LOCAL_AI_TIMEOUT: process.env.LOCAL_AI_TIMEOUT ? parseInt(process.env.LOCAL_AI_TIMEOUT, 10) : 30000,
+  LOCAL_AI_TIMEOUT: process.env.LOCAL_AI_TIMEOUT ? parseInt(process.env.LOCAL_AI_TIMEOUT, 10) : 45000,
 };

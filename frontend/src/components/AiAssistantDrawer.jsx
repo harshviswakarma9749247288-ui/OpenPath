@@ -1,7 +1,53 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Bot, X, Send, Sparkles, User, RefreshCw, Briefcase, Target } from 'lucide-react';
+import { Bot, X, Send, Sparkles, User, RefreshCw, Briefcase, Target, RotateCcw } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
+import { api } from '../utils/api';
+
+/**
+ * Helper to render markdown bold (**text**) and bullet lists nicely in the chat bubble.
+ */
+function FormattedMessageContent({ text }) {
+  if (!text) return null;
+
+  const lines = text.split('\n');
+
+  return (
+    <div className="ai-message-content">
+      {lines.map((line, lineIdx) => {
+        const trimmed = line.trim();
+        if (!trimmed) {
+          return <div key={lineIdx} className="ai-message-spacer" />;
+        }
+
+        // Parse bold **text** segments
+        const parts = line.split(/(\*\*[^*]+\*\*)/g);
+        const parsedLine = parts.map((part, partIdx) => {
+          if (part.startsWith('**') && part.endsWith('**')) {
+            return <strong key={partIdx}>{part.slice(2, -2)}</strong>;
+          }
+          return part;
+        });
+
+        // Bullet point styling
+        if (trimmed.startsWith('•') || trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+          return (
+            <div key={lineIdx} className="ai-message-bullet-line">
+              <span className="ai-bullet-dot">•</span>
+              <span className="ai-bullet-text">{parsedLine}</span>
+            </div>
+          );
+        }
+
+        return (
+          <div key={lineIdx} className="ai-message-text-line">
+            {parsedLine}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
 export default function AiAssistantDrawer() {
   const { user } = useAuthStore();
@@ -15,15 +61,19 @@ export default function AiAssistantDrawer() {
   const [isHovered, setIsHovered] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const initialGreeting = `👋 Hi ${user?.name ? user.name.split(' ')[0] : 'there'}! I am your OpenPath AI Career Mentor. I'm calibrated to your profile and current skills. Ask me about skill gaps, project roadmaps, or interview prep!`;
+
   const [messages, setMessages] = useState([
     {
       id: 1,
       sender: 'ai',
-      text: `👋 Hi ${user?.name ? user.name.split(' ')[0] : 'there'}! I am your OpenPath AI Career Mentor. I'm calibrated to your profile and current skills. Ask me about skill gaps, project roadmaps, or interview prep!`,
+      text: initialGreeting,
     },
   ]);
 
   const messagesEndRef = useRef(null);
+  const lastAnalyzedOppIdRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -34,6 +84,18 @@ export default function AiAssistantDrawer() {
       scrollToBottom();
     }
   }, [messages, isAiDrawerOpen]);
+
+  // Reset / Clear Conversation
+  const handleResetChat = () => {
+    lastAnalyzedOppIdRef.current = null;
+    setMessages([
+      {
+        id: Date.now(),
+        sender: 'ai',
+        text: initialGreeting,
+      },
+    ]);
+  };
 
   // Core Send message function
   const handleSend = useCallback(async (textToSend) => {
@@ -61,19 +123,24 @@ export default function AiAssistantDrawer() {
           }
         : null;
 
-      const response = await fetch('http://localhost:5000/api/ai/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      // Prepare conversation history (last 5 messages)
+      const conversationHistory = messages.slice(-5).map((m) => ({
+        role: m.sender === 'user' ? 'user' : 'assistant',
+        content: m.text,
+      }));
+
+      const data = await api.post(
+        '/ai/chat',
+        {
           prompt: message,
+          messages: conversationHistory,
           context: {
             student: studentContext,
             opportunity: opportunityContext,
           },
-        }),
-      });
-
-      const data = await response.json();
+        },
+        { timeout: 60000 }
+      );
 
       if (data && (data.reply || data.response)) {
         setMessages((prev) => [
@@ -83,7 +150,11 @@ export default function AiAssistantDrawer() {
       } else {
         setMessages((prev) => [
           ...prev,
-          { id: Date.now() + 1, sender: 'ai', text: "I couldn't process that response. Please check your Ollama backend." },
+          { 
+            id: Date.now() + 1, 
+            sender: 'ai', 
+            text: "I received your query, but could not generate a response. Please try rephrasing or ask about a specific skill." 
+          },
         ]);
       }
     } catch (err) {
@@ -92,21 +163,25 @@ export default function AiAssistantDrawer() {
         {
           id: Date.now() + 1,
           sender: 'ai',
-          text: '⚠️ Unable to connect to the backend AI agent at http://localhost:5000/api/ai/chat. Ensure your backend server is running.',
+          text: '⚠️ Unable to connect to the OpenPath Career AI service. Please ensure your backend is active.',
         },
       ]);
     } finally {
       setLoading(false);
     }
-  }, [inputMessage, loading, user, activeMentorOpportunity]);
+  }, [inputMessage, loading, user, activeMentorOpportunity, messages]);
 
-  // Automated trigger when an opportunity is clicked
+  // Automated trigger when an opportunity is clicked (triggers only once per opportunity)
   useEffect(() => {
     if (activeMentorOpportunity && isAiDrawerOpen) {
-      const promptText = `Analyze my skill gap for "${activeMentorOpportunity.title}". Compare my current background against the role requirements. Acknowledge my existing tech strengths, pinpoint specific missing design tools/methods, and outline a full, day-by-day 14-day study and portfolio roadmap.`;
-      handleSend(promptText);
+      const oppId = activeMentorOpportunity._id || activeMentorOpportunity.id || activeMentorOpportunity.title;
+      if (lastAnalyzedOppIdRef.current !== oppId) {
+        lastAnalyzedOppIdRef.current = oppId;
+        const promptText = `Analyze my fit for "${activeMentorOpportunity.title}". What are my top matched skills, priority missing skills, and recommended 3-step action plan?`;
+        handleSend(promptText);
+      }
     }
-  }, [activeMentorOpportunity, isAiDrawerOpen]);
+  }, [activeMentorOpportunity, isAiDrawerOpen, handleSend]);
 
   const quickPrompts = activeMentorOpportunity
     ? [
@@ -166,13 +241,24 @@ export default function AiAssistantDrawer() {
                   </span>
                 </div>
               </div>
-              <button
-                onClick={handleClose}
-                className="ai-close-btn"
-                aria-label="Close mentor drawer"
-              >
-                <X size={20} />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleResetChat}
+                  className="ai-action-btn"
+                  title="Reset conversation"
+                  aria-label="Reset conversation"
+                >
+                  <RotateCcw size={18} />
+                </button>
+                <button
+                  onClick={handleClose}
+                  className="ai-close-btn"
+                  title="Close mentor drawer"
+                  aria-label="Close mentor drawer"
+                >
+                  <X size={20} />
+                </button>
+              </div>
             </div>
 
             {/* Target Opportunity Alert Bar */}
@@ -222,7 +308,7 @@ export default function AiAssistantDrawer() {
                     </div>
                   )}
                   <div className={`ai-message-bubble ${msg.sender === 'user' ? 'user' : 'ai'}`}>
-                    {msg.text}
+                    <FormattedMessageContent text={msg.text} />
                   </div>
                   {msg.sender === 'user' && (
                     <div className="ai-avatar-circle user">
@@ -237,7 +323,7 @@ export default function AiAssistantDrawer() {
                     <RefreshCw size={16} color="#fff" className="animate-spin" />
                   </div>
                   <div className="ai-message-bubble ai ai-loading-text">
-                    Analyzing role with local Llama...
+                    Consulting AI Career Mentor...
                   </div>
                 </div>
               )}
@@ -256,7 +342,7 @@ export default function AiAssistantDrawer() {
                 type="text"
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
-                placeholder="Ask about this role or preparation..."
+                placeholder="Ask about this role, skill gaps, or interview prep..."
                 disabled={loading}
                 className="ai-input-field"
               />
@@ -264,6 +350,7 @@ export default function AiAssistantDrawer() {
                 type="submit"
                 disabled={loading || !inputMessage.trim()}
                 className="ai-send-btn"
+                aria-label="Send message"
               >
                 <Send size={18} />
               </button>
