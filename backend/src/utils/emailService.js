@@ -194,24 +194,19 @@ export const sendOtpEmail = async ({ to, code, purpose = 'Registration' }) => {
   // 3. Fallback: Nodemailer SMTP
   if (!delivered && transporter) {
     try {
-      const sendPromise = transporter.sendMail({
+      const info = await transporter.sendMail({
         from: ENV.EMAIL_FROM,
         to,
         subject,
         html: htmlContent,
       });
 
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('SMTP transmission timed out')), 3500)
-      );
-
-      await Promise.race([sendPromise, timeoutPromise]);
-      delivered = true;
-      console.log(`✅ [EMAIL SERVICE] Message successfully dispatched via SMTP to ${to}`);
+      delivered = Boolean(info && info.messageId);
+      console.log(`✅ [EMAIL SERVICE] Message successfully dispatched via SMTP to ${to} (MessageId: ${info.messageId})`);
     } catch (err) {
-      console.error(`⚠️ [EMAIL SERVICE] SMTP delivery failed or timed out: ${err.message}`);
+      console.error(`⚠️ [EMAIL SERVICE] SMTP delivery failed: ${err.message}`);
     }
   }
 
-  return { delivered, code };
+  return { delivered };
 };

@@ -163,20 +163,22 @@ export const sendOtp = async (req, res, next) => {
       purpose,
     });
 
-    const isDelivered = Boolean(delivered);
+    if (!delivered) {
+      return errorResponse(
+        res,
+        `Could not send verification email to ${emailNorm}. Please check your email address or try again in a few moments.`,
+        500
+      );
+    }
 
     return successResponse(
       res,
       {
         email: emailNorm,
-        delivered: isDelivered,
-        fallbackOtp: isDelivered ? undefined : rawOtp,
-        previewOtp: isDelivered ? undefined : rawOtp,
+        delivered: true,
         expiresIn: '10 minutes',
       },
-      isDelivered
-        ? `Verification code dispatched to ${emailNorm}. Please check your email inbox and spam folder.`
-        : `Email gateway in Demo Sandbox mode. Your verification code is provided below.`
+      `Verification code dispatched to ${emailNorm}. Please check your email inbox and spam folder.`
     );
   } catch (error) {
     next(error);
@@ -335,20 +337,14 @@ export const forgotPassword = async (req, res, next) => {
       purpose: 'Password Reset',
     });
 
-    const isDelivered = Boolean(delivered);
+    if (!delivered) {
+      return errorResponse(res, `Failed to send password reset email to ${emailNorm}. Please try again.`, 500);
+    }
 
     return successResponse(
       res,
-      {
-        email: emailNorm,
-        delivered: isDelivered,
-        fallbackOtp: isDelivered ? undefined : rawOtp,
-        previewOtp: isDelivered ? undefined : rawOtp,
-        expiresIn: '15 minutes',
-      },
-      isDelivered
-        ? `Password reset code sent to ${emailNorm}. Please check your email inbox and spam folder.`
-        : `Email gateway in Demo Sandbox mode. Your password reset code is provided below.`
+      { email: emailNorm, delivered: true },
+      `Password reset code sent to ${emailNorm}. Please check your email inbox and spam folder.`
     );
   } catch (error) {
     next(error);

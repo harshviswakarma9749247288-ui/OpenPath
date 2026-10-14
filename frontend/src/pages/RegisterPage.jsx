@@ -22,8 +22,6 @@ export default function RegisterPage() {
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
   const [cooldown, setCooldown] = useState(0);
-  const [deliveredViaSmtp, setDeliveredViaSmtp] = useState(false);
-  const [otpFallbackCode, setOtpFallbackCode] = useState('');
 
   useEffect(() => {
     if (clearError) clearError();
@@ -48,24 +46,8 @@ export default function RegisterPage() {
     setIsSendingOtp(true);
     try {
       const res = await api.post('/auth/otp/send', { email, purpose: 'Registration' });
-      const fallback = res?.data?.fallbackOtp || res?.data?.previewOtp || res?.fallbackOtp || res?.previewOtp;
-      const delivered = Boolean(res?.data?.delivered ?? res?.delivered);
-
-      setDeliveredViaSmtp(delivered);
-      if (fallback) {
-        setOtpFallbackCode(fallback);
-        setOtpCode(fallback);
-      } else {
-        setOtpFallbackCode('');
-        setOtpCode('');
-      }
-
-      showToast(
-        delivered
-          ? res?.message || `Verification code sent to ${email}. Please check your email inbox.`
-          : 'Demo verification code generated below.',
-        delivered ? 'success' : 'info'
-      );
+      setOtpCode('');
+      showToast(res?.message || `Verification code sent to ${email}. Please check your email inbox.`, 'success');
       setCooldown(60);
       setStep('otp');
     } catch (err) {
@@ -80,21 +62,8 @@ export default function RegisterPage() {
     setIsSendingOtp(true);
     try {
       const res = await api.post('/auth/otp/send', { email, purpose: 'Registration' });
-      const fallback = res?.data?.fallbackOtp || res?.data?.previewOtp || res?.fallbackOtp || res?.previewOtp;
-      const delivered = Boolean(res?.data?.delivered ?? res?.delivered);
-
-      setDeliveredViaSmtp(delivered);
-      if (fallback) {
-        setOtpFallbackCode(fallback);
-        setOtpCode(fallback);
-      }
-
-      showToast(
-        delivered
-          ? res?.message || `A new verification code was sent to ${email}`
-          : 'New demo verification code generated below.',
-        delivered ? 'success' : 'info'
-      );
+      setOtpCode('');
+      showToast(res?.message || `A new verification code was sent to ${email}. Please check your inbox.`, 'success');
       setCooldown(60);
     } catch (err) {
       showToast(err.message || 'Failed to resend code', 'error');
@@ -310,37 +279,9 @@ export default function RegisterPage() {
               </p>
             </div>
 
-            {deliveredViaSmtp ? (
-              <div className="auth-otp-status-banner success auth-mb-18">
-                <CheckCircle2 size={16} /> Verification code dispatched to your email! (Please check your inbox & Spam folder)
-              </div>
-            ) : otpFallbackCode ? (
-              <div className="auth-otp-fallback-card auth-mb-18 animate-fade-in">
-                <div className="auth-otp-fallback-header">
-                  <div className="auth-otp-fallback-badge">
-                    <Sparkles size={14} color="#C084FC" />
-                    <span>Live Mail Server Notice</span>
-                  </div>
-                </div>
-                <p className="auth-otp-fallback-desc">
-                  Outbound email port is restricted by the cloud hosting environment. For uninterrupted demo testing, your verification code is provided below:
-                </p>
-                <div className="auth-otp-fallback-code-row">
-                  <span className="auth-otp-fallback-code">{otpFallbackCode}</span>
-                  <button
-                    type="button"
-                    onClick={() => setOtpCode(otpFallbackCode)}
-                    className="auth-otp-autofill-btn"
-                  >
-                    <CheckCircle2 size={14} /> Auto-Fill Code
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="auth-otp-status-banner success auth-mb-18">
-                <CheckCircle2 size={16} /> Verification code dispatched to your email! (Please check your inbox & Spam folder)
-              </div>
-            )}
+            <div className="auth-otp-status-banner success auth-mb-18">
+              <CheckCircle2 size={16} /> Verification code dispatched to your email! (Please check your inbox & Spam folder)
+            </div>
 
             <form onSubmit={handleVerifyOtp}>
               <div className="form-group auth-mb-18">

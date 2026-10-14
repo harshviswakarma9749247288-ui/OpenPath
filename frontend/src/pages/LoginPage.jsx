@@ -40,8 +40,6 @@ export default function LoginPage() {
   const [otpStep, setOtpStep] = useState('email'); // 'email' | 'code'
   const [otpEmail, setOtpEmail] = useState('');
   const [otpLoginCode, setOtpLoginCode] = useState('');
-  const [otpDeliveredViaSmtp, setOtpDeliveredViaSmtp] = useState(false);
-  const [otpFallbackCode, setOtpFallbackCode] = useState('');
   const [otpCooldown, setOtpCooldown] = useState(0);
   const [isSendingLoginOtp, setIsSendingLoginOtp] = useState(false);
   const [isLoggingInOtp, setIsLoggingInOtp] = useState(false);
@@ -53,9 +51,7 @@ export default function LoginPage() {
   const [resetCode, setResetCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [forgotLoading, setForgotLoading] = useState(false);
-  const [resetOtpPreview, setResetOtpPreview] = useState('');
   const [forgotCooldown, setForgotCooldown] = useState(0);
-  const [forgotDeliveredViaSmtp, setForgotDeliveredViaSmtp] = useState(false);
 
   // Countdown timers
   useEffect(() => {
@@ -104,24 +100,8 @@ export default function LoginPage() {
     setIsSendingLoginOtp(true);
     try {
       const res = await api.post('/auth/otp/send', { email: targetEmail, purpose: 'Login' });
-      const fallback = res?.data?.fallbackOtp || res?.data?.previewOtp || res?.fallbackOtp || res?.previewOtp;
-      const delivered = Boolean(res?.data?.delivered ?? res?.delivered);
-
-      setOtpDeliveredViaSmtp(delivered);
-      if (fallback) {
-        setOtpFallbackCode(fallback);
-        setOtpLoginCode(fallback);
-      } else {
-        setOtpFallbackCode('');
-        setOtpLoginCode('');
-      }
-
-      showToast(
-        delivered
-          ? res?.message || `Login code dispatched to ${targetEmail}. Please check your email inbox.`
-          : 'Demo verification code generated below.',
-        delivered ? 'success' : 'info'
-      );
+      setOtpLoginCode('');
+      showToast(res?.message || `Login verification code sent to ${targetEmail}. Please check your email inbox.`, 'success');
       setOtpCooldown(60);
       setOtpStep('code');
     } catch (err) {
@@ -138,21 +118,8 @@ export default function LoginPage() {
     setIsSendingLoginOtp(true);
     try {
       const res = await api.post('/auth/otp/send', { email: targetEmail, purpose: 'Login' });
-      const fallback = res?.data?.fallbackOtp || res?.data?.previewOtp || res?.fallbackOtp || res?.previewOtp;
-      const delivered = Boolean(res?.data?.delivered ?? res?.delivered);
-
-      setOtpDeliveredViaSmtp(delivered);
-      if (fallback) {
-        setOtpFallbackCode(fallback);
-        setOtpLoginCode(fallback);
-      }
-
-      showToast(
-        delivered
-          ? res?.message || `A new code was dispatched to ${targetEmail}.`
-          : 'New verification code generated below.',
-        delivered ? 'success' : 'info'
-      );
+      setOtpLoginCode('');
+      showToast(res?.message || `A new code was dispatched to ${targetEmail}. Please check your inbox.`, 'success');
       setOtpCooldown(60);
     } catch (err) {
       showToast(err.message || 'Failed to resend code', 'error');
@@ -196,22 +163,8 @@ export default function LoginPage() {
     setForgotLoading(true);
     try {
       const res = await api.post('/auth/password/forgot', { email: forgotEmail });
-      const preview = res?.data?.fallbackOtp || res?.data?.previewOtp || res?.fallbackOtp || res?.previewOtp;
-      const delivered = Boolean(res?.data?.delivered ?? res?.delivered);
-      setForgotDeliveredViaSmtp(delivered);
-      if (preview) {
-        setResetOtpPreview(preview);
-        setResetCode(preview);
-      } else {
-        setResetOtpPreview('');
-        setResetCode('');
-      }
-      showToast(
-        delivered
-          ? res?.message || 'Reset code sent to your email.'
-          : 'Demo reset verification code generated below.',
-        delivered ? 'success' : 'info'
-      );
+      setResetCode('');
+      showToast(res?.message || 'Password reset code sent to your email. Please check your inbox.', 'success');
       setForgotCooldown(60);
       setForgotStep('reset');
     } catch (err) {
@@ -227,19 +180,8 @@ export default function LoginPage() {
     setForgotLoading(true);
     try {
       const res = await api.post('/auth/password/forgot', { email: forgotEmail });
-      const preview = res?.data?.fallbackOtp || res?.data?.previewOtp || res?.fallbackOtp || res?.previewOtp;
-      const delivered = Boolean(res?.data?.delivered ?? res?.delivered);
-      setForgotDeliveredViaSmtp(delivered);
-      if (preview) {
-        setResetOtpPreview(preview);
-        setResetCode(preview);
-      }
-      showToast(
-        delivered
-          ? 'A new reset code has been sent to your email.'
-          : 'New demo reset verification code generated below.',
-        delivered ? 'success' : 'info'
-      );
+      setResetCode('');
+      showToast('A new reset code has been sent to your email.', 'success');
       setForgotCooldown(60);
     } catch (err) {
       showToast(err.message || 'Failed to resend reset code', 'error');
@@ -557,37 +499,9 @@ export default function LoginPage() {
                   </p>
                 </div>
 
-                {otpDeliveredViaSmtp ? (
-                  <div className="auth-otp-status-banner success auth-mb-18">
-                    <CheckCircle2 size={16} /> Verification code dispatched to your email! (Please check your inbox & Spam folder)
-                  </div>
-                ) : otpFallbackCode ? (
-                  <div className="auth-otp-fallback-card auth-mb-18 animate-fade-in">
-                    <div className="auth-otp-fallback-header">
-                      <div className="auth-otp-fallback-badge">
-                        <Sparkles size={14} color="#C084FC" />
-                        <span>Live Mail Server Notice</span>
-                      </div>
-                    </div>
-                    <p className="auth-otp-fallback-desc">
-                      Outbound email port is restricted by the cloud hosting environment. For uninterrupted demo testing, your verification code is provided below:
-                    </p>
-                    <div className="auth-otp-fallback-code-row">
-                      <span className="auth-otp-fallback-code">{otpFallbackCode}</span>
-                      <button
-                        type="button"
-                        onClick={() => setOtpLoginCode(otpFallbackCode)}
-                        className="auth-otp-autofill-btn"
-                      >
-                        <CheckCircle2 size={14} /> Auto-Fill Code
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="auth-otp-status-banner success auth-mb-18">
-                    <CheckCircle2 size={16} /> Verification code dispatched to your email! (Please check your inbox & Spam folder)
-                  </div>
-                )}
+                <div className="auth-otp-status-banner success auth-mb-18">
+                  <CheckCircle2 size={16} /> Verification code dispatched to your email! (Please check your inbox & Spam folder)
+                </div>
 
                 <form onSubmit={handleLoginWithOtpSubmit}>
                   <div className="form-group auth-mb-18">
@@ -697,33 +611,9 @@ export default function LoginPage() {
               </form>
             ) : (
               <form onSubmit={handleResetPassword}>
-                {forgotDeliveredViaSmtp ? (
-                  <div className="auth-otp-status-banner success auth-mb-14">
-                    <CheckCircle2 size={15} /> Code delivered to inbox!
-                  </div>
-                ) : resetOtpPreview ? (
-                  <div className="auth-otp-fallback-card auth-mb-16 animate-fade-in">
-                    <div className="auth-otp-fallback-header">
-                      <div className="auth-otp-fallback-badge">
-                        <Sparkles size={13} color="#C084FC" />
-                        <span>Live Mail Server Notice</span>
-                      </div>
-                    </div>
-                    <p className="auth-otp-fallback-desc">
-                      Outbound email port is restricted by the cloud hosting environment. Here is your password reset code:
-                    </p>
-                    <div className="auth-otp-fallback-code-row">
-                      <span className="auth-otp-fallback-code">{resetOtpPreview}</span>
-                      <button
-                        type="button"
-                        onClick={() => setResetCode(resetOtpPreview)}
-                        className="auth-otp-autofill-btn"
-                      >
-                        <CheckCircle2 size={14} /> Auto-Fill Code
-                      </button>
-                    </div>
-                  </div>
-                ) : null}
+                <div className="auth-otp-status-banner success auth-mb-14">
+                  <CheckCircle2 size={15} /> Password reset code sent to your email! (Please check your inbox & Spam folder)
+                </div>
 
                 <div className="form-group auth-mb-12">
                   <label className="form-label auth-modal-field-label">6-Digit OTP</label>
