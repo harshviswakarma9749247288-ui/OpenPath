@@ -11,6 +11,9 @@ import {
   Users,
   Search,
   BookOpen,
+  Menu,
+  X,
+  LogOut,
 } from 'lucide-react';
 import { useUIStore } from '../store/useUIStore';
 import { useAuthStore } from '../store/useAuthStore';
@@ -24,11 +27,12 @@ import AnimatedLogo from '../components/AnimatedLogo';
 import UserAvatar from '../components/UserAvatar';
 
 export default function LandingPage() {
-  const { navigate } = useUIStore();
+  const { navigate, openSignOutModal } = useUIStore();
   const { isAuthenticated, user } = useAuthStore();
   const [featuredOpps, setFeaturedOpps] = useState([]);
   const [stats, setStats] = useState(null);
   const [platformContent, setPlatformContent] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     api
@@ -104,7 +108,10 @@ export default function LandingPage() {
         <div className="landing-nav-container">
           {/* Logo */}
           <div
-            onClick={() => navigate('landing')}
+            onClick={() => {
+              navigate('landing');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
             className="landing-nav-logo"
           >
             <AnimatedLogo size="sm" />
@@ -113,7 +120,7 @@ export default function LandingPage() {
             </span>
           </div>
 
-          {/* Quick Nav Links */}
+          {/* Quick Nav Links (Desktop) */}
           <nav className="landing-nav-links">
             <button
               onClick={() => navigate('opportunities')}
@@ -137,58 +144,239 @@ export default function LandingPage() {
 
           {/* Actions & Theme Toggle */}
           <div className="landing-nav-actions">
-            <ThemeToggle showLabel={true} size="default" />
+            {/* Desktop Theme Toggle with label */}
+            <div className="landing-nav-desktop-theme">
+              <ThemeToggle showLabel={true} size="default" />
+            </div>
 
-            {isAuthenticated ? (
-              <div className="landing-nav-auth-group">
-                <button
-                  onClick={() => navigate('profile')}
-                  title="View Profile"
-                  className="landing-nav-user-chip"
-                >
-                  <UserAvatar
-                    user={user}
-                    size={28}
-                    className="landing-nav-user-avatar"
-                  />
-                  <span>{user?.name?.split(' ')[0] || 'User'}</span>
-                  <span
-                    className={`landing-nav-user-role-badge role-${user?.role}`}
+            {/* Mobile-only Theme Toggle (icon-only compact) */}
+            <div className="landing-nav-mobile-theme">
+              <ThemeToggle showLabel={false} size="sm" />
+            </div>
+
+            {/* Desktop Auth Group */}
+            <div className="landing-nav-desktop-auth">
+              {isAuthenticated ? (
+                <div className="landing-nav-auth-group">
+                  <button
+                    onClick={() => navigate('profile')}
+                    title="View Profile"
+                    className="landing-nav-user-chip"
                   >
-                    {user?.role}
-                  </span>
-                </button>
+                    <UserAvatar
+                      user={user}
+                      size={28}
+                      className="landing-nav-user-avatar"
+                    />
+                    <span>{user?.name?.split(' ')[0] || 'User'}</span>
+                    <span
+                      className={`landing-nav-user-role-badge role-${user?.role}`}
+                    >
+                      {user?.role}
+                    </span>
+                  </button>
 
-                <button
-                  onClick={() => navigate(getDashboardRoute())}
-                  className="btn-glow-ring landing-nav-hub-btn"
-                >
-                  {isAdmin
-                    ? '🛡️ Admin Command'
-                    : isEmployer
-                    ? '💼 Employer Hub'
-                    : '🎓 Student Hub'} <ArrowRight size={14} />
-                </button>
-              </div>
-            ) : (
-              <div className="landing-nav-auth-group">
-                <button
-                  onClick={() => navigate('login')}
-                  className="btn-liquid-glass landing-nav-signin-btn"
-                >
-                  Sign In
-                </button>
+                  <button
+                    onClick={() => navigate(getDashboardRoute())}
+                    className="btn-glow-ring landing-nav-hub-btn"
+                  >
+                    {isAdmin
+                      ? '🛡️ Admin Command'
+                      : isEmployer
+                      ? '💼 Employer Hub'
+                      : '🎓 Student Hub'} <ArrowRight size={14} />
+                  </button>
+                </div>
+              ) : (
+                <div className="landing-nav-auth-group">
+                  <button
+                    onClick={() => navigate('login')}
+                    className="btn-liquid-glass landing-nav-signin-btn"
+                  >
+                    Sign In
+                  </button>
 
-                <button
-                  onClick={() => navigate('register')}
-                  className="btn-glow-ring landing-nav-register-btn"
-                >
-                  Get Started Free <ArrowRight size={15} />
-                </button>
-              </div>
-            )}
+                  <button
+                    onClick={() => navigate('register')}
+                    className="btn-glow-ring landing-nav-register-btn"
+                  >
+                    Get Started Free <ArrowRight size={15} />
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Three-Line Hamburger Menu Button (Mobile & Tablet) */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="landing-mobile-menu-btn"
+              aria-label="Toggle navigation menu"
+              title="Toggle Menu"
+            >
+              {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Slide-down / Overlay Drawer */}
+        {mobileMenuOpen && (
+          <div
+            className="landing-mobile-menu-overlay"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <div
+              className="landing-mobile-menu-drawer"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="landing-mobile-menu-header">
+                <div
+                  className="landing-nav-logo"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    navigate('landing');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                >
+                  <AnimatedLogo size="sm" />
+                  <span className="landing-nav-brand-text">
+                    Open<span className="gradient-text">Path</span>
+                  </span>
+                </div>
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="landing-mobile-menu-close"
+                  aria-label="Close navigation menu"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              {/* User profile card if authenticated */}
+              {isAuthenticated && user && (
+                <div
+                  className="landing-mobile-user-card"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    navigate('profile');
+                  }}
+                >
+                  <UserAvatar user={user} size={36} />
+                  <div className="landing-mobile-user-info">
+                    <span className="landing-mobile-user-name">
+                      {user.name || 'User'}
+                    </span>
+                    <span className={`landing-nav-user-role-badge role-${user.role}`}>
+                      {user.role}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* Mobile Navigation List */}
+              <div className="landing-mobile-nav-list">
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    navigate('opportunities');
+                  }}
+                  className="landing-mobile-nav-link"
+                >
+                  <Compass size={18} />
+                  <span>Browse Roles & Opportunities</span>
+                </button>
+
+                <a
+                  href="#features"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="landing-mobile-nav-link"
+                >
+                  <Sparkles size={18} />
+                  <span>Platform Features</span>
+                </a>
+
+                <a
+                  href="#how-it-works"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="landing-mobile-nav-link"
+                >
+                  <Target size={18} />
+                  <span>How It Works</span>
+                </a>
+
+                {isAuthenticated ? (
+                  <>
+                    <button
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        navigate(getDashboardRoute());
+                      }}
+                      className="landing-mobile-nav-link highlight"
+                    >
+                      <ArrowRight size={18} />
+                      <span>
+                        {isAdmin
+                          ? '🛡️ Admin Command Center'
+                          : isEmployer
+                          ? '💼 Employer Hub'
+                          : '🎓 Student Hub'}
+                      </span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        navigate('profile');
+                      }}
+                      className="landing-mobile-nav-link"
+                    >
+                      <Users size={18} />
+                      <span>My Digital Resume</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        openSignOutModal();
+                      }}
+                      className="landing-mobile-nav-link danger"
+                    >
+                      <LogOut size={18} />
+                      <span>Sign Out</span>
+                    </button>
+                  </>
+                ) : (
+                  <div className="landing-mobile-auth-actions">
+                    <button
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        navigate('login');
+                      }}
+                      className="btn-liquid-glass landing-mobile-auth-btn"
+                    >
+                      Sign In
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        navigate('register');
+                      }}
+                      className="btn-glow-ring landing-mobile-auth-btn primary"
+                    >
+                      Get Started Free <ArrowRight size={16} />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Drawer Footer with Theme Toggle */}
+              <div className="landing-mobile-drawer-footer">
+                <span className="candidate-bg-desc">Appearance</span>
+                <ThemeToggle showLabel={true} size="sm" />
+              </div>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* 1. HERO SECTION (3D Animated & Cinematic Scrolltide Experience) */}

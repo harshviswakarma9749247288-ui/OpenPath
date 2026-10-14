@@ -261,7 +261,7 @@ export default function App() {
                       Candidate Review
                     </button>
                   </>
-                ) : (
+                ) : isAuthenticated ? (
                   <>
                     <button
                       onClick={() => {
@@ -307,6 +307,36 @@ export default function App() {
                       className="btn-ghost mobile-nav-btn"
                     >
                       Digital Resume
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => {
+                        navigate('opportunities');
+                        setMobileDrawerOpen(false);
+                      }}
+                      className="btn-ghost mobile-nav-btn"
+                    >
+                      Browse Opportunities
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate('login');
+                        setMobileDrawerOpen(false);
+                      }}
+                      className="btn-ghost mobile-nav-btn"
+                    >
+                      Sign In
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate('register');
+                        setMobileDrawerOpen(false);
+                      }}
+                      className="btn-primary mobile-nav-btn"
+                    >
+                      Get Started Free
                     </button>
                   </>
                 )}

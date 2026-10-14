@@ -498,17 +498,25 @@
 }
 
 .mobile-drawer-pane {
-  width: 280px;
-  max-width: 85vw;
+  width: 290px;
+  max-width: 86vw;
   height: 100%;
   background-color: var(--sidebar-bg);
   border-right: 1px solid var(--border-color);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  padding: 24px;
+  padding: 24px 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  box-shadow: 15px 0 40px rgba(0, 0, 0, 0.7), 0 0 30px rgba(124, 58, 237, 0.2);
+  animation: mobileDrawerSlideIn 0.26s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  overflow-y: auto;
+}
+
+@keyframes mobileDrawerSlideIn {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
 }
 
 /* Modal Shell Overlay */
@@ -790,4 +798,74 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+/* =========================================================
+   Responsive Breakpoints for Main Application Navbar
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .navbar-header {
+    padding: 0 14px;
+    height: 60px;
+  }
+  .navbar-left {
+    gap: 10px;
+    min-width: 0;
+  }
+  .navbar-title {
+    font-size: 1.025rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 175px;
+  }
+  .navbar-right {
+    gap: 8px;
+  }
+  .navbar-admin-btn {
+    display: none !important; /* Accessible in 3-line hamburger mobile drawer */
+  }
+  .navbar-profile-pill {
+    padding: 3px 8px 3px 3px;
+    gap: 6px;
+  }
+  .navbar-role-badge {
+    display: none !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .navbar-header {
+    padding: 0 10px;
+  }
+  .navbar-welcome {
+    display: none !important;
+  }
+  .navbar-title {
+    max-width: 130px;
+    font-size: 0.925rem;
+  }
+  .navbar-profile-name {
+    display: none !important;
+  }
+  .navbar-profile-pill {
+    padding: 2px;
+    background: transparent;
+    border-color: transparent;
+  }
+  .navbar-signout-btn {
+    display: none !important; /* Accessible via 3-line hamburger mobile drawer */
+  }
+  .navbar-bell-btn {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (max-width: 380px) {
+  .navbar-title {
+    max-width: 105px;
+    font-size: 0.85rem;
+  }
 }
