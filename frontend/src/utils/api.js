@@ -1,4 +1,11 @@
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const rawApiUrl =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD
+    ? 'https://openpath-jkpo.onrender.com/api'
+    : 'http://localhost:5000/api');
+
+const sanitizedApiUrl = rawApiUrl.trim().replace(/\/+$/, '');
+const API_BASE = sanitizedApiUrl.endsWith('/api') ? sanitizedApiUrl : `${sanitizedApiUrl}/api`;
 
 export const request = async (endpoint, options = {}) => {
   const method = (options.method || 'GET').toUpperCase();
