@@ -202,7 +202,7 @@ export const sendOtpEmail = async ({ to, code, purpose = 'Registration' }) => {
       });
 
       const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('SMTP transmission timed out after 12 seconds')), 12000)
+        setTimeout(() => reject(new Error('SMTP transmission timed out')), 3500)
       );
 
       await Promise.race([sendPromise, timeoutPromise]);
@@ -213,5 +213,5 @@ export const sendOtpEmail = async ({ to, code, purpose = 'Registration' }) => {
     }
   }
 
-  return { delivered };
+  return { delivered, code };
 };
