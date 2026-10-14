@@ -53,6 +53,8 @@ export const useAuthStore = create((set, get) => ({
     isComplete: false,
   },
 
+  clearError: () => set({ error: null }),
+
   // Initialize auth state by fetching current user if token exists
   initAuth: async () => {
     const token = localStorage.getItem('openpath_token');

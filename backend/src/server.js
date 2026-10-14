@@ -23,6 +23,9 @@ import { generalApiLimiter } from './middleware/rateLimiter.js';
 
 const app = express();
 
+// Trust reverse proxy (Render, Vercel, Cloudflare) for accurate client IP & rate limiting
+app.set('trust proxy', 1);
+
 // Hardening: Disable Express signature header
 app.disable('x-powered-by');
 

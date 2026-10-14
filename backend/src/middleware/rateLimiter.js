@@ -60,18 +60,18 @@ class MemoryRateLimiter {
   }
 }
 
-// 1. OTP Dispatch Rate Limiter: Max 5 OTP requests per 10 minutes per IP/email
+// 1. OTP Dispatch Rate Limiter: Max 20 OTP requests per 2 minutes per email/IP
 export const otpRateLimiter = new MemoryRateLimiter({
-  windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 5,
-  message: 'Verification code rate limit reached. Too many requests. Please wait a few minutes before trying again.',
+  windowMs: 2 * 60 * 1000, // 2 minutes
+  max: 20,
+  message: 'Verification code rate limit reached. Too many requests. Please wait a minute before trying again.',
 }).middleware((req) => (req.body?.email ? String(req.body.email).toLowerCase().trim() : ''));
 
-// 2. Auth Login Limiter: Max 10 attempts per 15 minutes per IP
+// 2. Auth Login Limiter: Max 30 attempts per 5 minutes per IP
 export const authRateLimiter = new MemoryRateLimiter({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10,
-  message: 'Too many authentication attempts. For your account security, please wait 15 minutes before trying again.',
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  max: 30,
+  message: 'Too many authentication attempts. Please wait a few moments before trying again.',
 }).middleware();
 
 // 3. Password Reset Limiter: Max 4 reset requests per 15 minutes per IP/email

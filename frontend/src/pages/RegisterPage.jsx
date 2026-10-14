@@ -9,7 +9,7 @@ import Tilt3DCard from '../components/Tilt3DCard';
 import BackButton from '../components/BackButton';
 
 export default function RegisterPage() {
-  const { register, isLoading, error } = useAuthStore();
+  const { register, isLoading, error, clearError } = useAuthStore();
   const { navigate, showToast } = useUIStore();
 
   const [step, setStep] = useState('form');
@@ -24,6 +24,10 @@ export default function RegisterPage() {
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
   const [cooldown, setCooldown] = useState(0);
   const [deliveredViaSmtp, setDeliveredViaSmtp] = useState(false);
+
+  useEffect(() => {
+    if (clearError) clearError();
+  }, []);
 
   useEffect(() => {
     if (cooldown <= 0) return;
