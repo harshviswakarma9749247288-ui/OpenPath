@@ -298,11 +298,18 @@ export default function RegisterPage() {
                 <CheckCircle2 size={16} /> Verification code delivered to your email inbox!
               </div>
             ) : demoCode ? (
-              <div className="auth-otp-preview-card auth-mb-18">
+              <div
+                className="auth-otp-preview-card auth-mb-18"
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  if (demoCode) setOtpCode(demoCode);
+                }}
+                title="Click to auto-fill code"
+              >
                 <span>Verification Code: </span>
                 <strong className="auth-otp-preview-code">{demoCode}</strong>
                 <div className="auth-instruction-caption">
-                  (Enter the 6-digit code in the field below)
+                  (Click here to auto-fill or type the 6 digits below)
                 </div>
               </div>
             ) : null}
@@ -317,7 +324,7 @@ export default function RegisterPage() {
                   maxLength={6}
                   required
                   autoFocus
-                  placeholder="000000"
+                  placeholder="------"
                   className="form-input auth-code-input-lg"
                   value={otpCode}
                   onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}

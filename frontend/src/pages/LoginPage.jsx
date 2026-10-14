@@ -538,13 +538,20 @@ export default function LoginPage() {
                     <CheckCircle2 size={16} /> Verification code delivered to your email inbox!
                   </div>
                 ) : otpPreviewCode ? (
-                  <div className="auth-otp-preview-card">
+                  <div
+                    className="auth-otp-preview-card"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => {
+                      if (otpPreviewCode) setOtpLoginCode(otpPreviewCode);
+                    }}
+                    title="Click to auto-fill code"
+                  >
                     <span className="auth-subdued-text">Email Verification Code: </span>
                     <strong className="auth-otp-preview-code">
                       {otpPreviewCode}
                     </strong>
                     <div className="auth-instruction-caption">
-                      (Enter this 6-digit code below to authenticate)
+                      (Click here to auto-fill or type the 6 digits below)
                     </div>
                   </div>
                 ) : null}
@@ -559,7 +566,7 @@ export default function LoginPage() {
                       maxLength={6}
                       required
                       autoFocus
-                      placeholder="000000"
+                      placeholder="------"
                       className="form-input auth-code-input-lg"
                       value={otpLoginCode}
                       onChange={(e) => setOtpLoginCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
