@@ -13,9 +13,9 @@ if (ENV.SMTP_HOST && ENV.SMTP_USER) {
             user: ENV.SMTP_USER,
             pass: ENV.SMTP_PASS,
           },
-          connectionTimeout: 6000,
-          greetingTimeout: 5000,
-          socketTimeout: 8000,
+          connectionTimeout: 10000,
+          greetingTimeout: 10000,
+          socketTimeout: 15000,
         }
       : {
           host: ENV.SMTP_HOST,
@@ -25,9 +25,9 @@ if (ENV.SMTP_HOST && ENV.SMTP_USER) {
             user: ENV.SMTP_USER,
             pass: ENV.SMTP_PASS,
           },
-          connectionTimeout: 6000,
-          greetingTimeout: 5000,
-          socketTimeout: 8000,
+          connectionTimeout: 10000,
+          greetingTimeout: 10000,
+          socketTimeout: 15000,
         }
   );
 }
@@ -143,7 +143,7 @@ export const sendOtpEmail = async ({ to, code, purpose = 'Registration' }) => {
       });
 
       const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('SMTP transmission timed out after 6 seconds')), 6000)
+        setTimeout(() => reject(new Error('SMTP transmission timed out after 12 seconds')), 12000)
       );
 
       await Promise.race([sendPromise, timeoutPromise]);

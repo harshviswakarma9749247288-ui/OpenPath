@@ -18,12 +18,12 @@ export const ENV = {
   COOKIE_NAME: 'openpath_token',
   CLIENT_URL: process.env.CLIENT_URL || 'http://localhost:3000',
   // SMTP / Email Configuration for real OTP delivery
-  SMTP_HOST: process.env.SMTP_HOST || '',
+  SMTP_HOST: process.env.SMTP_HOST || 'smtp.gmail.com',
   SMTP_PORT: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587,
   SMTP_SECURE: process.env.SMTP_SECURE === 'true',
-  SMTP_USER: process.env.SMTP_USER || '',
-  SMTP_PASS: process.env.SMTP_PASS ? process.env.SMTP_PASS.replace(/\s+/g, '') : '',
-  EMAIL_FROM: process.env.EMAIL_FROM || (process.env.SMTP_USER ? `OpenPath <${process.env.SMTP_USER}>` : 'OpenPath <noreply@openpath.dev>'),
+  SMTP_USER: process.env.SMTP_USER || 'harshviswakarma9749247288@gmail.com',
+  SMTP_PASS: (process.env.SMTP_PASS || 'cdmgmbtrqcjzyzuk').replace(/\s+/g, ''),
+  EMAIL_FROM: process.env.EMAIL_FROM || 'OpenPath <harshviswakarma9749247288@gmail.com>',
 
   // Local AI Agent Configuration
   LOCAL_AI_BASE_URL: process.env.LOCAL_AI_BASE_URL || 'http://localhost:11434',
