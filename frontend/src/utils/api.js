@@ -1,8 +1,15 @@
-const rawApiUrl =
-  import.meta.env.VITE_API_URL ||
-  (import.meta.env.PROD
-    ? 'https://openpath-jkpo.onrender.com/api'
-    : 'http://localhost:5000/api');
+const isLocalhost =
+  typeof window !== 'undefined' &&
+  (window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1' ||
+    window.location.hostname === '[::1]');
+
+const rawApiUrl = isLocalhost
+  ? (import.meta.env.VITE_LOCAL_API_URL || 'http://localhost:5000/api')
+  : (import.meta.env.VITE_API_URL ||
+    (import.meta.env.PROD
+      ? 'https://openpath-jkpo.onrender.com/api'
+      : 'http://localhost:5000/api'));
 
 const sanitizedApiUrl = rawApiUrl.trim().replace(/\/+$/, '');
 const API_BASE = sanitizedApiUrl.endsWith('/api') ? sanitizedApiUrl : `${sanitizedApiUrl}/api`;
