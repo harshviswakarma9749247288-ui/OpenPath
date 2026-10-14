@@ -17,7 +17,9 @@ export const ENV = {
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '7d',
   COOKIE_NAME: 'openpath_token',
   CLIENT_URL: process.env.CLIENT_URL || 'http://localhost:3000',
-  // SMTP / Email Configuration for real OTP delivery
+  // SMTP & HTTPS Email Configuration for real OTP delivery
+  RESEND_API_KEY: process.env.RESEND_API_KEY || '',
+  BREVO_API_KEY: process.env.BREVO_API_KEY || '',
   SMTP_HOST: process.env.SMTP_HOST || 'smtp.gmail.com',
   SMTP_PORT: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587,
   SMTP_SECURE: process.env.SMTP_SECURE === 'true',

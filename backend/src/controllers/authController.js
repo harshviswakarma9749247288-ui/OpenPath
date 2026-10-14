@@ -157,23 +157,28 @@ export const sendOtp = async (req, res, next) => {
     });
 
     // Send email using emailService (live SMTP delivery or fallback console preview)
-    const { delivered, previewOtp } = await sendOtpEmail({
+    const { delivered } = await sendOtpEmail({
       to: emailNorm,
       code: rawOtp,
       purpose,
     });
 
+    if (!delivered) {
+      return errorResponse(
+        res,
+        `Could not send verification email to ${emailNorm}. Please check your email address or try again in a few moments.`,
+        500
+      );
+    }
+
     return successResponse(
       res,
       {
         email: emailNorm,
-        delivered,
-        previewOtp: (delivered && ENV.NODE_ENV === 'production') ? undefined : previewOtp,
+        delivered: true,
         expiresIn: '10 minutes',
       },
-      delivered
-        ? `Verification code dispatched to ${emailNorm}. Please check your inbox.`
-        : `Verification code sent to ${emailNorm} (Code: ${previewOtp})`
+      `Verification code dispatched to ${emailNorm}. Please check your email inbox and spam folder.`
     );
   } catch (error) {
     next(error);
@@ -326,18 +331,20 @@ export const forgotPassword = async (req, res, next) => {
       verified: false,
     });
 
-    const { delivered, previewOtp } = await sendOtpEmail({
+    const { delivered } = await sendOtpEmail({
       to: emailNorm,
       code: rawOtp,
       purpose: 'Password Reset',
     });
 
+    if (!delivered) {
+      return errorResponse(res, `Failed to send password reset email to ${emailNorm}. Please try again.`, 500);
+    }
+
     return successResponse(
       res,
-      { email: emailNorm, delivered, previewOtp: (delivered && ENV.NODE_ENV === 'production') ? undefined : previewOtp },
-      delivered
-        ? `Password reset code sent to ${emailNorm}. Please check your inbox.`
-        : `Reset code generated for ${emailNorm} (Demo Code: ${previewOtp})`
+      { email: emailNorm, delivered: true },
+      `Password reset code sent to ${emailNorm}. Please check your email inbox and spam folder.`
     );
   } catch (error) {
     next(error);

@@ -19,7 +19,6 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [otpCode, setOtpCode] = useState('');
-  const [demoCode, setDemoCode] = useState('');
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
   const [cooldown, setCooldown] = useState(0);
@@ -48,14 +47,8 @@ export default function RegisterPage() {
     setIsSendingOtp(true);
     try {
       const res = await api.post('/auth/otp/send', { email, purpose: 'Registration' });
-      const preview = res?.data?.previewOtp || res?.data?.data?.previewOtp;
-      const delivered = res?.data?.delivered ?? res?.data?.data?.delivered;
-      setDeliveredViaSmtp(!!delivered);
-      setOtpCode(''); // Ensure OTP input is NOT auto-filled
-      if (preview && !delivered) {
-        setDemoCode(preview);
-      }
-      showToast(`Verification code sent to ${email}`, 'success');
+      setOtpCode('');
+      showToast(res?.message || `Verification code sent to ${email}. Please check your email inbox.`, 'success');
       setCooldown(60);
       setStep('otp');
     } catch (err) {
@@ -70,14 +63,8 @@ export default function RegisterPage() {
     setIsSendingOtp(true);
     try {
       const res = await api.post('/auth/otp/send', { email, purpose: 'Registration' });
-      const preview = res?.data?.previewOtp || res?.data?.data?.previewOtp;
-      const delivered = res?.data?.delivered ?? res?.data?.data?.delivered;
-      setDeliveredViaSmtp(!!delivered);
-      setOtpCode(''); // Keep OTP input empty on resend
-      if (preview && !delivered) {
-        setDemoCode(preview);
-      }
-      showToast(`A new verification code was sent to ${email}`, 'success');
+      setOtpCode('');
+      showToast(res?.message || `A new verification code was sent to ${email}`, 'success');
       setCooldown(60);
     } catch (err) {
       showToast(err.message || 'Failed to resend code', 'error');
@@ -293,26 +280,9 @@ export default function RegisterPage() {
               </p>
             </div>
 
-            {deliveredViaSmtp ? (
-              <div className="auth-otp-status-banner success auth-mb-18">
-                <CheckCircle2 size={16} /> Verification code delivered to your email inbox!
-              </div>
-            ) : demoCode ? (
-              <div
-                className="auth-otp-preview-card auth-mb-18"
-                style={{ cursor: 'pointer' }}
-                onClick={() => {
-                  if (demoCode) setOtpCode(demoCode);
-                }}
-                title="Click to auto-fill code"
-              >
-                <span>Verification Code: </span>
-                <strong className="auth-otp-preview-code">{demoCode}</strong>
-                <div className="auth-instruction-caption">
-                  (Click here to auto-fill or type the 6 digits below)
-                </div>
-              </div>
-            ) : null}
+            <div className="auth-otp-status-banner success auth-mb-18">
+              <CheckCircle2 size={16} /> Verification code dispatched to your email! (Please check your inbox & Spam folder)
+            </div>
 
             <form onSubmit={handleVerifyOtp}>
               <div className="form-group auth-mb-18">

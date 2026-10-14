@@ -40,7 +40,6 @@ export default function LoginPage() {
   const [otpStep, setOtpStep] = useState('email'); // 'email' | 'code'
   const [otpEmail, setOtpEmail] = useState('');
   const [otpLoginCode, setOtpLoginCode] = useState('');
-  const [otpPreviewCode, setOtpPreviewCode] = useState('');
   const [otpDeliveredViaSmtp, setOtpDeliveredViaSmtp] = useState(false);
   const [otpCooldown, setOtpCooldown] = useState(0);
   const [isSendingLoginOtp, setIsSendingLoginOtp] = useState(false);
@@ -104,17 +103,8 @@ export default function LoginPage() {
     setIsSendingLoginOtp(true);
     try {
       const res = await api.post('/auth/otp/send', { email: targetEmail, purpose: 'Login' });
-      const preview = res?.data?.previewOtp || res?.data?.data?.previewOtp;
-      const delivered = res?.data?.delivered ?? res?.data?.data?.delivered;
-      setOtpDeliveredViaSmtp(!!delivered);
-      setOtpLoginCode(''); // Require manual input
-      if (preview) {
-        setOtpPreviewCode(preview);
-        showToast(`Login OTP code: ${preview}`, 'info');
-      } else {
-        setOtpPreviewCode('');
-        showToast(`Login OTP code dispatched to ${targetEmail}`, 'success');
-      }
+      setOtpLoginCode('');
+      showToast(res?.message || `Login OTP code sent to ${targetEmail}. Please check your email inbox.`, 'success');
       setOtpCooldown(60);
       setOtpStep('code');
     } catch (err) {
@@ -131,17 +121,8 @@ export default function LoginPage() {
     setIsSendingLoginOtp(true);
     try {
       const res = await api.post('/auth/otp/send', { email: targetEmail, purpose: 'Login' });
-      const preview = res?.data?.previewOtp || res?.data?.data?.previewOtp;
-      const delivered = res?.data?.delivered ?? res?.data?.data?.delivered;
-      setOtpDeliveredViaSmtp(!!delivered);
-      setOtpLoginCode(''); // Require manual input
-      if (preview) {
-        setOtpPreviewCode(preview);
-        showToast(`New login code: ${preview}`, 'info');
-      } else {
-        setOtpPreviewCode('');
-        showToast(`A new login code was sent to ${targetEmail}`, 'success');
-      }
+      setOtpLoginCode('');
+      showToast(res?.message || `A new login code was sent to ${targetEmail}. Please check your inbox.`, 'success');
       setOtpCooldown(60);
     } catch (err) {
       showToast(err.message || 'Failed to resend code', 'error');
@@ -533,28 +514,9 @@ export default function LoginPage() {
                   </p>
                 </div>
 
-                {otpDeliveredViaSmtp ? (
-                  <div className="auth-otp-status-banner success">
-                    <CheckCircle2 size={16} /> Verification code delivered to your email inbox!
-                  </div>
-                ) : otpPreviewCode ? (
-                  <div
-                    className="auth-otp-preview-card"
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => {
-                      if (otpPreviewCode) setOtpLoginCode(otpPreviewCode);
-                    }}
-                    title="Click to auto-fill code"
-                  >
-                    <span className="auth-subdued-text">Email Verification Code: </span>
-                    <strong className="auth-otp-preview-code">
-                      {otpPreviewCode}
-                    </strong>
-                    <div className="auth-instruction-caption">
-                      (Click here to auto-fill or type the 6 digits below)
-                    </div>
-                  </div>
-                ) : null}
+                <div className="auth-otp-status-banner success auth-mb-18">
+                  <CheckCircle2 size={16} /> Verification code dispatched to your email! (Please check your inbox & Spam folder)
+                </div>
 
                 <form onSubmit={handleLoginWithOtpSubmit}>
                   <div className="form-group auth-mb-18">

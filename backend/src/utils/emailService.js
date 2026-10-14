@@ -133,7 +133,66 @@ export const sendOtpEmail = async ({ to, code, purpose = 'Registration' }) => {
 
   let delivered = false;
 
-  if (transporter) {
+  // 1. Primary Cloud Driver: Resend HTTPS API (Port 443 - works 100% on Render Free Tier)
+  if (ENV.RESEND_API_KEY) {
+    try {
+      const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${ENV.RESEND_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: ENV.EMAIL_FROM?.includes('<') ? ENV.EMAIL_FROM : `OpenPath <${ENV.EMAIL_FROM || 'onboarding@resend.dev'}>`,
+          to: [to],
+          subject,
+          html: htmlContent,
+        }),
+      });
+
+      if (res.ok) {
+        delivered = true;
+        console.log(`✅ [EMAIL SERVICE] Message dispatched via Resend HTTPS API to ${to}`);
+      } else {
+        const errorData = await res.json().catch(() => ({}));
+        console.error('⚠️ [EMAIL SERVICE] Resend HTTP Error:', errorData);
+      }
+    } catch (err) {
+      console.error('⚠️ [EMAIL SERVICE] Resend request failed:', err.message);
+    }
+  }
+
+  // 2. Secondary Cloud Driver: Brevo HTTPS API (Port 443 - works 100% on Render Free Tier)
+  if (!delivered && ENV.BREVO_API_KEY) {
+    try {
+      const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+          'api-key': ENV.BREVO_API_KEY,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sender: { name: 'OpenPath', email: ENV.SMTP_USER || 'harshviswakarma9749247288@gmail.com' },
+          to: [{ email: to }],
+          subject,
+          htmlContent,
+        }),
+      });
+
+      if (res.ok) {
+        delivered = true;
+        console.log(`✅ [EMAIL SERVICE] Message dispatched via Brevo HTTPS API to ${to}`);
+      } else {
+        const errorData = await res.json().catch(() => ({}));
+        console.error('⚠️ [EMAIL SERVICE] Brevo HTTP Error:', errorData);
+      }
+    } catch (err) {
+      console.error('⚠️ [EMAIL SERVICE] Brevo request failed:', err.message);
+    }
+  }
+
+  // 3. Fallback: Nodemailer SMTP
+  if (!delivered && transporter) {
     try {
       const sendPromise = transporter.sendMail({
         from: ENV.EMAIL_FROM,
@@ -150,12 +209,9 @@ export const sendOtpEmail = async ({ to, code, purpose = 'Registration' }) => {
       delivered = true;
       console.log(`✅ [EMAIL SERVICE] Message successfully dispatched via SMTP to ${to}`);
     } catch (err) {
-      console.error(`⚠️ [EMAIL SERVICE] SMTP delivery failed or timed out: ${err.message}. Retaining demo preview code.`);
+      console.error(`⚠️ [EMAIL SERVICE] SMTP delivery failed or timed out: ${err.message}`);
     }
   }
 
-  return {
-    delivered,
-    previewOtp: code,
-  };
+  return { delivered };
 };
