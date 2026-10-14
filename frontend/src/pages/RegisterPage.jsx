@@ -93,6 +93,8 @@ export default function RegisterPage() {
         } else {
           navigate('employer-dashboard');
         }
+      } else {
+        showToast(res.error || 'Registration failed', 'error');
       }
     } catch (err) {
       showToast(err.message || 'OTP verification failed', 'error');
