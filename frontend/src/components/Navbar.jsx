@@ -9,6 +9,7 @@ import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
 import api from '../utils/api';
 import ThemeToggle from './ThemeToggle';
+import UserAvatar from './UserAvatar';
 
 export default function Navbar() {
   const { user, isAuthenticated } = useAuthStore();
@@ -174,12 +175,9 @@ export default function Navbar() {
               title="View Digital Resume Profile"
               className="navbar-profile-pill"
             >
-              <img
-                src={
-                  user.avatar ||
-                  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120'
-                }
-                alt={user.name}
+              <UserAvatar
+                user={user}
+                size={30}
                 className="navbar-profile-avatar"
               />
               <span className="navbar-profile-name">

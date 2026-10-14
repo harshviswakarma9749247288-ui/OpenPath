@@ -10,6 +10,7 @@ import {
   Clock,
   FileWarning,
 } from 'lucide-react';
+import UserAvatar from '../UserAvatar';
 
 export default function UserBanModal({ isOpen, onClose, user, onConfirm, isLoading }) {
   const [banType, setBanType] = useState('suspended'); // 'suspended' | 'banned'
@@ -96,12 +97,9 @@ export default function UserBanModal({ isOpen, onClose, user, onConfirm, isLoadi
         <div className="admin-modal-user-card-col">
           <div className="admin-modal-card-top-row">
             <div className="admin-modal-card-left">
-              <img
-                src={
-                  user.avatar ||
-                  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=80'
-                }
-                alt={user.name}
+              <UserAvatar
+                user={user}
+                size={48}
                 className="admin-modal-user-avatar"
               />
               <div>

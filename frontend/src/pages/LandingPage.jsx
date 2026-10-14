@@ -21,6 +21,7 @@ import ThemeToggle from '../components/ThemeToggle';
 import ThreeHeroScene from '../components/ThreeHeroScene';
 import Tilt3DCard from '../components/Tilt3DCard';
 import AnimatedLogo from '../components/AnimatedLogo';
+import UserAvatar from '../components/UserAvatar';
 
 export default function LandingPage() {
   const { navigate } = useUIStore();
@@ -145,12 +146,9 @@ export default function LandingPage() {
                   title="View Profile"
                   className="landing-nav-user-chip"
                 >
-                  <img
-                    src={
-                      user?.avatar ||
-                      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100'
-                    }
-                    alt={user?.name}
+                  <UserAvatar
+                    user={user}
+                    size={28}
                     className="landing-nav-user-avatar"
                   />
                   <span>{user?.name?.split(' ')[0] || 'User'}</span>

@@ -15,6 +15,7 @@ import api from '../utils/api';
 import MatchScoreBadge from '../components/MatchScoreBadge';
 import ApplicationStatusBadge from '../components/ApplicationStatusBadge';
 import BackButton from '../components/BackButton';
+import UserAvatar from '../components/UserAvatar';
 
 export default function EmployerDashboard() {
   const { navigate } = useUIStore();
@@ -149,9 +150,7 @@ export default function EmployerDashboard() {
                 <tr key={app._id} className="dashboard-table-row">
                   <td className="dashboard-table-td primary-bold">
                     <div className="candidate-card-title-row">
-                      <div className="dashboard-user-avatar-initials">
-                        {app.user?.name?.substring(0, 2).toUpperCase() || 'CA'}
-                      </div>
+                      <UserAvatar user={app.user} size={32} />
                       <div>
                         <span>{app.user?.name || 'Applicant'}</span>
                         <span className="candidate-bg-desc">

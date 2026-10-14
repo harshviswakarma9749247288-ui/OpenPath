@@ -47,13 +47,11 @@ export default function RegisterPage() {
       const preview = res?.data?.previewOtp || res?.data?.data?.previewOtp;
       const delivered = res?.data?.delivered ?? res?.data?.data?.delivered;
       setDeliveredViaSmtp(!!delivered);
-      if (preview) {
+      setOtpCode(''); // Ensure OTP input is NOT auto-filled
+      if (preview && !delivered) {
         setDemoCode(preview);
-        setOtpCode(preview);
-        showToast(`Verification code: ${preview}`, 'info');
-      } else {
-        showToast(`Verification code sent to ${email}`, 'success');
       }
+      showToast(`Verification code sent to ${email}`, 'success');
       setCooldown(60);
       setStep('otp');
     } catch (err) {
@@ -71,13 +69,11 @@ export default function RegisterPage() {
       const preview = res?.data?.previewOtp || res?.data?.data?.previewOtp;
       const delivered = res?.data?.delivered ?? res?.data?.data?.delivered;
       setDeliveredViaSmtp(!!delivered);
-      if (preview) {
+      setOtpCode(''); // Keep OTP input empty on resend
+      if (preview && !delivered) {
         setDemoCode(preview);
-        setOtpCode(preview);
-        showToast(`New verification code: ${preview}`, 'info');
-      } else {
-        showToast(`A new verification code was sent to ${email}`, 'success');
       }
+      showToast(`A new verification code was sent to ${email}`, 'success');
       setCooldown(60);
     } catch (err) {
       showToast(err.message || 'Failed to resend code', 'error');
@@ -295,14 +291,14 @@ export default function RegisterPage() {
 
             {deliveredViaSmtp ? (
               <div className="auth-otp-status-banner success auth-mb-18">
-                <CheckCircle2 size={16} /> Delivered to your inbox via SMTP
+                <CheckCircle2 size={16} /> Verification code delivered to your email inbox!
               </div>
             ) : demoCode ? (
               <div className="auth-otp-preview-card auth-mb-18">
-                <span>Demo / Test OTP Code: </span>
+                <span>Verification Code: </span>
                 <strong className="auth-otp-preview-code">{demoCode}</strong>
                 <div className="auth-instruction-caption">
-                  (Auto-filled for rapid testing & evaluation)
+                  (Enter the 6-digit code in the field below)
                 </div>
               </div>
             ) : null}

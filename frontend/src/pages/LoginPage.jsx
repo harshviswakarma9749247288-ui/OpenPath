@@ -190,7 +190,7 @@ export default function LoginPage() {
       setForgotDeliveredViaSmtp(!!delivered);
       if (preview) {
         setResetOtpPreview(preview);
-        setResetCode(preview);
+        setResetCode('');
       }
       showToast(res?.message || 'Reset code sent to your email.', 'info');
       setForgotCooldown(60);
@@ -213,7 +213,7 @@ export default function LoginPage() {
       setForgotDeliveredViaSmtp(!!delivered);
       if (preview) {
         setResetOtpPreview(preview);
-        setResetCode(preview);
+        setResetCode('');
       }
       showToast('A new reset code has been sent.', 'info');
       setForgotCooldown(60);

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Mail, GraduationCap, Briefcase, MapPin, FileText, X, Download } from 'lucide-react';
 import MatchScoreBadge from './MatchScoreBadge';
 import ApplicationStatusBadge from './ApplicationStatusBadge';
+import UserAvatar from './UserAvatar';
 import { generatePdfResume } from '../utils/pdfResumeGenerator';
 
 export default function EmployerCandidateCard({ candidate, onStatusChange }) {
@@ -25,12 +26,9 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
       {/* Top row: Avatar, Info, Match Score & Current Status */}
       <div className="candidate-top-row">
         <div className="candidate-info-group">
-          <img
-            src={
-              user.avatar ||
-              'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150'
-            }
-            alt={user.name}
+          <UserAvatar
+            user={user}
+            size={48}
             className="candidate-avatar"
           />
           <div>
@@ -163,12 +161,9 @@ export default function EmployerCandidateCard({ candidate, onStatusChange }) {
             </div>
 
             <div className="candidate-modal-user-row">
-              <img
-                src={
-                  user.avatar ||
-                  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150'
-                }
-                alt={user.name}
+              <UserAvatar
+                user={user}
+                size={54}
                 className="candidate-modal-avatar"
               />
               <div>

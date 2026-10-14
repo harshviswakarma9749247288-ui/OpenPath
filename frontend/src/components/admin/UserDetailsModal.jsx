@@ -18,6 +18,7 @@ import {
   Check,
   Award,
 } from 'lucide-react';
+import UserAvatar from '../UserAvatar';
 
 export default function UserDetailsModal({
   isOpen,
@@ -61,12 +62,9 @@ export default function UserDetailsModal({
 
         {/* 1. Header Identity Profile */}
         <div className="admin-details-header">
-          <img
-            src={
-              user.avatar ||
-              'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120'
-            }
-            alt={user.name}
+          <UserAvatar
+            user={user}
+            size={68}
             className="admin-avatar-lg"
           />
 

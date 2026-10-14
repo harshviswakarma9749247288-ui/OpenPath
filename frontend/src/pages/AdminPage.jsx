@@ -40,6 +40,7 @@ import { useUIStore } from '../store/useUIStore';
 import api from '../utils/api';
 import BackButton from '../components/BackButton';
 import ApplicationStatusBadge from '../components/ApplicationStatusBadge';
+import UserAvatar from '../components/UserAvatar';
 
 // SkillLoop-style Modals for Admin
 import RoleChangeModal from '../components/admin/RoleChangeModal';
@@ -745,9 +746,9 @@ export default function AdminPage({ initialTab = 'overview' }) {
                     className="admin-recent-item"
                   >
                     <div className="admin-header-title-box">
-                      <img
-                        src={u.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=60'}
-                        alt={u.name}
+                      <UserAvatar
+                        user={u}
+                        size={32}
                         className="admin-recent-avatar-sm"
                       />
                       <div>
@@ -906,12 +907,9 @@ export default function AdminPage({ initialTab = 'overview' }) {
                             className="admin-table-user-cell"
                             title="Click to inspect profile"
                           >
-                            <img
-                              src={
-                                u.avatar ||
-                                'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=80'
-                              }
-                              alt={u.name}
+                            <UserAvatar
+                              user={u}
+                              size={36}
                               className="admin-table-avatar-md"
                             />
                             <div>
@@ -1395,12 +1393,9 @@ export default function AdminPage({ initialTab = 'overview' }) {
                           className="admin-header-title-box pointer"
                           title="Click to inspect candidate"
                         >
-                          <img
-                            src={
-                              app.user?.avatar ||
-                              'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=60'
-                            }
-                            alt="User"
+                          <UserAvatar
+                            user={app.user}
+                            size={32}
                             className="admin-recent-avatar-sm"
                           />
                           <div>

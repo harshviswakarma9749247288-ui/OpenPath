@@ -14,11 +14,14 @@ import {
   Share2,
   ShieldCheck,
   Server,
+  Camera,
+  Upload,
 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
 import MatchScoreBadge from '../components/MatchScoreBadge';
 import BackButton from '../components/BackButton';
+import UserAvatar from '../components/UserAvatar';
 import { generatePdfResume } from '../utils/pdfResumeGenerator';
 
 export default function ProfilePage() {
@@ -58,6 +61,89 @@ export default function ProfilePage() {
   }, [user]);
 
   const percentage = profileCompletion?.percentage ?? 0;
+  const fileInputRef = React.useRef(null);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+
+  const compressImage = (file, maxWidth = 320, maxHeight = 320, quality = 0.85) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > maxWidth) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            }
+          } else {
+            if (height > maxHeight) {
+              width = Math.round((width * maxHeight) / height);
+              height = maxHeight;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = reject;
+      };
+      reader.onerror = reject;
+    });
+  };
+
+  const handlePhotoSelect = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      showToast('Please select a valid image file (PNG, JPG, WebP)', 'error');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('Image file should be smaller than 5MB', 'error');
+      return;
+    }
+
+    try {
+      setIsUploadingPhoto(true);
+      const compressedDataUrl = await compressImage(file);
+      const res = await updateProfile({ avatar: compressedDataUrl });
+      if (res.success) {
+        showToast('Profile photo updated successfully!', 'success');
+      } else {
+        showToast('Failed to update profile photo', 'error');
+      }
+    } catch (err) {
+      showToast('Error processing image', 'error');
+    } finally {
+      setIsUploadingPhoto(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  const handleRemovePhoto = async () => {
+    try {
+      setIsUploadingPhoto(true);
+      const res = await updateProfile({ avatar: '' });
+      if (res.success) {
+        showToast('Profile photo removed. Initial avatar restored.', 'info');
+      }
+    } catch (err) {
+      showToast('Failed to remove photo', 'error');
+    } finally {
+      setIsUploadingPhoto(false);
+    }
+  };
 
   const handleSaveProfile = async (e) => {
     e.preventDefault();
@@ -111,14 +197,29 @@ export default function ProfilePage() {
       {/* 1. Profile Top Card */}
       <div className="card card-featured profile-top-card">
         <div className="profile-header-user">
-          <img
-            src={
-              user?.avatar ||
-              'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200'
-            }
-            alt={user?.name}
-            className={`profile-user-avatar ${isAdmin ? 'admin-mode' : ''}`}
-          />
+          <div className="profile-avatar-container">
+            <UserAvatar
+              user={user}
+              size={84}
+              className={`profile-user-avatar ${isAdmin ? 'admin-mode' : ''}`}
+            />
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept="image/*"
+              style={{ display: 'none' }}
+              onChange={handlePhotoSelect}
+            />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="profile-avatar-edit-badge"
+              title="Change profile photo"
+              disabled={isUploadingPhoto}
+            >
+              <Camera size={14} />
+            </button>
+          </div>
 
           <div>
             <div className="profile-name-row">
@@ -134,6 +235,26 @@ export default function ProfilePage() {
             <p className="profile-email-meta">
               {user?.email} • {user?.location?.city || 'Location not specified'} ({user?.location?.remotePreference || 'Remote'})
             </p>
+            <div className="profile-avatar-actions-row">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="profile-photo-text-btn"
+                disabled={isUploadingPhoto}
+              >
+                <Camera size={13} /> {user?.avatar ? 'Change Photo' : 'Upload Photo'}
+              </button>
+              {user?.avatar && (
+                <button
+                  type="button"
+                  onClick={handleRemovePhoto}
+                  className="profile-photo-text-btn danger"
+                  disabled={isUploadingPhoto}
+                >
+                  <Trash2 size={13} /> Remove
+                </button>
+              )}
+            </div>
             <p className="profile-bio-text">
               {user?.bio || (isAdmin ? 'Platform Administrator with complete system access.' : 'No bio provided yet. Click "Edit Profile" to introduce yourself.')}
             </p>

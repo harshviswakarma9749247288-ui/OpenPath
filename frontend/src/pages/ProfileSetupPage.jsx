@@ -9,15 +9,22 @@ import {
   ArrowRight,
   CheckCircle2,
   Upload,
+  Camera,
+  Trash2,
 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
 import BackButton from '../components/BackButton';
+import UserAvatar from '../components/UserAvatar';
 import api from '../utils/api';
 
 export default function ProfileSetupPage() {
   const { user, updateProfile } = useAuthStore();
   const { navigate, showToast } = useUIStore();
+
+  const [avatar, setAvatar] = useState(user?.avatar || '');
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const fileInputRef = React.useRef(null);
 
   const [availableSkills, setAvailableSkills] = useState([]);
   const [degree, setDegree] = useState(user?.education?.degree || '');
@@ -34,6 +41,74 @@ export default function ProfileSetupPage() {
   const [city, setCity] = useState(user?.location?.city || '');
   const [remotePref, setRemotePref] = useState(user?.location?.remotePreference || 'Hybrid');
   const [bio, setBio] = useState(user?.bio || '');
+
+  const compressImage = (file, maxWidth = 320, maxHeight = 320, quality = 0.85) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > maxWidth) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            }
+          } else {
+            if (height > maxHeight) {
+              width = Math.round((width * maxHeight) / height);
+              height = maxHeight;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = reject;
+      };
+      reader.onerror = reject;
+    });
+  };
+
+  const handlePhotoSelect = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      showToast('Please select a valid image file (PNG, JPG, WebP)', 'error');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('Image file should be smaller than 5MB', 'error');
+      return;
+    }
+
+    try {
+      setIsUploadingPhoto(true);
+      const compressedDataUrl = await compressImage(file);
+      setAvatar(compressedDataUrl);
+      showToast('Profile photo attached! Remember to save.', 'success');
+    } catch (err) {
+      showToast('Error processing image', 'error');
+    } finally {
+      setIsUploadingPhoto(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  const handleRemovePhoto = () => {
+    setAvatar('');
+    showToast('Photo removed. Name initial will be displayed.', 'info');
+  };
 
   useEffect(() => {
     if (user) {
@@ -52,6 +127,9 @@ export default function ProfileSetupPage() {
       }
       if (user.bio) {
         setBio(user.bio);
+      }
+      if (user.avatar) {
+        setAvatar(user.avatar);
       }
     }
   }, [user]);
@@ -125,6 +203,7 @@ export default function ProfileSetupPage() {
     );
 
     const payload = {
+      avatar,
       bio,
       education: {
         degree,
@@ -167,6 +246,60 @@ export default function ProfileSetupPage() {
       </div>
 
       <form onSubmit={handleSave} className="card card-featured profile-setup-form">
+        {/* Profile Photo Section (Optional) */}
+        <div className="profile-setup-section">
+          <div className="profile-setup-section-title-row">
+            <Camera size={20} color="#38BDF8" />
+            <h3 className="profile-setup-section-title">Profile Photo (Optional)</h3>
+          </div>
+          <div className="profile-setup-photo-wrap">
+            <UserAvatar
+              user={{ name: user?.name, avatar }}
+              size={72}
+              className="profile-user-avatar"
+            />
+            <div className="profile-setup-photo-info">
+              <span className="profile-setup-photo-title">
+                {avatar ? 'Custom Photo Uploaded' : 'Name Initial Avatar'}
+              </span>
+              <span className="profile-setup-photo-subtitle">
+                {avatar
+                  ? 'Your custom photo is active and will be displayed across your profile.'
+                  : `Currently showing "${(user?.name || 'U').trim().charAt(0).toUpperCase()}". You can upload a photo or keep the initial.`}
+              </span>
+              <div className="profile-setup-photo-btns">
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={handlePhotoSelect}
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="profile-photo-text-btn"
+                  disabled={isUploadingPhoto}
+                >
+                  <Camera size={13} /> {avatar ? 'Change Photo' : 'Upload Photo'}
+                </button>
+                {avatar && (
+                  <button
+                    type="button"
+                    onClick={handleRemovePhoto}
+                    className="profile-photo-text-btn danger"
+                    disabled={isUploadingPhoto}
+                  >
+                    <Trash2 size={13} /> Remove
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr className="profile-setup-hr" />
+
         {/* Education Section */}
         <div className="profile-setup-section">
           <div className="profile-setup-section-title-row">

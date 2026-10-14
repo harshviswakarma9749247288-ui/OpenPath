@@ -8,6 +8,7 @@ import {
   Check,
   User,
 } from 'lucide-react';
+import UserAvatar from '../UserAvatar';
 
 export default function RoleChangeModal({ isOpen, onClose, user, onConfirm, isLoading }) {
   const [selectedRole, setSelectedRole] = useState('student');
@@ -93,12 +94,9 @@ export default function RoleChangeModal({ isOpen, onClose, user, onConfirm, isLo
         {/* Target User Banner */}
         <div className="admin-modal-user-card">
           <div className="admin-modal-card-left">
-            <img
-              src={
-                user.avatar ||
-                'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=80'
-              }
-              alt={user.name}
+            <UserAvatar
+              user={user}
+              size={48}
               className="admin-modal-user-avatar"
             />
             <div>

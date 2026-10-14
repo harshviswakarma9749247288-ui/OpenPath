@@ -18,6 +18,7 @@ import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
 import ThemeToggle from './ThemeToggle';
 import AnimatedLogo from './AnimatedLogo';
+import UserAvatar from './UserAvatar';
 
 export default function Sidebar() {
   const { user } = useAuthStore();
@@ -137,12 +138,9 @@ export default function Sidebar() {
               onClick={() => navigate('profile')}
               className="sidebar-user-profile"
             >
-              <img
-                src={
-                  user?.avatar ||
-                  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120'
-                }
-                alt={user?.name || 'User'}
+              <UserAvatar
+                user={user}
+                size={38}
                 className="sidebar-user-avatar"
               />
               <div className="sidebar-user-meta">
