@@ -1,0 +1,24 @@
+{
+  "name": "openpath-monorepo",
+  "version": "1.0.0",
+  "description": "OpenPath Full-Stack Platform for Student & Fresher Opportunity Discovery",
+  "private": true,
+  "scripts": {
+    "start": "node backend/src/server.js",
+    "seed": "node backend/src/config/seed.js",
+    "test:backend": "node backend/src/test/api-test.js",
+    "backend": "cd backend && npm start",
+    "frontend": "cd frontend && npm run dev"
+  },
+  "keywords": [
+    "openpath",
+    "hackathon",
+    "react",
+    "express",
+    "mongodb",
+    "internships",
+    "matching"
+  ],
+  "author": "OpenPath Team",
+  "license": "ISC"
+}
