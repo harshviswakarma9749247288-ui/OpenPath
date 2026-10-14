@@ -4,15 +4,32 @@ import { ENV } from '../config/env.js';
 let transporter = null;
 
 if (ENV.SMTP_HOST && ENV.SMTP_USER) {
-  transporter = nodemailer.createTransport({
-    host: ENV.SMTP_HOST,
-    port: ENV.SMTP_PORT,
-    secure: ENV.SMTP_SECURE,
-    auth: {
-      user: ENV.SMTP_USER,
-      pass: ENV.SMTP_PASS,
-    },
-  });
+  const isGmail = String(ENV.SMTP_HOST).toLowerCase().includes('gmail');
+  transporter = nodemailer.createTransport(
+    isGmail
+      ? {
+          service: 'gmail',
+          auth: {
+            user: ENV.SMTP_USER,
+            pass: ENV.SMTP_PASS,
+          },
+          connectionTimeout: 6000,
+          greetingTimeout: 5000,
+          socketTimeout: 8000,
+        }
+      : {
+          host: ENV.SMTP_HOST,
+          port: ENV.SMTP_PORT,
+          secure: ENV.SMTP_SECURE,
+          auth: {
+            user: ENV.SMTP_USER,
+            pass: ENV.SMTP_PASS,
+          },
+          connectionTimeout: 6000,
+          greetingTimeout: 5000,
+          socketTimeout: 8000,
+        }
+  );
 }
 
 /**
@@ -118,16 +135,22 @@ export const sendOtpEmail = async ({ to, code, purpose = 'Registration' }) => {
 
   if (transporter) {
     try {
-      await transporter.sendMail({
+      const sendPromise = transporter.sendMail({
         from: ENV.EMAIL_FROM,
         to,
         subject,
         html: htmlContent,
       });
+
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('SMTP transmission timed out after 6 seconds')), 6000)
+      );
+
+      await Promise.race([sendPromise, timeoutPromise]);
       delivered = true;
       console.log(`✅ [EMAIL SERVICE] Message successfully dispatched via SMTP to ${to}`);
     } catch (err) {
-      console.error(`⚠️ [EMAIL SERVICE] SMTP delivery failed: ${err.message}. Retaining demo preview code.`);
+      console.error(`⚠️ [EMAIL SERVICE] SMTP delivery failed or timed out: ${err.message}. Retaining demo preview code.`);
     }
   }
 

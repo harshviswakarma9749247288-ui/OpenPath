@@ -27,7 +27,7 @@ export const request = async (endpoint, options = {}) => {
     config.body = JSON.stringify(options.body);
   }
 
-  const timeoutMs = options.timeout || 30000;
+  const timeoutMs = options.timeout || 45000;
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
