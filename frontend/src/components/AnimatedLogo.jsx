@@ -1,154 +1,97 @@
 import React, { useState } from 'react';
 
-export default function AnimatedLogo({ size = 'md', interactive = true, showRings = true }) {
+export default function AnimatedLogo({ size = 'md', interactive = true, showRings = false }) {
   const [isHovered, setIsHovered] = useState(false);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
   const sizes = {
-    sm: { box: 34, font: '0.95rem', radius: 8, ring: 46 },
-    md: { box: 42, font: '1.2rem', radius: 12, ring: 58 },
-    lg: { box: 64, font: '1.8rem', radius: 18, ring: 86 },
-    xl: { box: 88, font: '2.4rem', radius: 24, ring: 118 },
+    sm: { box: 34, font: '0.85rem', radius: 10, star: 5 },
+    md: { box: 42, font: '1.05rem', radius: 12, star: 6 },
+    lg: { box: 60, font: '1.5rem', radius: 16, star: 8 },
+    xl: { box: 80, font: '2.0rem', radius: 22, star: 10 },
   };
 
   const currentSize = sizes[size] || sizes.md;
 
-  const handleMouseMove = (e) => {
-    if (!interactive) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    const tiltX = -(y / (rect.height / 2)) * 20;
-    const tiltY = (x / (rect.width / 2)) * 20;
-    setTilt({ x: tiltX, y: tiltY });
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    setTilt({ x: 0, y: 0 });
-  };
-
   return (
     <div
       onMouseEnter={() => setIsHovered(true)}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      onMouseLeave={() => setIsHovered(false)}
       style={{
         position: 'relative',
-        width: `${currentSize.ring}px`,
-        height: `${currentSize.ring}px`,
-        display: 'flex',
+        width: `${currentSize.box}px`,
+        height: `${currentSize.box}px`,
+        display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        perspective: '600px',
+        flexShrink: 0,
         cursor: interactive ? 'pointer' : 'default',
         userSelect: 'none',
       }}
     >
-      {/* Outer Orbiting 3D Ring 1 */}
-      {showRings && (
-        <div
-          className="anim-orbit-ring"
-          style={{
-            position: 'absolute',
-            inset: 0,
-            borderRadius: '50%',
-            border: '1.5px dashed rgba(168, 85, 247, 0.45)',
-            transform: isHovered
-              ? `rotateX(65deg) rotateZ(180deg) scale(1.1)`
-              : 'rotateX(65deg) rotateZ(0deg)',
-            transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
-            pointerEvents: 'none',
-          }}
-        />
-      )}
-
-      {/* Orbiting 3D Ring 2 (Cross Axis) */}
-      {showRings && (
-        <div
-          className="anim-orbit-ring-reverse"
-          style={{
-            position: 'absolute',
-            inset: '3px',
-            borderRadius: '50%',
-            border: '1px solid rgba(236, 72, 153, 0.35)',
-            transform: isHovered
-              ? `rotateY(65deg) rotateZ(-180deg) scale(1.1)`
-              : 'rotateY(65deg) rotateZ(0deg)',
-            transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
-            pointerEvents: 'none',
-          }}
-        />
-      )}
-
-      {/* Orbiting Photon Satellite Dot */}
-      {showRings && (
-        <div
-          className="anim-satellite-dot"
-          style={{
-            position: 'absolute',
-            width: size === 'sm' ? '5px' : '7px',
-            height: size === 'sm' ? '5px' : '7px',
-            borderRadius: '50%',
-            backgroundColor: '#06B6D4',
-            boxShadow: '0 0 10px #06B6D4, 0 0 18px rgba(6, 182, 212, 0.8)',
-            pointerEvents: 'none',
-          }}
-        />
-      )}
-
-      {/* Central 3D Core Logo Box */}
+      {/* Sleek Minimalist Core Logo Badge */}
       <div
         style={{
-          width: `${currentSize.box}px`,
-          height: `${currentSize.box}px`,
+          width: '100%',
+          height: '100%',
           borderRadius: `${currentSize.radius}px`,
-          background: 'linear-gradient(135deg, #7C3AED 0%, #C026D3 50%, #EC4899 100%)',
+          background: 'linear-gradient(135deg, #7C3AED 0%, #C026D3 55%, #EC4899 100%)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           color: '#FFFFFF',
           fontWeight: 900,
-          fontSize: currentSize.font,
-          letterSpacing: '-0.5px',
+          border: '1px solid rgba(255, 255, 255, 0.25)',
           boxShadow: isHovered
-            ? '0 0 30px rgba(236, 72, 153, 0.7), 0 0 50px rgba(124, 58, 237, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.5)'
-            : '0 0 18px rgba(236, 72, 153, 0.45), 0 0 30px rgba(124, 58, 237, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.4)',
-          border: '1px solid rgba(255, 255, 255, 0.35)',
-          transform: isHovered
-            ? `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale(1.1) translateZ(12px)`
-            : 'rotateX(0deg) rotateY(0deg) scale(1) translateZ(0)',
-          transformStyle: 'preserve-3d',
-          transition: isHovered
-            ? 'transform 0.1s ease-out, box-shadow 0.3s ease'
-            : 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease',
+            ? '0 6px 20px rgba(236, 72, 153, 0.45), 0 2px 10px rgba(124, 58, 237, 0.35)'
+            : '0 3px 12px rgba(124, 58, 237, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2)',
+          transform: isHovered && interactive ? 'translateY(-1px) scale(1.04)' : 'scale(1)',
+          transition: 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease',
           position: 'relative',
           overflow: 'hidden',
         }}
       >
-        {/* Shimmer sweep effect */}
+        {/* Subtle glass reflection highlight */}
         <div
-          className="anim-shimmer-sweep"
           style={{
             position: 'absolute',
-            inset: 0,
-            background:
-              'linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.4) 50%, transparent 80%)',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '45%',
+            background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 100%)',
             pointerEvents: 'none',
           }}
         />
 
-        {/* Text glyph */}
-        <span
+        {/* Clean Modern OP Mark with Star Beacon */}
+        <div
           style={{
             position: 'relative',
-            zIndex: 2,
-            textShadow: '0 2px 8px rgba(0, 0, 0, 0.5)',
-            transform: 'translateZ(10px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            lineHeight: 1,
+            fontWeight: 900,
+            fontSize: currentSize.font,
+            letterSpacing: '-0.5px',
+            color: '#FFFFFF',
+            textShadow: '0 1px 3px rgba(0, 0, 0, 0.35)',
           }}
         >
-          OP
-        </span>
+          <span>OP</span>
+          <span
+            style={{
+              position: 'absolute',
+              top: '-2px',
+              right: '-4px',
+              width: `${currentSize.star}px`,
+              height: `${currentSize.star}px`,
+              borderRadius: '50%',
+              backgroundColor: '#38BDF8',
+              boxShadow: '0 0 6px #38BDF8, 0 0 10px rgba(56, 189, 248, 0.8)',
+            }}
+          />
+        </div>
       </div>
     </div>
   );
