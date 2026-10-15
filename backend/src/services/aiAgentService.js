@@ -10,17 +10,22 @@ let cachedActiveModel = null;
 async function getAvailableModel(baseUrl, preferredModel) {
   if (cachedActiveModel) return cachedActiveModel;
 
+  // On Render/Production without an explicit remote Ollama host, skip immediately
+  if (process.env.NODE_ENV === 'production' && !process.env.OLLAMA_HOST) {
+    return null;
+  }
+
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2000);
+    const timeoutId = setTimeout(() => controller.abort(), 1200);
     const res = await fetch(`${baseUrl}/api/tags`, { signal: controller.signal });
     clearTimeout(timeoutId);
 
-    if (!res.ok) return preferredModel;
-    const data = await res.json();
+    if (!res.ok) return null;
+    const data = await res.json().catch(() => ({}));
     const modelNames = (data.models || []).map((m) => m.name || m.model);
 
-    if (modelNames.length === 0) return preferredModel;
+    if (modelNames.length === 0) return null;
     if (modelNames.includes(preferredModel)) {
       cachedActiveModel = preferredModel;
       return preferredModel;
@@ -37,7 +42,7 @@ async function getAvailableModel(baseUrl, preferredModel) {
     cachedActiveModel = modelNames[0];
     return modelNames[0];
   } catch {
-    return preferredModel;
+    return null;
   }
 }
 
@@ -199,6 +204,16 @@ export async function queryLocalAgent({ prompt, messages = [], systemPrompt, con
   // 3. Detect best available model
   const activeModel = await getAvailableModel(baseUrl, configuredModel);
 
+  if (!activeModel) {
+    const fallbackReply = generateCareerAdvisorFallback({ prompt, context });
+    return {
+      success: true,
+      reply: fallbackReply,
+      model: 'OpenPath Career Intelligence Engine',
+      source: 'domain-ai',
+    };
+  }
+
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -305,6 +320,17 @@ export async function streamLocalAgent({ prompt, messages = [], systemPrompt, co
   }
 
   const activeModel = await getAvailableModel(baseUrl, configuredModel);
+
+  if (!activeModel) {
+    const fallbackText = generateCareerAdvisorFallback({ prompt, context });
+    const words = fallbackText.split(/(\s+)/);
+    for (const word of words) {
+      onChunk(word);
+      await new Promise((r) => setTimeout(r, 16));
+    }
+    return { success: true, model: 'OpenPath Career Intelligence Engine', source: 'domain-ai' };
+  }
+
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Bot, X, Send, Sparkles, User, RefreshCw, Briefcase, Target, RotateCcw } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
+import { API_BASE } from '../utils/api';
 
 /**
  * Helper to render markdown bold (**text**) and bullet lists nicely in the chat bubble.
@@ -134,7 +135,6 @@ export default function AiAssistantDrawer() {
         content: m.text,
       }));
 
-      const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
       const token = localStorage.getItem('openpath_token');
 
       const response = await fetch(`${API_BASE}/ai/stream`, {
