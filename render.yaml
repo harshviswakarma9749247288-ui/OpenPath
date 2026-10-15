@@ -22,6 +22,12 @@ services:
         value: 7d
       - key: CLIENT_URL
         sync: false
+      - key: BREVO_API_KEY
+        sync: false
+      - key: BREVO_SENDER_EMAIL
+        value: harshviswakarma9749247288@gmail.com
+      - key: RESEND_API_KEY
+        sync: false
 
   # OpenPath Frontend Web App (React / Vite)
   - type: web
@@ -38,4 +44,4 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_URL
-        sync: false
+        value: https://openpath-jkpo.onrender.com/api

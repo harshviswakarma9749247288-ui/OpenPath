@@ -165,6 +165,11 @@ export const sendOtpEmail = async ({ to, code, purpose = 'Registration' }) => {
   // 2. Secondary Cloud Driver: Brevo HTTPS API (Port 443 - works 100% on Render Free Tier)
   if (!delivered && ENV.BREVO_API_KEY) {
     try {
+      const rawSender = ENV.BREVO_SENDER_EMAIL || ENV.SMTP_USER || 'harshviswakarma9749247288@gmail.com';
+      const senderEmail = rawSender.includes('<')
+        ? rawSender.replace(/.*<([^>]+)>.*/, '$1').trim()
+        : rawSender.trim();
+
       const res = await fetch('https://api.brevo.com/v3/smtp/email', {
         method: 'POST',
         headers: {
@@ -172,7 +177,7 @@ export const sendOtpEmail = async ({ to, code, purpose = 'Registration' }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          sender: { name: 'OpenPath', email: ENV.SMTP_USER || 'harshviswakarma9749247288@gmail.com' },
+          sender: { name: 'OpenPath', email: senderEmail },
           to: [{ email: to }],
           subject,
           htmlContent,
