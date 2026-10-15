@@ -178,6 +178,7 @@ app.use('/api/applications', applicationRoutes);
 app.use('/api/employer', employerRoutes);
 app.use('/api/skills', skillRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/ai', aiRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/admin', adminRoutes);
 

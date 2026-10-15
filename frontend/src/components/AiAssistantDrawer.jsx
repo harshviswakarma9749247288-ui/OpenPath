@@ -137,24 +137,58 @@ export default function AiAssistantDrawer() {
 
       const token = localStorage.getItem('openpath_token');
 
-      const response = await fetch(`${API_BASE}/ai/stream`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify({
-          prompt: message,
-          messages: conversationHistory,
-          context: {
-            student: studentContext,
-            opportunity: opportunityContext,
+      let response = null;
+      try {
+        response = await fetch(`${API_BASE}/ai/stream`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
-        }),
-      });
+          body: JSON.stringify({
+            prompt: message,
+            messages: conversationHistory,
+            context: {
+              student: studentContext,
+              opportunity: opportunityContext,
+            },
+          }),
+        });
+      } catch (streamErr) {
+        response = null;
+      }
 
-      if (!response.ok) {
-        throw new Error(`HTTP error ${response.status}`);
+      if (!response || !response.ok) {
+        // Fallback to standard chat endpoint if streaming fails
+        const chatRes = await fetch(`${API_BASE}/ai/chat`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({
+            prompt: message,
+            messages: conversationHistory,
+            context: {
+              student: studentContext,
+              opportunity: opportunityContext,
+            },
+          }),
+        });
+
+        if (chatRes.ok) {
+          const chatData = await chatRes.json();
+          const replyText = chatData.reply || chatData.response || '';
+          if (replyText) {
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === aiMessageId ? { ...m, text: replyText } : m
+              )
+            );
+            return;
+          }
+        }
+        throw new Error('AI service error');
       }
 
       const reader = response.body.getReader();
