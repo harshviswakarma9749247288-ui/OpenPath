@@ -79,7 +79,27 @@ if (ENV.NODE_ENV !== 'test') {
   });
 }
 
-// Health Check
+// Root endpoint for UptimeRobot / pingers to keep Render awake
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: 'healthy',
+    product: 'OpenPath API',
+    message: 'OpenPath REST API is active',
+    uptime: `${Math.floor(process.uptime())}s`,
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Health Checks
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'healthy',
+    product: 'OpenPath API',
+    timestamp: new Date().toISOString(),
+    env: ENV.NODE_ENV,
+  });
+});
+
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'healthy',
