@@ -12,7 +12,7 @@ const rawApiUrl = isLocalhost
       : 'http://localhost:5000/api'));
 
 const sanitizedApiUrl = rawApiUrl.trim().replace(/\/+$/, '');
-const API_BASE = sanitizedApiUrl.endsWith('/api') ? sanitizedApiUrl : `${sanitizedApiUrl}/api`;
+export const API_BASE = sanitizedApiUrl.endsWith('/api') ? sanitizedApiUrl : `${sanitizedApiUrl}/api`;
 
 export const request = async (endpoint, options = {}) => {
   const method = (options.method || 'GET').toUpperCase();
